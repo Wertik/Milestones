@@ -1,0 +1,22 @@
+testing-milestone:
+  type: blockbreak
+  conditions:
+    tool-types:
+    - IRON_SPADE
+    in-inventory:
+    - APPLE
+    block-types:
+    - DIRT
+  global-milestone: true
+  only-once: true
+testing-milestone-2:
+  type: blockbreak
+  conditions:
+    tool-types:
+    - IRON_SPADE
+    in-inventory:
+    - APPLE
+    block-types:
+    - DIRT
+  global-milestone: false
+  only-once: true
