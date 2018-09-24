@@ -48,7 +48,6 @@ public class DataHandler {
      * Files are created with the names of milestones. It doesn't matter so i just did it like this.
      *
      * CLEAR == set the score to 0
-     * REMOVE == remove the caption
      * ADD == add 1 point to the score
      * SUB == inc. soon mby.
      * */

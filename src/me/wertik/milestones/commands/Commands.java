@@ -36,9 +36,8 @@ public class Commands implements CommandExecutor {
         if (args.length == 0) {
             sender.sendMessage("This should be the help page.");
             sender.sendMessage("/mile reload == reload yaml paths\n" +
-                    "/mile toggle (player/all) (specific/'') == toggle data logging\n" +
-                    "/mile clear (player/all) == clear data\n" +
-                    "/mile remove (player/all) == remove data\n" +
+                    "/mile toggle (player/global/*) (milestone/*) == toggle data collecting\n" +
+                    "/mile clear (player/global/*) (milestone/*) == clear data\n" +
                     "/mile list (params::planned) == list milestone data\n" +
                     "/mile stats (player/global) == player/global stats\n" +
                     "/mile info (milestone) == info about a milestone\n" +
@@ -48,7 +47,15 @@ public class Commands implements CommandExecutor {
 
             switch (args[0]) {
                 case "reload":
+                    cload.loadMilestones();
+                    cload.loadYamls();
+                    dataHandler.loadFiles();
+                    plugin.reloadConfig();
+                    sender.sendMessage("§3Should be reloaded.");
+                    break;
                 case "toggle":
+
+                    break;
                 case "clear":
 
                     if (args.length < 3) {
@@ -100,7 +107,6 @@ public class Commands implements CommandExecutor {
                             sender.sendMessage("§cStop bullshitting me, that one's not real.");
                     }
                     break;
-                case "remove":
                 case "stats":
                     // /mile stats (player/global)
 

@@ -31,6 +31,10 @@ public class ConditionHandler {
 
         for (Milestone milestone : milestones) {
 
+            // Toggle checkers
+            // player
+
+
             Condition condition = milestone.getCondition();
 
             if (!condition.getType().equalsIgnoreCase(type))

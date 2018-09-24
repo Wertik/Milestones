@@ -16,7 +16,10 @@ public class ConfigLoader {
     private Main plugin = Main.getInstance();
     public static FileConfiguration config;
     public static YamlConfiguration miles;
-    public static File milefile;
+    public static File mileFile;
+    public static File storageFile;
+    public static YamlConfiguration storage;
+
     private static List<Milestone> milestones;
 
     public ConfigLoader() {
@@ -30,9 +33,20 @@ public class ConfigLoader {
 
     public void loadYamls() {
         config = plugin.getConfig();
-        milefile = new File(plugin.getDataFolder() + "/milestones.yml");
-        miles = YamlConfiguration.loadConfiguration(milefile);
+        mileFile = new File(plugin.getDataFolder() + "/milestones.yml");
+        miles = YamlConfiguration.loadConfiguration(mileFile);
+        storageFile = new File(plugin.getDataFolder() + "/datastorage.yml");
+        storage = YamlConfiguration.loadConfiguration(storageFile);
     }
+
+    // Toggles
+    public void togglePlayer(String playerName) {}
+
+    public void toggleMilestone(String name) {}
+
+    public boolean getPlayerToggle(String playerName) {return false;}
+
+    public boolean getMilestoneToggle(String name) {return false;}
 
     public void loadMilestones() {
         milestones = setMilestones();

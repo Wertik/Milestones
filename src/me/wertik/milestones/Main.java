@@ -58,6 +58,21 @@ public class Main extends JavaPlugin {
             console.sendMessage("§aGenerated default §f" + milefile.getName());
         }
 
+        // Other data
+        File storageFile = new File(getDataFolder() + "/datastorage.yml");
+
+        if (!storageFile.exists()) {
+            saveResource("datastorage.yml", false);
+            YamlConfiguration storageYaml = YamlConfiguration.loadConfiguration(milefile);
+            storageYaml.options().copyDefaults(true);
+            try {
+                storageYaml.save(storageFile);
+            } catch (IOException e) {
+                console.sendMessage("§cCould not save the file, that's bad tho.");
+            }
+            console.sendMessage("§aGenerated default §f" + storageFile.getName());
+        }
+
         // Global Milestones
         File globalMileFile = new File(getDataFolder() + "/globalmilestones.yml");
 
