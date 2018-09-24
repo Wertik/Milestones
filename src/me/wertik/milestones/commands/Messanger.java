@@ -17,6 +17,11 @@ public class Messanger {
     }
 
     // Methods to simplify sending messages in commands. (It looks easier only for me)
+    /*
+     *
+     * I'm gonna add some language file after completing the system, don't worry.
+     *
+     * */
 
     public void help(Player p) {
     }
@@ -57,18 +62,17 @@ public class Messanger {
             }
         }
         if (milestone.getCondition().getInInventory() != null) {
-            p.sendMessage("  §3In invetory item types:");
+            p.sendMessage("  §3In-inventory item types:");
             for (String item : milestone.getCondition().getInInventory()) {
                 p.sendMessage("  §8- §f" + item);
             }
-
         }
     }
 
     public void list(CommandSender p) {
         p.sendMessage("§dList of all milestones:");
         for (String name : cload.getMileNames()) {
-            p.sendMessage("§f"+name);
+            p.sendMessage("§f" + name);
         }
     }
 

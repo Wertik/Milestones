@@ -36,9 +36,9 @@ public class Commands implements CommandExecutor {
         if (args.length == 0) {
             sender.sendMessage("This should be the help page.");
             sender.sendMessage("/mile reload == reload yaml paths\n" +
-                    "/mile toggle (player/all) (specific/\"\") == toggle data logging\n" +
+                    "/mile toggle (player/all) (specific/'') == toggle data logging\n" +
                     "/mile clear (player/all) == clear data\n" +
-                    "/mile remove == remove data\n" +
+                    "/mile remove (player/all) == remove data\n" +
                     "/mile list (params::planned) == list milestone data\n" +
                     "/mile stats (player/global) == player/global stats\n" +
                     "/mile info (milestone) == info about a milestone\n" +
@@ -88,7 +88,7 @@ public class Commands implements CommandExecutor {
                             mess.stats(sender, target);
                             return true;
                         } else
-                            sender.sendMessage("§cPlayer is not logged, or you just made it up.");
+                            sender.sendMessage("§cPlayer is not logged, or you just made his name up.");
                     }
                     break;
                 case "list":

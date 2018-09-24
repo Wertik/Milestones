@@ -9,6 +9,12 @@ public class Condition {
      *     *  *   *
      *-*/  /**/   /*-*/
 
+    /*
+    * Planned conditions:
+    * Biome, Block under the player, Region (WG)
+    *
+    * */
+
     private String type;
     private List<String> toolTypes;
     private List<String> targetTypes;

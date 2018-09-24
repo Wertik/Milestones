@@ -109,6 +109,10 @@ public class DataHandler {
     }
 
     public boolean isLogged(Player p, String name) {
+
+        if (p == null)
+            return false;
+
         if (files.get(name).contains(p.getName()))
             return true;
         else
