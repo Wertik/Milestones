@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -47,8 +48,10 @@ public class DataHandler {
      *
      * Files are created with the names of milestones. It doesn't matter so i just did it like this.
      *
-     *
-     *
+     * CLEAR == set the score to 0
+     * REMOVE == remove the caption
+     * ADD == add 1 point to the score
+     * SUB == inc. soon mby.
      * */
 
     // CLEAR
@@ -66,21 +69,19 @@ public class DataHandler {
     }
 
     public void clearGlobalScore(String name) {
-        globalMiles.set(name, null);
+        globalMiles.set(name, 0);
         saveGlobalMileFile();
     }
 
+    // Clear all globalMilestones
     public void clearGlobalScores() {
-        globalMileFile.delete();
-        plugin.saveResource("globalmilestones.yml", false);
-        YamlConfiguration globalMiles = YamlConfiguration.loadConfiguration(globalMileFile);
-        globalMiles.options().copyDefaults(true);
-        try {
-            globalMiles.save(globalMileFile);
-        } catch (IOException e) {
-            plugin.getServer().getConsoleSender().sendMessage("§cCould not save the file, that's bad tho.");
+        List<String> globalMilestones = new ArrayList<>(globalMiles.getKeys(false));
+
+        for (String globalMilestone : globalMilestones) {
+            globalMiles.set(globalMilestone, 0);
         }
-        plugin.getServer().getConsoleSender().sendMessage("§aGenerated default §f" + globalMileFile.getName());
+
+        saveGlobalMileFile();
     }
 
     // ADD

@@ -1,13 +1,10 @@
 package me.wertik.milestones.commands;
 
 import me.wertik.milestones.ConfigLoader;
-import me.wertik.milestones.objects.Condition;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.bukkit.entity.Player;
 
 public class Commands implements CommandExecutor {
 
@@ -17,36 +14,56 @@ public class Commands implements CommandExecutor {
      * Soo... plans:
      * /milestones
      * (aliases: mile, miles)
-     * /mile reset
-     * /mile reload
-     * /mile toggle (player/all) (world/all) (specific/"")
+     *
+     * /mile reload == reload yaml paths
+     * /mile toggle (player/all) (specific/"") == toggle data logging
+     * /mile clear (player/all) == clear data
+     * /mile remove == remove data
+     * /mile list (params::planned) == list milestone data
+     * /mile stats (player/global)
+     *
      * */
 
     @Override
-    public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        Condition condition = cload.getCondition("testing-milestone");
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-        List<String> infolist = new ArrayList<>();
+        // Fuu..
+        if (args.length == 0) {
+            sender.sendMessage("This should be the help page.");
+            sender.sendMessage("/mile reload == reload yaml paths\n" +
+                    "/mile toggle (player/all) (specific/\"\") == toggle data logging\n" +
+                    "/mile clear (player/all) == clear data\n" +
+                    "/mile remove == remove data\n" +
+                    "/mile list (params::planned) == list milestone data\n" +
+                    "/mile stats (player/global)");
+        } else {
 
-        infolist.add("Type: " + condition.getType());
-        infolist.add("InInventoryTypes: " + condition.getInInventory());
-        infolist.add("TargetTypes: " + condition.getTargetTypes());
+            switch (args[0]) {
+                case "reload":
+                case "toggle":
+                case "clear":
+                case "remove":
+                case "stats":
+                    // /mile stats (player/global)
 
-        switch (condition.getType()) {
-            case "blockbreak":
-                infolist.add("ToolTypes: " + condition.getToolTypes());
-                break;
-            case "blockplace":
-                break;
-            case "entitykill":
-                infolist.add("ToolTypes: " + condition.getToolTypes());
-                break;
+                    // lenght checkers.
+                    if (args.length == 1) {
+                        // data for sender (if player)
+                        if (sender instanceof Player) {
+
+
+
+                        }
+                    } else if (args.length > 2) {
+
+                    }
+
+                    break;
+                case "list":
+            }
+
+
         }
-
-        for (String line : infolist) {
-            commandSender.sendMessage(line);
-        }
-
         return false;
     }
 }
