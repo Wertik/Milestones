@@ -26,7 +26,7 @@ public class DataHandler {
         globalMiles = YamlConfiguration.loadConfiguration(globalMileFile);
 
         files = new HashMap<>();
-        List<String> names = cload.getMileList();
+        List<String> names = cload.getMileNames();
 
         for (String name : names) {
             if (!cload.getMilestone(name).isGlobal())
@@ -113,6 +113,19 @@ public class DataHandler {
             return true;
         else
             return false;
+    }
+
+    public boolean isLogged(Player p) {
+        List<String> milestones = cload.getMileNames();
+
+        for (String milestone : milestones) {
+            if (isLogged(p, milestone))
+                return true;
+            else
+                continue;
+        }
+
+        return false;
     }
 
     // GETTER

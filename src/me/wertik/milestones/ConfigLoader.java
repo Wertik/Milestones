@@ -23,9 +23,9 @@ public class ConfigLoader {
 
     // THE FUN-CTIONSSSSS, did you get it? Huh.
     /*
-    * Loading stuff from milestones.yml and config.yml, also some useless string and config methods.
-    * idk how to name the classes actualy, just ignore it.
-    * */
+     * Loading stuff from milestones.yml and config.yml, also some useless string and config methods.
+     * idk how to name the classes actualy, just ignore it.
+     * */
 
     public void loadYamls() {
         config = plugin.getConfig();
@@ -45,15 +45,57 @@ public class ConfigLoader {
     public List<Milestone> getMilestones() {
         List<Milestone> milestones = new ArrayList<>();
 
-        for (String name : getMileList()) {
+        for (String name : getMileNames()) {
             milestones.add(getMilestone(name));
         }
 
         return milestones;
     }
 
-    public List<String> getMileList() {
+    public List<Milestone> getGlobalMilestones() {
+        List<Milestone> milestones = getMilestones();
+
+        for (Milestone milestone : milestones) {
+            if (!milestone.isGlobal())
+                milestones.remove(milestone);
+        }
+        return milestones;
+    }
+
+    public List<Milestone> getPersonalMilestones() {
+        List<Milestone> milestones = getMilestones();
+
+        for (Milestone milestone : milestones) {
+            if (milestone.isGlobal())
+                milestones.remove(milestone);
+        }
+        return milestones;
+    }
+
+    public List<String> getMileNames() {
         return new ArrayList<>(miles.getKeys(false));
+    }
+
+    public List<String> getPersonalMileNames() {
+        List<Milestone> milestones = getPersonalMilestones();
+        List<String> milenames = new ArrayList<>();
+
+        for (Milestone milestone : milestones) {
+            milenames.add(milestone.getName());
+        }
+
+        return milenames;
+    }
+
+    public List<String> getGlobalMileNames() {
+        List<Milestone> milestones = getGlobalMilestones();
+        List<String> milenames = new ArrayList<>();
+
+        for (Milestone milestone : milestones) {
+            milenames.add(milestone.getName());
+        }
+
+        return milenames;
     }
 
     /*

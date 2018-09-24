@@ -1,6 +1,8 @@
 package me.wertik.milestones.commands;
 
 import me.wertik.milestones.ConfigLoader;
+import me.wertik.milestones.DataHandler;
+import me.wertik.milestones.Main;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -9,6 +11,9 @@ import org.bukkit.entity.Player;
 public class Commands implements CommandExecutor {
 
     ConfigLoader cload = new ConfigLoader();
+    DataHandler dataHandler = new DataHandler();
+    Main plugin = Main.getInstance();
+    Messanger mess = new Messanger();
 
     /*
      * Soo... plans:
@@ -50,19 +55,40 @@ public class Commands implements CommandExecutor {
                     if (args.length == 1) {
                         // data for sender (if player)
                         if (sender instanceof Player) {
-
-
-
+                            // TO-DO
+                            return true;
                         }
-                    } else if (args.length > 2) {
 
+                    } else if (args.length > 2) {
+                        sender.sendMessage("§cThat's too much args, /mile stats (player/'global') ");
+                        return true;
                     }
 
+                    // global
+                    if (args[1].equalsIgnoreCase("global")) {
+
+                        mess.statsGlobal(sender);
+
+                        // player
+                    } else {
+
+                        // target
+                        Player target = null;
+                        try {
+                            target = plugin.getServer().getPlayer(args[1]);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        if (dataHandler.isLogged(target) && target != null) {
+                            mess.stats(sender, target);
+                            return true;
+                        } else
+                            sender.sendMessage("§cPlayer is not logged, or you just made it up.");
+                    }
                     break;
                 case "list":
             }
-
-
         }
         return false;
     }

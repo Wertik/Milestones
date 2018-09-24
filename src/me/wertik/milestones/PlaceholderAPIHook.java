@@ -21,7 +21,7 @@ public class PlaceholderAPIHook extends EZPlaceholderHook {
 
         // %milestones_<name>%
 
-        if (cload.getMileList().contains(params))
+        if (cload.getMileNames().contains(params))
             return String.valueOf(dataHandler.getScore(p, params));
 
         return null;
