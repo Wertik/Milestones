@@ -3,6 +3,8 @@ package me.wertik.milestones;
 import me.clip.placeholderapi.PlaceholderHook;
 import me.wertik.milestones.commands.Commands;
 import me.wertik.milestones.listeners.BlockBreakListener;
+import me.wertik.milestones.listeners.BlockPlaceListener;
+import me.wertik.milestones.listeners.EntityDeathListener;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -85,6 +87,8 @@ public class Main extends JavaPlugin {
         getCommand("mile").setExecutor(new Commands());
 
         getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
+        getServer().getPluginManager().registerEvents(new BlockPlaceListener(), this);
+        getServer().getPluginManager().registerEvents(new EntityDeathListener(), this);
 
         // Placeholder API
         if (this.getServer().getPluginManager().getPlugin("PlaceholderAPI").isEnabled()) {

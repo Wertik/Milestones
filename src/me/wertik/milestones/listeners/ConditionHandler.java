@@ -4,6 +4,7 @@ import me.wertik.milestones.ConfigLoader;
 import me.wertik.milestones.DataHandler;
 import me.wertik.milestones.objects.Condition;
 import me.wertik.milestones.objects.Milestone;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -35,11 +36,17 @@ public class ConditionHandler {
             if (!condition.getType().equalsIgnoreCase(type))
                 continue;
 
+            Bukkit.broadcastMessage("§aCheck 1!");
+
             // Check for the target first, easier.
             if (condition.getTargetTypes().contains(targetType)) {
 
+                Bukkit.broadcastMessage("§aCheck 2!");
+
                 // check tool type
                 if (condition.getToolTypes().contains(p.getInventory().getItemInMainHand().getType().toString())) {
+
+                    Bukkit.broadcastMessage("§aCheck 3!");
 
                     // inventory items
                     for (String itemType : condition.getInInventory()) {
@@ -50,15 +57,18 @@ public class ConditionHandler {
                             return;
                     }
 
+                    Bukkit.broadcastMessage("§aCheck 4!");
+
                     if (milestone.isOnlyOnce()) {
                         if (dataHandler.isLogged(p, milestone.getName())) {
                             return;
                         } else {
-                            p.sendMessage("§3Ok, you good. Adding a point!");
+                            p.sendMessage("§3Ok, you good. Adding a point, but only once!");
                             if (!milestone.isGlobal())
                                 dataHandler.addScore(p, milestone.getName());
                             else
                                 dataHandler.addGlobalScore(milestone.getName());
+                            return;
                         }
                     } else {
                         p.sendMessage("§3Ok, you good. Adding a point!");

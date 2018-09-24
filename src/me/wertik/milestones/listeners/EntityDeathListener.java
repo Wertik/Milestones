@@ -12,6 +12,6 @@ public class EntityDeathListener implements Listener {
     @EventHandler
     public void onDeath(EntityDeathEvent e) {
         if (e.getEntity().getKiller() instanceof Player)
-            conditionHandler.process("blockbreak", e.getEntity().getType().toString(), e.getEntity().getKiller());
+            conditionHandler.process("entitykill", e.getEntity().getType().toString(), e.getEntity().getKiller());
     }
 }

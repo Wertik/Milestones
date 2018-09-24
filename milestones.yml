@@ -9,7 +9,7 @@ testing-milestone:
     block-types:
     - DIRT
   global-milestone: true
-  only-once: true
+  log-only-once: true
 testing-milestone-2:
   type: blockbreak
   conditions:
@@ -20,4 +20,4 @@ testing-milestone-2:
     block-types:
     - DIRT
   global-milestone: false
-  only-once: true
+  log-only-once: true
