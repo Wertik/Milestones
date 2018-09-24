@@ -50,6 +50,56 @@ public class Commands implements CommandExecutor {
                 case "reload":
                 case "toggle":
                 case "clear":
+
+                    if (args.length < 3) {
+                        sender.sendMessage("§cThat's not enough.. /mile clear (player/global/*) (milestone/*)");
+                        return true;
+                    } else if (args.length > 3) {
+                        sender.sendMessage("§cThat's too much. Stop plox.");
+                        return true;
+                    }
+
+                    // /mile clear (player/global/*) (milestone/*)
+                    if (args[1].equalsIgnoreCase("global")) {
+
+                        if (args[2].equalsIgnoreCase("*")) {
+                            dataHandler.clearGlobalScores();
+                            sender.sendMessage("§cData wipe you requested should be done sir.");
+                        } else {
+                            if (cload.getGlobalMileNames().contains(args[2])) {
+                                dataHandler.clearGlobalScore(args[2]);
+                                sender.sendMessage("§cData wipe you requested should be done sir.");
+                            } else
+                                sender.sendMessage("§cThat milestone is non-existant.");
+                        }
+
+                        return true;
+                    } else if (args[1].equalsIgnoreCase("*")) {
+
+                        if (args[2].equalsIgnoreCase("*")) {
+                            dataHandler.clearScores();
+                            sender.sendMessage("§cIt's gone.. and it's your fault..");
+                            return true;
+                        }
+
+                        dataHandler.clearMilestoneScores(args[2]);
+                        sender.sendMessage("§cWipeout performed!");
+                        return true;
+                    } else {
+                        // player
+                        if (args[2].equalsIgnoreCase("*")) {
+                            dataHandler.clearPlayerScore(args[1]);
+                            sender.sendMessage("§cAaaand he's out.");
+                            return true;
+                        }
+
+                        if (cload.getPersonalMileNames().contains(args[2])) {
+                            dataHandler.clearScore(args[1], args[2]);
+                            sender.sendMessage("§cDone.");
+                        } else
+                            sender.sendMessage("§cStop bullshitting me, that one's not real.");
+                    }
+                    break;
                 case "remove":
                 case "stats":
                     // /mile stats (player/global)
@@ -58,7 +108,7 @@ public class Commands implements CommandExecutor {
                     if (args.length == 1) {
                         // data for sender (if player)
                         if (sender instanceof Player) {
-                            mess.stats(sender, (Player) sender);
+                            mess.stats(sender, sender.getName());
                             return true;
                         } else
                             sender.sendMessage("§cYou're not a player. Console don't play stuff.");
@@ -77,15 +127,10 @@ public class Commands implements CommandExecutor {
                     } else {
 
                         // target
-                        Player target = null;
-                        try {
-                            target = plugin.getServer().getPlayer(args[1]);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        String targetName = args[1];
 
-                        if (dataHandler.isLogged(target) && target != null) {
-                            mess.stats(sender, target);
+                        if (dataHandler.isLogged(targetName)) {
+                            mess.stats(sender, targetName);
                             return true;
                         } else
                             sender.sendMessage("§cPlayer is not logged, or you just made his name up.");

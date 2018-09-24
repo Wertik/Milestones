@@ -29,12 +29,12 @@ public class Messanger {
     public void stats(Player p) {
     }
 
-    public void stats(CommandSender p, Player t) {
+    public void stats(CommandSender p, String targetName) {
 
-        p.sendMessage("§dScores for player §f" + t.getName());
+        p.sendMessage("§dScores for player §f" + targetName);
 
         for (String milestone : cload.getPersonalMileNames()) {
-            p.sendMessage("§3Score of §f" + milestone + "§3 is §f" + dataHandler.getScore(t, milestone));
+            p.sendMessage("§3Score of §f" + milestone + "§3 is §f" + dataHandler.getScore(targetName, milestone));
         }
     }
 

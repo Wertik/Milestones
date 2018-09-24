@@ -44,7 +44,7 @@ public class ConditionHandler {
                 Bukkit.broadcastMessage("§aCheck 2!");
 
                 // check tool type
-                if (condition.getToolTypes().contains(p.getInventory().getItemInMainHand().getType().toString())) {
+                if (condition.getToolTypes().contains(p.getInventory().getItemInMainHand().getType().toString()) || condition.getType().equalsIgnoreCase("blockplace")) {
 
                     Bukkit.broadcastMessage("§aCheck 3!");
 
@@ -60,12 +60,12 @@ public class ConditionHandler {
                     Bukkit.broadcastMessage("§aCheck 4!");
 
                     if (milestone.isOnlyOnce()) {
-                        if (dataHandler.isLogged(p, milestone.getName())) {
+                        if (dataHandler.isLogged(p.getName(), milestone.getName())) {
                             return;
                         } else {
                             p.sendMessage("§3Ok, you good. Adding a point, but only once!");
                             if (!milestone.isGlobal())
-                                dataHandler.addScore(p, milestone.getName());
+                                dataHandler.addScore(p.getName(), milestone.getName());
                             else
                                 dataHandler.addGlobalScore(milestone.getName());
                             return;
@@ -73,7 +73,7 @@ public class ConditionHandler {
                     } else {
                         p.sendMessage("§3Ok, you good. Adding a point!");
                         if (!milestone.isGlobal())
-                            dataHandler.addScore(p, milestone.getName());
+                            dataHandler.addScore(p.getName(), milestone.getName());
                         else
                             dataHandler.addGlobalScore(milestone.getName());
                     }

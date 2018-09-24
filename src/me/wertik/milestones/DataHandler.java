@@ -1,7 +1,6 @@
 package me.wertik.milestones;
 
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,20 +56,33 @@ public class DataHandler {
     // CLEAR
 
     // clear for exact player and exact milestone name
-    public void clearScore(Player p, String name) {
+    public void clearScore(String playerName, String name) {
+        files.get(name).set(playerName, 0);
     }
 
     // only for a player
-    public void clearScore(Player p) {
+    public void clearPlayerScore(String playerName) {
+        for (YamlConfiguration yaml : files.values()) {
+            yaml.set(playerName, 0);
+        }
     }
 
     // only by milestone name
-    public void clearScore(String name) {
+    public void clearMilestoneScores(String name) {
+        for (String path : files.get(name).getKeys(false)) {
+            files.get(name).set(path, 0);
+        }
+    }
+
+    // ALL OF THEM. NO MERCY.
+    public void clearScores() {
+        for (String name : files.keySet()) {
+            clearMilestoneScores(name);
+        }
     }
 
     public void clearGlobalScore(String name) {
         globalMiles.set(name, 0);
-        saveGlobalMileFile();
     }
 
     // Clear all globalMilestones
@@ -80,22 +92,18 @@ public class DataHandler {
         for (String globalMilestone : globalMilestones) {
             globalMiles.set(globalMilestone, 0);
         }
-
-        saveGlobalMileFile();
     }
 
     // ADD
 
     // add a point. :)
-    public void addScore(Player p, String name) {
-        files.get(name).set(p.getName(), getScore(p, name) + 1);
-        saveDataFile(name);
+    public void addScore(String playerName, String name) {
+        files.get(name).set(playerName, getScore(playerName, name) + 1);
     }
 
     // add a global point
     public void addGlobalScore(String name) {
         globalMiles.set(name, getGlobalScore(name) + 1);
-        saveGlobalMileFile();
     }
 
     public int getGlobalScore(String name) {
@@ -103,27 +111,23 @@ public class DataHandler {
     }
 
     // Add player to the Scoreboard
-    public void addPlayer(Player p, String name) {
-        files.get(name).set(p.getName(), 0);
-        saveDataFile(name);
+    public void addPlayer(String playerName, String name) {
+        files.get(name).set(playerName, 0);
     }
 
-    public boolean isLogged(Player p, String name) {
+    public boolean isLogged(String playerName, String name) {
 
-        if (p == null)
-            return false;
-
-        if (files.get(name).contains(p.getName()))
+        if (files.get(name).contains(playerName))
             return true;
         else
             return false;
     }
 
-    public boolean isLogged(Player p) {
+    public boolean isLogged(String playerName) {
         List<String> milestones = cload.getMileNames();
 
         for (String milestone : milestones) {
-            if (isLogged(p, milestone))
+            if (isLogged(playerName, milestone))
                 return true;
             else
                 continue;
@@ -132,11 +136,20 @@ public class DataHandler {
         return false;
     }
 
+    public List<String> getLoggedPlayers() {
+        List<String> playerNames = new ArrayList<>();
+
+        for (YamlConfiguration yaml : files.values()) {
+            playerNames.addAll(yaml.getKeys(false));
+        }
+        return playerNames;
+    }
+
     // GETTER
-    public int getScore(Player p, String name) {
-        if (!files.get(name).contains(p.getName()))
-            addPlayer(p, name);
-        return files.get(name).getInt(p.getName());
+    public int getScore(String playerName, String name) {
+        if (!files.get(name).contains(playerName))
+            addPlayer(playerName, name);
+        return files.get(name).getInt(playerName);
     }
 
     // FILE MANIPULATION
@@ -161,6 +174,12 @@ public class DataHandler {
             files.get(name).save(file);
         } catch (IOException e) {
             plugin.getServer().getConsoleSender().sendMessage("§cCould not save data file §f" + file.getName());
+        }
+    }
+
+    public void saveDataFiles() {
+        for (String name : files.keySet()) {
+            saveDataFile(name);
         }
     }
 

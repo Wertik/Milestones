@@ -1,6 +1,5 @@
 package me.wertik.milestones;
 
-import me.clip.placeholderapi.PlaceholderHook;
 import me.wertik.milestones.commands.Commands;
 import me.wertik.milestones.listeners.BlockBreakListener;
 import me.wertik.milestones.listeners.BlockPlaceListener;
@@ -107,6 +106,9 @@ public class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         ConsoleCommandSender console = getServer().getConsoleSender();
+        DataHandler dataHandler = new DataHandler();
+        dataHandler.saveGlobalMileFile();
+        dataHandler.saveDataFiles();
         console.sendMessage("§2It's okay now, i got all data i could ever dream of. :)");
     }
 }
