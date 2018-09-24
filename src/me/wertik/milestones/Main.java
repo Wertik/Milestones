@@ -94,6 +94,7 @@ public class Main extends JavaPlugin {
 
         ConfigLoader cload = new ConfigLoader();
         cload.loadYamls();
+        cload.loadMilestones();
 
         DataHandler dataHandler = new DataHandler();
         dataHandler.loadFiles();

@@ -17,6 +17,7 @@ public class ConfigLoader {
     public static FileConfiguration config;
     public static YamlConfiguration miles;
     public static File milefile;
+    private static List<Milestone> milestones;
 
     public ConfigLoader() {
     }
@@ -33,6 +34,10 @@ public class ConfigLoader {
         miles = YamlConfiguration.loadConfiguration(milefile);
     }
 
+    public void loadMilestones() {
+        milestones = setMilestones();
+    }
+
     public Milestone getMilestone(String name) {
         Condition condition = getCondition(name);
 
@@ -42,7 +47,7 @@ public class ConfigLoader {
         return new Milestone(name, condition, onlyOnce, perPlayer);
     }
 
-    public List<Milestone> getMilestones() {
+    public List<Milestone> setMilestones() {
         List<Milestone> milestones = new ArrayList<>();
 
         for (String name : getMileNames()) {
@@ -52,24 +57,30 @@ public class ConfigLoader {
         return milestones;
     }
 
-    public List<Milestone> getGlobalMilestones() {
-        List<Milestone> milestones = getMilestones();
-
-        for (Milestone milestone : milestones) {
-            if (!milestone.isGlobal())
-                milestones.remove(milestone);
-        }
+    public List<Milestone> getMilestones() {
         return milestones;
     }
 
-    public List<Milestone> getPersonalMilestones() {
-        List<Milestone> milestones = getMilestones();
+    public List<Milestone> getGlobalMilestones() {
+        List<Milestone> output = new ArrayList<>();
 
-        for (Milestone milestone : milestones) {
+        for (Milestone milestone : getMilestones()) {
             if (milestone.isGlobal())
-                milestones.remove(milestone);
+                output.add(milestone);
         }
-        return milestones;
+
+        return output;
+    }
+
+    public List<Milestone> getPersonalMilestones() {
+        List<Milestone> output = new ArrayList<>();
+
+        for (Milestone milestone : getMilestones()) {
+            if (!milestone.isGlobal())
+                output.add(milestone);
+        }
+
+        return output;
     }
 
     public List<String> getMileNames() {
