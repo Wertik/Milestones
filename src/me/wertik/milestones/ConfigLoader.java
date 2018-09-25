@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -61,6 +62,8 @@ public class ConfigLoader {
     public Milestone getMilestone(String name) {
         Condition condition = getCondition(name);
 
+        String displayName = miles.getString(name + ".display-name");
+
         boolean perPlayer = miles.getBoolean(name + ".global-milestone");
         boolean onlyOnce = miles.getBoolean(name + ".log-only-once");
         boolean broadcast = miles.getBoolean(name + ".broadcast");
@@ -71,7 +74,7 @@ public class ConfigLoader {
 
         List<String> commands = miles.getStringList(name + ".commands");
 
-        return new Milestone(name, condition, onlyOnce, perPlayer, broadcast, broadcastMessage, inform, informMessage, commands);
+        return new Milestone(name, displayName, condition, onlyOnce, perPlayer, broadcast, broadcastMessage, inform, informMessage, commands);
     }
 
     public List<Milestone> setMilestones() {
@@ -141,6 +144,7 @@ public class ConfigLoader {
      * type <- mobkill/blockbreak/blockplace
      * inInv
      * toolTypes - weapon/tool
+     * biomeTypes
      * */
 
     public Condition getCondition(String name) {
@@ -179,5 +183,47 @@ public class ConfigLoader {
 
     public String format(String msg) {
         return ChatColor.translateAlternateColorCodes('&', msg);
+    }
+
+    // Placeholders..
+    /*
+     * %player%
+     * idk, lol..
+     *
+     *
+     * */
+
+    public String parseString(String msg, Player p) {
+        msg = msg.replace("%player%", p.getName());
+        return msg;
+    }
+
+    /*
+     * %milestone_name%
+     * %milestone_displayName%
+     *
+     * */
+
+    public String parseString(String msg, Player p, Milestone milestone) {
+        msg = parseString(msg, p);
+        msg = msg.replace("%milestone_name%", milestone.getName());
+        msg = msg.replace("%milestone_displayName%", milestone.getDisplayName());
+        return msg;
+    }
+
+    public List<String> parseStringList(List<String> msg, Player p) {
+        return null;
+    }
+
+    public List<String> parseStringList(List<String> msg, Player p, Milestone milestone) {
+        return null;
+    }
+
+    public String getFinalString(String msg, Player p) {
+        return format(parseString(msg, p));
+    }
+
+    public String getFinalString(String msg, Player p, Milestone milestone) {
+        return format(parseString(msg, p, milestone));
     }
 }

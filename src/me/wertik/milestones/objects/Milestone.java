@@ -13,10 +13,12 @@ public class Milestone {
     private String broadcastMessage;
     private String informMessage;
     private List<String> commandsReward;
+    private String displayName;
 
-    public Milestone(String name, Condition condition, boolean onlyOnce, boolean global, boolean broadcast, String broadcastMessage, boolean inform,
+    public Milestone(String name, String displayName, Condition condition, boolean onlyOnce, boolean global, boolean broadcast, String broadcastMessage, boolean inform,
                      String informMessage, List<String> commandsReward) {
         this.name = name;
+        this.displayName = displayName;
         this.condition = condition;
         this.onlyOnce = onlyOnce;
         this.global = global;
@@ -61,5 +63,9 @@ public class Milestone {
 
     public List<String> getCommandsReward() {
         return commandsReward;
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 }

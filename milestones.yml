@@ -1,5 +1,6 @@
 # Just read the instructions and no matter what i do to you while configuring.. just remember: of course i still love you.
 blockbreak-global:
+  display-name: '&3Destructionator'
   type: blockbreak
   conditions:
     tool-types:

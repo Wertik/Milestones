@@ -42,6 +42,7 @@ public class Messanger {
         p.sendMessage("§dInfo about §f" + milestone.getName());
 
         // print info
+        p.sendMessage(" §3Display name: §f" + milestone.getDisplayName());
         p.sendMessage(" §3Global: §f" + milestone.isGlobal());
         p.sendMessage(" §3Only once: §f" + milestone.isOnlyOnce());
         p.sendMessage(" §3Type: §f" + milestone.getCondition().getType());

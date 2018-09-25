@@ -23,9 +23,9 @@ public class Commands implements CommandExecutor {
      * /mile reload == reload yaml paths
      * /mile toggle (player/all) (specific/"") == toggle data logging
      * /mile clear (player/all) == clear data
-     * /mile remove == remove data
      * /mile list (params::planned) == list milestone data
      * /mile stats (player/global)
+     * /mile credits
      *
      * */
 
@@ -54,7 +54,7 @@ public class Commands implements CommandExecutor {
                     sender.sendMessage("§3Should be reloaded.");
                     break;
                 case "toggle":
-
+                        // Too lazy.
                     break;
                 case "clear":
 
