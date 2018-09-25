@@ -1,15 +1,23 @@
 # Just read the instructions and no matter what i do to you while configuring.. just remember: of course i still love you.
-testing-milestone:
+blockbreak-global:
   type: blockbreak
   conditions:
     tool-types:
-    - IRON_SPADE
+    - DIAMOND_PICKAXE
     in-inventory:
-    - APPLE
+    - IRON_INGOT
     block-types:
-    - DIRT
+    - DIAMOND_ORE
+    biome-types:
+    - FOREST
+    - PLAINS
   global-milestone: true
-  log-only-once: true
+  broadcast: true
+  broadcast-message: '&f%player% &3has just earned some cool stuff tho.'
+  inform-player: false
+  inform-message: '...'
+  commands:
+  - say You did it!
 testing-milestone-2:
   type: blockbreak
   conditions:
@@ -19,5 +27,8 @@ testing-milestone-2:
     - APPLE
     block-types:
     - DIRT
+    biome-types:
+    - FOREST
+    - PLAINS
   global-milestone: false
   log-only-once: true

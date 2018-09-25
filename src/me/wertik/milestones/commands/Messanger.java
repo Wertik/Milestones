@@ -23,10 +23,7 @@ public class Messanger {
      *
      * */
 
-    public void help(Player p) {
-    }
-
-    public void stats(Player p) {
+    public void help(CommandSender p) {
     }
 
     public void stats(CommandSender p, String targetName) {
@@ -48,6 +45,12 @@ public class Messanger {
         p.sendMessage(" §3Global: §f" + milestone.isGlobal());
         p.sendMessage(" §3Only once: §f" + milestone.isOnlyOnce());
         p.sendMessage(" §3Type: §f" + milestone.getCondition().getType());
+        p.sendMessage(" §3Broadcast message: §f" + milestone.getBroadcastMessage());
+        p.sendMessage(" §3Inform message: §f" + milestone.getInformMessage());
+        p.sendMessage(" §3Commands:");
+        for (String command : milestone.getCommandsReward()) {
+            p.sendMessage(" §8- §f" + command);
+        }
         p.sendMessage(" §aConditions:");
         if (milestone.getCondition().getToolTypes() != null) {
             p.sendMessage("  §3Tool Types:");
@@ -65,6 +68,12 @@ public class Messanger {
             p.sendMessage("  §3In-inventory item types:");
             for (String item : milestone.getCondition().getInInventory()) {
                 p.sendMessage("  §8- §f" + item);
+            }
+        }
+        if (milestone.getCondition().getBiomes() != null) {
+            p.sendMessage("  §3Biome types:");
+            for (String biome : milestone.getCondition().getBiomes()) {
+                p.sendMessage("  §8- §f" + biome);
             }
         }
     }

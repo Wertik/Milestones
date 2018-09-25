@@ -97,8 +97,6 @@ public class Main extends JavaPlugin {
 
         // Commands, listeners
         getCommand("milestones").setExecutor(new Commands());
-        getCommand("miles").setExecutor(new Commands());
-        getCommand("mile").setExecutor(new Commands());
 
         getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
         getServer().getPluginManager().registerEvents(new BlockPlaceListener(), this);

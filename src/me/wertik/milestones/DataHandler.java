@@ -28,9 +28,10 @@ public class DataHandler {
         List<String> names = cload.getMileNames();
 
         for (String name : names) {
-            if (!cload.getMilestone(name).isGlobal())
-                createDataFile(name);
-                // global milestones
+            if (!cload.getMilestone(name).isGlobal()) {
+                files.put(name, createDataFile(name));
+            }
+            // global milestones
             else {
                 if (!globalMiles.contains(name)) {
                     globalMiles.set(name, 0);

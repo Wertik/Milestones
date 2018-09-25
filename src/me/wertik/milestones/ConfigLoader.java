@@ -40,13 +40,19 @@ public class ConfigLoader {
     }
 
     // Toggles
-    public void togglePlayer(String playerName) {}
+    public void togglePlayer(String playerName) {
+    }
 
-    public void toggleMilestone(String name) {}
+    public void toggleMilestone(String name) {
+    }
 
-    public boolean getPlayerToggle(String playerName) {return false;}
+    public boolean getPlayerToggle(String playerName) {
+        return false;
+    }
 
-    public boolean getMilestoneToggle(String name) {return false;}
+    public boolean getMilestoneToggle(String name) {
+        return false;
+    }
 
     public void loadMilestones() {
         milestones = setMilestones();
@@ -57,8 +63,15 @@ public class ConfigLoader {
 
         boolean perPlayer = miles.getBoolean(name + ".global-milestone");
         boolean onlyOnce = miles.getBoolean(name + ".log-only-once");
+        boolean broadcast = miles.getBoolean(name + ".broadcast");
+        boolean inform = miles.getBoolean(name + ".inform-player");
 
-        return new Milestone(name, condition, onlyOnce, perPlayer);
+        String broadcastMessage = miles.getString(name + ".broadcast-message");
+        String informMessage = miles.getString(name + ".inform-message");
+
+        List<String> commands = miles.getStringList(name + ".commands");
+
+        return new Milestone(name, condition, onlyOnce, perPlayer, broadcast, broadcastMessage, inform, informMessage, commands);
     }
 
     public List<Milestone> setMilestones() {
@@ -138,21 +151,22 @@ public class ConfigLoader {
 
         List<String> inInventory = section.getStringList("conditions.in-inventory");
         List<String> toolTypes = section.getStringList("conditions.tool-types");
+        List<String> biomes = section.getStringList("conditions.biome-types");
 
         Condition condition = null;
 
         switch (type) {
             case "entitykill":
                 List<String> mobTypes = section.getStringList("conditions.mob-types");
-                condition = new Condition(type, inInventory, toolTypes, mobTypes);
+                condition = new Condition(type, inInventory, toolTypes, mobTypes, biomes);
                 break;
             case "blockbreak":
                 List<String> blockTypes = section.getStringList("conditions.block-types");
-                condition = new Condition(type, inInventory, toolTypes, blockTypes);
+                condition = new Condition(type, inInventory, toolTypes, blockTypes, biomes);
                 break;
             case "blockplace":
                 blockTypes = section.getStringList("conditions.block-types");
-                condition = new Condition(type, inInventory, toolTypes, blockTypes);
+                condition = new Condition(type, inInventory, toolTypes, blockTypes, biomes);
                 break;
         }
 
