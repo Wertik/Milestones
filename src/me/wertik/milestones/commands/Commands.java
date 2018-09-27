@@ -34,27 +34,19 @@ public class Commands implements CommandExecutor {
 
         // Fuu..
         if (args.length == 0) {
-            sender.sendMessage("This should be the help page.");
-            sender.sendMessage("/mile reload == reload yaml paths\n" +
-                    "/mile toggle (player/global/*) (milestone/*) == toggle data collecting\n" +
-                    "/mile clear (player/global/*) (milestone/*) == clear data\n" +
-                    "/mile list (params::planned) == list milestone data\n" +
-                    "/mile stats (player/global) == player/global stats\n" +
-                    "/mile info (milestone) == info about a milestone\n" +
-                    "/mile credits == authors, version, stuff."
-            );
+            mess.help(sender);
         } else {
 
             switch (args[0]) {
                 case "reload":
-                    cload.loadMilestones();
                     cload.loadYamls();
+                    cload.loadMilestones();
                     dataHandler.loadFiles();
                     plugin.reloadConfig();
                     sender.sendMessage("§3Should be reloaded.");
                     break;
                 case "toggle":
-                        // Too lazy.
+                    // Too lazy.
                     break;
                 case "clear":
 
@@ -168,6 +160,9 @@ public class Commands implements CommandExecutor {
                 case "credits":
                     sender.sendMessage("§fWertik1206 §3could say 'I am your father' to me. Noone else.");
                     sender.sendMessage("§3Current version is §f" + plugin.getDescription().getVersion());
+                    break;
+                default:
+                    mess.help(sender);
                     break;
             }
         }

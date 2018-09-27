@@ -4,7 +4,6 @@ import me.wertik.milestones.ConfigLoader;
 import me.wertik.milestones.DataHandler;
 import me.wertik.milestones.objects.Milestone;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -24,6 +23,14 @@ public class Messanger {
      * */
 
     public void help(CommandSender p) {
+        p.sendMessage("§dThis should be the help page.");
+        p.sendMessage("§3/mile reload §7== §3reload yaml paths\n" +
+                "§3/mile toggle (player/global/*) (milestone/*) §7== §3toggle data collecting\n" +
+                "§3/mile clear (player/global/*) (milestone/*) §7== §3clear data\n" +
+                "§3/mile list (params::planned) §7== " + "§3list milestone data\n" +
+                "§3/mile stats (player/global) §7== §3player/global stats\n" +
+                "§3/mile info (milestone) §7== §3info about a milestone\n" +
+                "§3/mile credits §7== §3authors, version, stuff.");
     }
 
     public void stats(CommandSender p, String targetName) {

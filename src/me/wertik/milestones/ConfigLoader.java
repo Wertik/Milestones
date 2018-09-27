@@ -194,7 +194,8 @@ public class ConfigLoader {
      * */
 
     public String parseString(String msg, Player p) {
-        msg = msg.replace("%player%", p.getName());
+        if (msg.contains("%player%"))
+            msg = msg.replace("%player%", p.getName());
         return msg;
     }
 
@@ -206,8 +207,10 @@ public class ConfigLoader {
 
     public String parseString(String msg, Player p, Milestone milestone) {
         msg = parseString(msg, p);
-        msg = msg.replace("%milestone_name%", milestone.getName());
-        msg = msg.replace("%milestone_displayName%", milestone.getDisplayName());
+        if (msg.contains("%milestone_name%"))
+            msg = msg.replace("%milestone_name%", milestone.getName());
+        if (msg.contains("%milestone_displayName%"))
+            msg = msg.replace("%milestone_displayName%", milestone.getDisplayName());
         return msg;
     }
 

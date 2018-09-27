@@ -34,7 +34,7 @@ public class ConditionHandler {
 
             // Toggle checkers
             // player
-
+            // Too lazy..
 
             Condition condition = milestone.getCondition();
 
@@ -42,15 +42,18 @@ public class ConditionHandler {
                 continue;
 
             // Check for the target first, easier.
-            if (condition.getTargetTypes().contains(targetType)) {
+            if (condition.getTargetTypes().contains(targetType) || condition.getTargetTypes().isEmpty()) {
 
-                if (condition.getBiomes().contains(p.getLocation().getBlock().getBiome().toString()))
+                if (condition.getBiomes().contains(p.getLocation().getBlock().getBiome().toString()) || condition.getBiomes().isEmpty()) {
 
                     // check tool type
-                    if (condition.getToolTypes().contains(p.getInventory().getItemInMainHand().getType().toString()) || condition.getType().equalsIgnoreCase("blockplace")) {
+                    if (condition.getToolTypes().contains(p.getInventory().getItemInMainHand().getType().toString()) || condition.getType().equalsIgnoreCase("blockplace") || condition.getToolTypes().isEmpty()) {
 
                         // inventory items
                         for (String itemType : condition.getInInventory()) {
+
+                            if (condition.getInInventory().isEmpty())
+                                break;
 
                             if (p.getInventory().contains(Material.valueOf(itemType)))
                                 continue;
@@ -64,8 +67,10 @@ public class ConditionHandler {
                             dataHandler.addGlobalScore(milestone.getName());
                         } else {
                             if (milestone.isOnlyOnce()) {
-                                if (!dataHandler.isLogged(p.getName(), milestone.getName()))
+                                if (dataHandler.getScore(p.getName(), milestone.getName()) == 0) {
                                     dataHandler.addScore(p.getName(), milestone.getName());
+                                } else
+                                    return;
                             } else
                                 dataHandler.addScore(p.getName(), milestone.getName());
                         }
@@ -86,6 +91,7 @@ public class ConditionHandler {
                             plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), cload.parseString(command, p, milestone));
                         }
                     }
+                }
             }
         }
     }

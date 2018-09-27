@@ -66,6 +66,9 @@ public class Milestone {
     }
 
     public String getDisplayName() {
-        return displayName;
+        if (displayName != null)
+            return displayName;
+        else
+            return name;
     }
 }
