@@ -28,13 +28,13 @@ LOGGED EVENTS:
   - blockPlace
 
 PLANNED:
-  - playerChat
-  - bedEvents
-  - changeWorld
+  - playerChat: message (targetType)
+  - bedEvent
+  - changeWorld: world-names (targetType)
   - joinEvent
   - quitEvent
   - pickupEvent
-  - shearEvent
+  - shearEvent: color of the sheep?
   - fishEvent
 
 PLANS:

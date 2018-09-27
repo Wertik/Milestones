@@ -20,13 +20,15 @@ public class Condition {
     private List<String> targetTypes;
     private List<String> inInventory;
     private List<String> biomes;
+    private List<String> regionNames;
 
-    public Condition(String type, List<String> inInventory, List<String> toolTypes, List<String> targetTypes, List<String> biomes) {
+    public Condition(String type, List<String> inInventory, List<String> toolTypes, List<String> targetTypes, List<String> biomes, List<String> regionNames) {
         this.type = type;
         this.toolTypes = toolTypes;
         this.inInventory = inInventory;
         this.targetTypes = targetTypes;
         this.biomes = biomes;
+        this.regionNames = regionNames;
     }
 
     public String getType() {
@@ -47,5 +49,9 @@ public class Condition {
 
     public List<String> getBiomes() {
         return biomes;
+    }
+
+    public List<String> getRegionNames() {
+        return regionNames;
     }
 }

@@ -1,12 +1,16 @@
 package me.wertik.milestones;
 
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import me.wertik.milestones.commands.Commands;
 import me.wertik.milestones.listeners.BlockBreakListener;
 import me.wertik.milestones.listeners.BlockPlaceListener;
 import me.wertik.milestones.listeners.EntityDeathListener;
+import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -108,6 +112,18 @@ public class Main extends JavaPlugin {
             console.sendMessage("§aPlaceholder API hooked successfuly.");
         }
 
+        // WorldEdit
+        if (this.getWorldEdit() == null) {
+            console.sendMessage("§cWorld Edit is fine, why don't you use it?");
+        } else
+            console.sendMessage("§aWorld Edit hooked successfuly.");
+
+        // WorldGuard
+        if (this.getWorldGuard() == null) {
+            console.sendMessage("§cDo you want a useful plugin? WORLD GUARD!");
+        } else
+            console.sendMessage("§aWorld Guard hooked successfuly.");
+
         ConfigLoader cload = new ConfigLoader();
         cload.loadYamls();
         cload.loadMilestones();
@@ -123,5 +139,27 @@ public class Main extends JavaPlugin {
         dataHandler.saveGlobalMileFile();
         dataHandler.saveDataFiles();
         console.sendMessage("§2It's okay now, i got all data i could ever dream of. :)");
+    }
+
+    public WorldGuardPlugin getWorldGuard() {
+        Plugin plugin = getServer().getPluginManager().getPlugin("WorldGuard");
+
+        // WorldGuard may not be loaded
+        if (plugin == null || !(plugin instanceof WorldGuardPlugin)) {
+            return null;
+        }
+
+        return (WorldGuardPlugin) plugin;
+    }
+
+    public WorldEditPlugin getWorldEdit() {
+        Plugin plugin = getServer().getPluginManager().getPlugin("WorldEdit");
+
+        // WorldGuard may not be loaded
+        if (plugin == null || !(plugin instanceof WorldEditPlugin)) {
+            return null;
+        }
+
+        return (WorldEditPlugin) plugin;
     }
 }

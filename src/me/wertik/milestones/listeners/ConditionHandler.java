@@ -1,5 +1,10 @@
 package me.wertik.milestones.listeners;
 
+import com.sk89q.worldedit.Vector;
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import me.wertik.milestones.ConfigLoader;
 import me.wertik.milestones.DataHandler;
 import me.wertik.milestones.Main;
@@ -25,75 +30,106 @@ public class ConditionHandler {
     ConfigLoader cload = new ConfigLoader();
     DataHandler dataHandler = new DataHandler();
     Main plugin = Main.getInstance();
+    WorldGuardPlugin wg = plugin.getWorldGuard();
 
     public void process(String type, String targetType, Player p) {
 
-        List<Milestone> milestones = cload.getMilestones();
+        for (Milestone milestone : cload.getMilestones()) {
+            process(milestone, type, targetType, p);
+        }
+    }
 
-        for (Milestone milestone : milestones) {
+    public void process(Milestone milestone, String type, String targetType, Player p) {
 
-            // Toggle checkers
-            // player
-            // Too lazy..
+        // Toggle checkers
+        // player
+        // Too lazy..
 
-            Condition condition = milestone.getCondition();
+        Condition condition = milestone.getCondition();
 
-            if (!condition.getType().equalsIgnoreCase(type))
+        // Type of the condition
+        if (!condition.getType().equalsIgnoreCase(type))
+            return;
+
+        // targetTypes
+        if (!condition.getTargetTypes().contains(targetType) && !condition.getTargetTypes().isEmpty())
+            return;
+
+        // biomeTypes
+        if (!condition.getBiomes().contains(p.getLocation().getBlock().getBiome().toString()) && !condition.getBiomes().isEmpty())
+            return;
+
+        // toolTypes
+        if (!condition.getToolTypes().contains(p.getInventory().getItemInMainHand().getType().toString()) && !condition.getType().equalsIgnoreCase("blockplace") && !condition.getToolTypes().isEmpty())
+            return;
+
+        // regionNames
+        LocalPlayer localPlayer = wg.wrapPlayer(p);
+        Vector vector = localPlayer.getPosition();
+        List<String> regionSet = wg.getRegionManager(p.getWorld()).getApplicableRegionsIDs(vector);
+
+        if (!condition.getRegionNames().isEmpty() && regionSet.isEmpty())
+            return;
+
+        for (String region : regionSet) {
+
+            if (condition.getRegionNames().isEmpty())
+                break;
+
+            if (condition.getRegionNames().contains(region))
+                break;
+            else
+                return;
+        }
+
+        // inventory items
+        for (String itemType : condition.getInInventory()) {
+
+            if (condition.getInInventory().isEmpty())
+                break;
+
+            if (p.getInventory().contains(Material.valueOf(itemType)))
                 continue;
+            else
+                return;
+        }
 
-            // Check for the target first, easier.
-            if (condition.getTargetTypes().contains(targetType) || condition.getTargetTypes().isEmpty()) {
+        // Reward him.
+        reward(milestone, p);
+    }
 
-                if (condition.getBiomes().contains(p.getLocation().getBlock().getBiome().toString()) || condition.getBiomes().isEmpty()) {
 
-                    // check tool type
-                    if (condition.getToolTypes().contains(p.getInventory().getItemInMainHand().getType().toString()) || condition.getType().equalsIgnoreCase("blockplace") || condition.getToolTypes().isEmpty()) {
+    // reward system
+    public void reward(Milestone milestone, Player p) {
 
-                        // inventory items
-                        for (String itemType : condition.getInInventory()) {
+        if (milestone.isGlobal()) {
+            dataHandler.addGlobalScore(milestone.getName());
+        } else {
+            if (milestone.isOnlyOnce()) {
+                if (dataHandler.getScore(p.getName(), milestone.getName()) == 0) {
+                    dataHandler.addScore(p.getName(), milestone.getName());
+                } else
+                    return;
+            } else
+                dataHandler.addScore(p.getName(), milestone.getName());
+        }
 
-                            if (condition.getInInventory().isEmpty())
-                                break;
-
-                            if (p.getInventory().contains(Material.valueOf(itemType)))
-                                continue;
-                            else
-                                return;
-                        }
-
-                        // Rewards
-
-                        if (milestone.isGlobal()) {
-                            dataHandler.addGlobalScore(milestone.getName());
-                        } else {
-                            if (milestone.isOnlyOnce()) {
-                                if (dataHandler.getScore(p.getName(), milestone.getName()) == 0) {
-                                    dataHandler.addScore(p.getName(), milestone.getName());
-                                } else
-                                    return;
-                            } else
-                                dataHandler.addScore(p.getName(), milestone.getName());
-                        }
-
-                        // Messages
-                        if (milestone.isBroadcast()) {
-                            for (Player t : plugin.getServer().getOnlinePlayers()) {
-                                t.sendMessage(cload.getFinalString(milestone.getBroadcastMessage(), p, milestone));
-                            }
-                        }
-
-                        if (milestone.isInform()) {
-                            p.sendMessage(cload.getFinalString(milestone.getInformMessage(), p, milestone));
-                        }
-
-                        // Commands
-                        for (String command : milestone.getCommandsReward()) {
-                            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), cload.parseString(command, p, milestone));
-                        }
-                    }
-                }
+        // Messages
+        if (milestone.isBroadcast()) {
+            for (Player t : plugin.getServer().getOnlinePlayers()) {
+                t.sendMessage(cload.getFinalString(milestone.getBroadcastMessage(), p, milestone));
             }
         }
+
+        if (milestone.isInform()) {
+            p.sendMessage(cload.getFinalString(milestone.getInformMessage(), p, milestone));
+        }
+
+        // Commands
+        for (String command : milestone.getCommandsReward()) {
+            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), cload.parseString(command, p, milestone));
+        }
+
     }
 }
 

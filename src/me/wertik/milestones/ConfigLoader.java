@@ -156,21 +156,22 @@ public class ConfigLoader {
         List<String> inInventory = section.getStringList("conditions.in-inventory");
         List<String> toolTypes = section.getStringList("conditions.tool-types");
         List<String> biomes = section.getStringList("conditions.biome-types");
+        List<String> regionNames = section.getStringList("conditions.region-names");
 
         Condition condition = null;
 
         switch (type) {
             case "entitykill":
                 List<String> mobTypes = section.getStringList("conditions.mob-types");
-                condition = new Condition(type, inInventory, toolTypes, mobTypes, biomes);
+                condition = new Condition(type, inInventory, toolTypes, mobTypes, biomes, regionNames);
                 break;
             case "blockbreak":
                 List<String> blockTypes = section.getStringList("conditions.block-types");
-                condition = new Condition(type, inInventory, toolTypes, blockTypes, biomes);
+                condition = new Condition(type, inInventory, toolTypes, blockTypes, biomes, regionNames);
                 break;
             case "blockplace":
                 blockTypes = section.getStringList("conditions.block-types");
-                condition = new Condition(type, inInventory, toolTypes, blockTypes, biomes);
+                condition = new Condition(type, inInventory, toolTypes, blockTypes, biomes, regionNames);
                 break;
         }
 

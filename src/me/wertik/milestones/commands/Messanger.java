@@ -1,7 +1,9 @@
 package me.wertik.milestones.commands;
 
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import me.wertik.milestones.ConfigLoader;
 import me.wertik.milestones.DataHandler;
+import me.wertik.milestones.Main;
 import me.wertik.milestones.objects.Milestone;
 import org.bukkit.command.CommandSender;
 
@@ -11,6 +13,8 @@ public class Messanger {
 
     DataHandler dataHandler = new DataHandler();
     ConfigLoader cload = new ConfigLoader();
+    Main plugin = Main.getInstance();
+    WorldGuardPlugin wg = plugin.getWorldGuard();
 
     public Messanger() {
     }
@@ -55,33 +59,43 @@ public class Messanger {
         p.sendMessage(" §3Type: §f" + milestone.getCondition().getType());
         p.sendMessage(" §3Broadcast message: §f" + milestone.getBroadcastMessage());
         p.sendMessage(" §3Inform message: §f" + milestone.getInformMessage());
-        p.sendMessage(" §3Commands:");
-        for (String command : milestone.getCommandsReward()) {
-            p.sendMessage(" §8- §f" + command);
+        if (!milestone.getCommandsReward().isEmpty()) {
+            p.sendMessage(" §3Commands:");
+            for (String command : milestone.getCommandsReward()) {
+                p.sendMessage(" §8- §f" + command);
+            }
         }
         p.sendMessage(" §aConditions:");
-        if (milestone.getCondition().getToolTypes() != null) {
+        if (!milestone.getCondition().getToolTypes().isEmpty()) {
             p.sendMessage("  §3Tool Types:");
             for (String tool : milestone.getCondition().getToolTypes()) {
                 p.sendMessage("  §8- §f" + tool);
             }
         }
-        if (milestone.getCondition().getTargetTypes() != null) {
+        if (!milestone.getCondition().getTargetTypes().isEmpty()) {
             p.sendMessage("  §3Target Types:");
             for (String target : milestone.getCondition().getTargetTypes()) {
                 p.sendMessage("  §8- §f" + target);
             }
         }
-        if (milestone.getCondition().getInInventory() != null) {
+        if (!milestone.getCondition().getInInventory().isEmpty()) {
             p.sendMessage("  §3In-inventory item types:");
             for (String item : milestone.getCondition().getInInventory()) {
                 p.sendMessage("  §8- §f" + item);
             }
         }
-        if (milestone.getCondition().getBiomes() != null) {
+        if (!milestone.getCondition().getBiomes().isEmpty()) {
             p.sendMessage("  §3Biome types:");
             for (String biome : milestone.getCondition().getBiomes()) {
                 p.sendMessage("  §8- §f" + biome);
+            }
+        }
+        if (wg != null) {
+            if (!milestone.getCondition().getRegionNames().isEmpty()) {
+                p.sendMessage("  §3Regions:");
+                for (String region : milestone.getCondition().getRegionNames()) {
+                    p.sendMessage("  §8- §f" + region);
+                }
             }
         }
     }
