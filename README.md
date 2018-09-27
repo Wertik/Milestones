@@ -9,6 +9,7 @@ CONDITIONS:
   - inInventory == item type in players inventory
   - targetType == block/mob type of the target
   - biomeType == biome type list
+
  PLANNED:
   - regions, block under the player..
 
@@ -25,7 +26,8 @@ LOGGED EVENTS:
   - entityDeath
   - blockBreak
   - blockPlace
- PLANNED:
+
+PLANNED:
   - playerChat
   - bedEvents
   - changeWorld
