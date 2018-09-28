@@ -15,7 +15,7 @@ CONDITIONS:
   - block under the player.. idk..
 
 OPTIONS:
-  - log-only-once == count the milestone only once, doesn't work on global milestones curently
+  - log-only-once == count the milestone only once, doesn't work on global milestones currently
   - global-milestone == boolean, the milestone counts for all of the players together
 
 REWARDS:
@@ -44,7 +44,7 @@ PLANNED:
   - voteEvent (votifier hook up)
 
 PLANS:
-  - First of all, estabilishing the core system, then adding up stuff.
+  - First of all, establishing the core system, then adding up stuff.
   - adding lang.yml to achieve the top level customisation
 
 ABOUT:
