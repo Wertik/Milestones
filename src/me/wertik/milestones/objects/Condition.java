@@ -1,5 +1,7 @@
 package me.wertik.milestones.objects;
 
+import org.bukkit.inventory.ItemStack;
+
 import java.util.List;
 
 public class Condition {
@@ -16,13 +18,13 @@ public class Condition {
      * */
 
     private String type;
-    private List<String> toolTypes;
+    private List<ItemStack> toolTypes;
     private List<String> targetTypes;
-    private List<String> inInventory;
+    private List<ItemStack> inInventory;
     private List<String> biomes;
     private List<String> regionNames;
 
-    public Condition(String type, List<String> inInventory, List<String> toolTypes, List<String> targetTypes, List<String> biomes, List<String> regionNames) {
+    public Condition(String type, List<ItemStack> inInventory, List<ItemStack> toolTypes, List<String> targetTypes, List<String> biomes, List<String> regionNames) {
         this.type = type;
         this.toolTypes = toolTypes;
         this.inInventory = inInventory;
@@ -35,7 +37,7 @@ public class Condition {
         return type;
     }
 
-    public List<String> getToolTypes() {
+    public List<ItemStack> getToolTypes() {
         return toolTypes;
     }
 
@@ -43,7 +45,7 @@ public class Condition {
         return targetTypes;
     }
 
-    public List<String> getInInventory() {
+    public List<ItemStack> getInInventory() {
         return inInventory;
     }
 

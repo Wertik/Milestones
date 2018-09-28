@@ -1,6 +1,7 @@
 package me.wertik.milestones;
 
 import me.clip.placeholderapi.external.EZPlaceholderHook;
+import me.wertik.milestones.handlers.DataHandler;
 import org.bukkit.entity.Player;
 
 public class PlaceholderAPIHook extends EZPlaceholderHook {

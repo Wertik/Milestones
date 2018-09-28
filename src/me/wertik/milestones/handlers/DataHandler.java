@@ -1,5 +1,7 @@
-package me.wertik.milestones;
+package me.wertik.milestones.handlers;
 
+import me.wertik.milestones.ConfigLoader;
+import me.wertik.milestones.Main;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -181,6 +183,7 @@ public class DataHandler {
         for (String name : files.keySet()) {
             saveDataFile(name);
         }
+        plugin.getServer().getConsoleSender().sendMessage("§aData files saved.");
     }
 
     public void saveGlobalMileFile() {

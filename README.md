@@ -9,9 +9,10 @@ CONDITIONS:
   - inInventory == item type in players inventory
   - targetType == block/mob type of the target
   - biomeType == biome type list
+  - regionNames == list of region names
 
  PLANNED:
-  - regions, block under the player..
+  - block under the player..
 
 OPTIONS:
   - inform-player == boolean
@@ -36,8 +37,10 @@ PLANNED:
   - pickupEvent
   - shearEvent: color of the sheep?
   - fishEvent
+  - voteEvent (votifier hook up)
 
 PLANS:
+  - First of all, estabilishing the core system, then adding up stuff.
   - adding lang.yml to achieve the top level customisation
   - item data support (planned from the start, just wanter to setup the system first)
 

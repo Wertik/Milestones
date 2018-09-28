@@ -3,10 +3,11 @@ package me.wertik.milestones;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import me.wertik.milestones.commands.Commands;
+import me.wertik.milestones.handlers.DataHandler;
+import me.wertik.milestones.handlers.StorageHandler;
 import me.wertik.milestones.listeners.BlockBreakListener;
 import me.wertik.milestones.listeners.BlockPlaceListener;
 import me.wertik.milestones.listeners.EntityDeathListener;
-import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -67,7 +68,7 @@ public class Main extends JavaPlugin {
 
         if (!storageFile.exists()) {
             saveResource("datastorage.yml", false);
-            YamlConfiguration storageYaml = YamlConfiguration.loadConfiguration(milefile);
+            YamlConfiguration storageYaml = YamlConfiguration.loadConfiguration(storageFile);
             storageYaml.options().copyDefaults(true);
             try {
                 storageYaml.save(storageFile);
@@ -126,6 +127,10 @@ public class Main extends JavaPlugin {
 
         ConfigLoader cload = new ConfigLoader();
         cload.loadYamls();
+
+        StorageHandler storageHandler = new StorageHandler();
+        storageHandler.setYamls();
+
         cload.loadMilestones();
 
         DataHandler dataHandler = new DataHandler();
@@ -136,6 +141,8 @@ public class Main extends JavaPlugin {
     public void onDisable() {
         ConsoleCommandSender console = getServer().getConsoleSender();
         DataHandler dataHandler = new DataHandler();
+        StorageHandler storageHandler = new StorageHandler();
+        storageHandler.saveStorage();
         dataHandler.saveGlobalMileFile();
         dataHandler.saveDataFiles();
         console.sendMessage("§2It's okay now, i got all data i could ever dream of. :)");

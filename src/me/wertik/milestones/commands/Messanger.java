@@ -2,10 +2,11 @@ package me.wertik.milestones.commands;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import me.wertik.milestones.ConfigLoader;
-import me.wertik.milestones.DataHandler;
+import me.wertik.milestones.handlers.DataHandler;
 import me.wertik.milestones.Main;
 import me.wertik.milestones.objects.Milestone;
 import org.bukkit.command.CommandSender;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
@@ -68,7 +69,7 @@ public class Messanger {
         p.sendMessage(" §aConditions:");
         if (!milestone.getCondition().getToolTypes().isEmpty()) {
             p.sendMessage("  §3Tool Types:");
-            for (String tool : milestone.getCondition().getToolTypes()) {
+            for (ItemStack tool : milestone.getCondition().getToolTypes()) {
                 p.sendMessage("  §8- §f" + tool);
             }
         }
@@ -80,7 +81,7 @@ public class Messanger {
         }
         if (!milestone.getCondition().getInInventory().isEmpty()) {
             p.sendMessage("  §3In-inventory item types:");
-            for (String item : milestone.getCondition().getInInventory()) {
+            for (ItemStack item : milestone.getCondition().getInInventory()) {
                 p.sendMessage("  §8- §f" + item);
             }
         }

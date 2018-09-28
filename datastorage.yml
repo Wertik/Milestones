@@ -1,7 +1,1 @@
-# Used for storing other plugin data. Now only toggle info.
-Toggles:
-  players:
-    Wertik1206:
-    - blockbreak
-  milestones:
-  - pvp
+# Used for storing other plugin data. Items and Toggles now. (made an update, lol.)

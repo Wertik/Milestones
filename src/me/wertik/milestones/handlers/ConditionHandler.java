@@ -1,17 +1,15 @@
-package me.wertik.milestones.listeners;
+package me.wertik.milestones.handlers;
 
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import me.wertik.milestones.ConfigLoader;
-import me.wertik.milestones.DataHandler;
 import me.wertik.milestones.Main;
+import me.wertik.milestones.Utils;
 import me.wertik.milestones.objects.Condition;
 import me.wertik.milestones.objects.Milestone;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
@@ -31,9 +29,9 @@ public class ConditionHandler {
     DataHandler dataHandler = new DataHandler();
     Main plugin = Main.getInstance();
     WorldGuardPlugin wg = plugin.getWorldGuard();
+    Utils utils = new Utils();
 
     public void process(String type, String targetType, Player p) {
-
         for (Milestone milestone : cload.getMilestones()) {
             process(milestone, type, targetType, p);
         }
@@ -60,8 +58,26 @@ public class ConditionHandler {
             return;
 
         // toolTypes
-        if (!condition.getToolTypes().contains(p.getInventory().getItemInMainHand().getType().toString()) && !condition.getType().equalsIgnoreCase("blockplace") && !condition.getToolTypes().isEmpty())
+        int i = 0;
+        for (ItemStack tool : condition.getToolTypes()) {
+
+            i++;
+
+            if (condition.getType().equals("blockplace") || condition.getToolTypes().isEmpty()) {
+                i = 0;
+                break;
+            }
+
+            ItemStack mainHand = p.getInventory().getItemInMainHand();
+            if (utils.compareItemStacks(tool, mainHand)) {
+                i = 0;
+                break;
+            }
+        }
+
+        if (i == condition.getToolTypes().size())
             return;
+
 
         // regionNames
         LocalPlayer localPlayer = wg.wrapPlayer(p);
@@ -83,12 +99,19 @@ public class ConditionHandler {
         }
 
         // inventory items
-        for (String itemType : condition.getInInventory()) {
+        for (ItemStack item : condition.getInInventory()) {
 
             if (condition.getInInventory().isEmpty())
                 break;
 
-            if (p.getInventory().contains(Material.valueOf(itemType)))
+            if (item.getAmount() == -1) {
+                if (p.getInventory().contains(item.getType()))
+                    continue;
+                else
+                    return;
+            }
+
+            if (p.getInventory().contains(item))
                 continue;
             else
                 return;
@@ -129,7 +152,6 @@ public class ConditionHandler {
         for (String command : milestone.getCommandsReward()) {
             plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), cload.parseString(command, p, milestone));
         }
-
     }
 }
 

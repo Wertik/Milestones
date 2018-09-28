@@ -1,12 +1,15 @@
 package me.wertik.milestones;
 
+import me.wertik.milestones.handlers.StorageHandler;
 import me.wertik.milestones.objects.Condition;
 import me.wertik.milestones.objects.Milestone;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,6 +18,7 @@ import java.util.List;
 public class ConfigLoader {
 
     private Main plugin = Main.getInstance();
+    private StorageHandler storageHandler = new StorageHandler();
     public static FileConfiguration config;
     public static YamlConfiguration miles;
     public static File mileFile;
@@ -153,8 +157,32 @@ public class ConfigLoader {
 
         String type = section.getString("type");
 
-        List<String> inInventory = section.getStringList("conditions.in-inventory");
-        List<String> toolTypes = section.getStringList("conditions.tool-types");
+        // inInventory
+        List<String> inInventoryString = section.getStringList("conditions.in-inventory");
+        List<ItemStack> inInventory = new ArrayList<>();
+
+        for (String row : inInventoryString) {
+            if (storageHandler.lookForItem(row)) {
+                inInventory.add(storageHandler.parseForItem(row));
+                continue;
+            }
+
+            inInventory.add(new ItemStack(Material.valueOf(row), -1));
+        }
+
+        // toolTypes
+        List<String> toolTypesString = section.getStringList("conditions.tool-types");
+        List<ItemStack> toolTypes = new ArrayList<>();
+
+        for (String row : toolTypesString) {
+            if (storageHandler.lookForItem(row)) {
+                toolTypes.add(storageHandler.parseForItem(row));
+                continue;
+            }
+
+            toolTypes.add(new ItemStack(Material.valueOf(row), -1));
+        }
+
         List<String> biomes = section.getStringList("conditions.biome-types");
         List<String> regionNames = section.getStringList("conditions.region-names");
 

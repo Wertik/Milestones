@@ -1,8 +1,9 @@
 package me.wertik.milestones.commands;
 
 import me.wertik.milestones.ConfigLoader;
-import me.wertik.milestones.DataHandler;
 import me.wertik.milestones.Main;
+import me.wertik.milestones.handlers.DataHandler;
+import me.wertik.milestones.handlers.StorageHandler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,6 +15,7 @@ public class Commands implements CommandExecutor {
     DataHandler dataHandler = new DataHandler();
     Main plugin = Main.getInstance();
     Messanger mess = new Messanger();
+    StorageHandler storageHandler = new StorageHandler();
 
     /*
      * Soo... plans:
@@ -43,6 +45,7 @@ public class Commands implements CommandExecutor {
                     cload.loadMilestones();
                     dataHandler.loadFiles();
                     plugin.reloadConfig();
+                    storageHandler.setYamls();
                     sender.sendMessage("§3Should be reloaded.");
                     break;
                 case "toggle":
@@ -160,6 +163,27 @@ public class Commands implements CommandExecutor {
                 case "credits":
                     sender.sendMessage("§fWertik1206 §3could say 'I am your father' to me. Noone else.");
                     sender.sendMessage("§3Current version is §f" + plugin.getDescription().getVersion());
+                    break;
+                case "additem":
+                    // /mile additem (name)
+                    if (!(sender instanceof Player)) {
+                        sender.sendMessage("§cOnly players please.");
+                        return false;
+                    }
+
+                    Player p = (Player) sender;
+
+                    if (p.getInventory().getItemInMainHand().getType().toString().equals("AIR")) {
+                        p.sendMessage("§cAir is useless to save, instead, consider breathing it.");
+                        return false;
+                    }
+
+                    storageHandler.saveItem(args[1], p.getInventory().getItemInMainHand());
+                    break;
+                case "getitem":
+                    sender.sendMessage("ok..");
+                    p = (Player) sender;
+                    p.getInventory().setItem(p.getInventory().getHeldItemSlot(), storageHandler.getItem(args[1]));
                     break;
                 default:
                     mess.help(sender);
