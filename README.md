@@ -43,6 +43,9 @@ PLANNED:
   - fishEvent
   - voteEvent (votifier hook up)
 
+PLACEHOLDER(S):
+  - %milestones_(name)% == fill the name of the milestone, displays the score per player, global scores not working currently
+
 PLANS:
   - First of all, establishing the core system, then adding up stuff.
   - adding lang.yml to achieve the top level customisation
