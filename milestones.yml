@@ -1,38 +1,28 @@
 # Just read the instructions and no matter what i do to you while configuring.. just remember: of course i still love you.
-blockbreak-global:
-  display-name: '&3Destructionator'
-  type: blockbreak
-  conditions:
-    tool-types:
-    - DIAMOND_PICKAXE
-    in-inventory:
-    - IRON_INGOT
-    block-types:
-    - DIAMOND_ORE
-    biome-types:
-    - FOREST
-    - PLAINS
-  global-milestone: true
-  log-only-once: false
-  rewards:
-    broadcast-message: '&3%player% &7is so cool! He had broken a freakin diamond ore!'
-    inform-message: '&7Completing &f%milestone_name% &7made you so famous you can buy your own mansion! Oh, wait. No, you cant.'
-    commands:
-    - say Hello world!
-    items:
-    - pvpsword
 pvp:
   type: entitykill
   display-name: '&cPvP &7(Player vs Pig)'
   conditions:
     tool-types:
-    - DIAMOND_SWORD
+    - '%item_pvpsword%'
     mob-types:
     - PIG
     biome-types:
     - FOREST
     - PLAINS
-    region-names:
+    reion-names:
     - pvp_region
   global-milestone: false
   log-only-once: false
+  rewards:
+    commands:
+    - mi load Custom vy-fly-1h %player% 1
+    items:
+    - apple
+  staged-rewards:
+    '10':
+      broadcast-message: '&f%player% &3hit &f10&3 scores in &f%milestone_name%&3!'
+      commands:
+      - say .. :)
+    '20':
+      broadcast-message: '&f%player% &3hit &f20&3 scores in &f%milestone_name%&3!'

@@ -47,16 +47,18 @@ public class ConditionHandler {
         Condition condition = milestone.getCondition();
 
         // Type of the condition
-        if (!condition.getType().equalsIgnoreCase(type))
+        if (!condition.getType().equalsIgnoreCase(type) || type == null)
             return;
 
         // targetTypes
-        if (!condition.getTargetTypes().contains(targetType) && !condition.getTargetTypes().isEmpty())
-            return;
+        if (condition.getTargetTypes() != null)
+            if (!condition.getTargetTypes().contains(targetType) && !condition.getTargetTypes().isEmpty() && targetType != null)
+                return;
 
         // biomeTypes
-        if (!condition.getBiomes().contains(p.getLocation().getBlock().getBiome().toString()) && !condition.getBiomes().isEmpty())
-            return;
+        if (condition.getBiomes() != null)
+            if (!condition.getBiomes().contains(p.getLocation().getBlock().getBiome().toString()) && !condition.getBiomes().isEmpty())
+                return;
 
         // toolTypes
         int i = 0;
@@ -64,7 +66,7 @@ public class ConditionHandler {
 
             i++;
 
-            if (condition.getType().equals("blockplace") || condition.getToolTypes().isEmpty()) {
+            if (condition.getToolTypes() == null || condition.getToolTypes().isEmpty() || condition.getType().equals("blockplace") || condition.getType().equals("playerjoin") || condition.getType().equals("playerquit")) {
                 i = 0;
                 break;
             }
@@ -76,7 +78,7 @@ public class ConditionHandler {
             }
         }
 
-        if (i == condition.getToolTypes().size())
+        if (i == condition.getToolTypes().size() && condition.getToolTypes().size() != 0)
             return;
 
         // regionNames

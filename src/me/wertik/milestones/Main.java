@@ -5,9 +5,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import me.wertik.milestones.commands.Commands;
 import me.wertik.milestones.handlers.DataHandler;
 import me.wertik.milestones.handlers.StorageHandler;
-import me.wertik.milestones.listeners.BlockBreakListener;
-import me.wertik.milestones.listeners.BlockPlaceListener;
-import me.wertik.milestones.listeners.EntityDeathListener;
+import me.wertik.milestones.listeners.*;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -106,6 +104,9 @@ public class Main extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
         getServer().getPluginManager().registerEvents(new BlockPlaceListener(), this);
         getServer().getPluginManager().registerEvents(new EntityDeathListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
 
         // Placeholder API
         if (this.getServer().getPluginManager().getPlugin("PlaceholderAPI").isEnabled()) {

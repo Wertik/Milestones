@@ -23,18 +23,21 @@ REWARDS:
   - broadcast-message == string, the message all of the players get
   - commands == list<string>, list of commands that run after completing the milestone
   - items == list of items from data storage the player gets
+
+ STAGED REWARDS:
+  - "cumulative" rewards, after a certain amount of points, set a reward.
   
 LOGGED EVENTS:
   - entityDeath
   - blockBreak
   - blockPlace
+  - playerJoin
+  - playerQuit
+  - playerChat: messages (targetType)
 
 PLANNED:
-  - playerChat: message (targetType)
   - bedEvent
   - changeWorld: world-names (targetType)
-  - joinEvent
-  - quitEvent
   - pickupEvent
   - shearEvent: color of the sheep?
   - fishEvent
@@ -43,7 +46,6 @@ PLANNED:
 PLANS:
   - First of all, estabilishing the core system, then adding up stuff.
   - adding lang.yml to achieve the top level customisation
-  - item data support (planned from the start, just wanter to setup the system first)
 
 ABOUT:
   I'm still in the early process of learning Java. My structures are simple and made out of basic commands and syntaxes, easy to understand.

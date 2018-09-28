@@ -6,7 +6,6 @@ import me.wertik.milestones.objects.Condition;
 import me.wertik.milestones.objects.Milestone;
 import me.wertik.milestones.objects.Reward;
 import me.wertik.milestones.objects.StagedReward;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -189,6 +188,18 @@ public class ConfigLoader {
             case "blockplace":
                 blockTypes = section.getStringList("conditions.block-types");
                 condition = new Condition(type, inInventory, toolTypes, blockTypes, biomes, regionNames);
+                break;
+            case "playerjoin":
+                //                                            (inHand)
+                condition = new Condition(type, inInventory, toolTypes, null, biomes, regionNames);
+                break;
+            case "playerquit":
+                //                                            (inHand)
+                condition = new Condition(type, inInventory, toolTypes, null, biomes, regionNames);
+                break;
+            case "playerchat":
+                List<String> messages = section.getStringList("conditions.messages");
+                condition = new Condition(type, inInventory, toolTypes, messages, biomes, regionNames);
                 break;
         }
 
