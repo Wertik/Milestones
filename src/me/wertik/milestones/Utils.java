@@ -25,4 +25,10 @@ public class Utils {
 
         return true;
     }
+
+    public String checkString(String string) {
+        if (string == null)
+            string = "";
+        return string;
+    }
 }

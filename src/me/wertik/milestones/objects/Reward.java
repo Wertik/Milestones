@@ -11,9 +11,9 @@ public class Reward {
 
     public Reward(List<String> commands, List<String> itemNames, String informMessage, String broadcastMessage) {
         this.broadcastMessage = broadcastMessage;
-        this.informMessage = informMessage;
         this.commands = commands;
         this.itemNames = itemNames;
+        this.informMessage = informMessage;
     }
 
     public String getBroadcastMessage() {

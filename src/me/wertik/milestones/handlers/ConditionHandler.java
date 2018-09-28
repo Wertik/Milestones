@@ -140,12 +140,14 @@ public class ConditionHandler {
         // Messages
         if (milestone.getReward().getBroadcastMessage() != null) {
             for (Player t : plugin.getServer().getOnlinePlayers()) {
-                t.sendMessage(cload.getFinalString(milestone.getReward().getBroadcastMessage(), p, milestone));
+                if (!milestone.getReward().getBroadcastMessage().equals(""))
+                    t.sendMessage(cload.getFinalString(milestone.getReward().getBroadcastMessage(), p, milestone));
             }
         }
 
         if (milestone.getReward().getInformMessage() != null) {
-            p.sendMessage(cload.getFinalString(milestone.getReward().getInformMessage(), p, milestone));
+            if (!milestone.getReward().getInformMessage().equals(""))
+                p.sendMessage(cload.getFinalString(milestone.getReward().getInformMessage(), p, milestone));
         }
 
         // Commands

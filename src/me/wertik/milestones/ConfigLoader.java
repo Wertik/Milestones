@@ -18,11 +18,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static java.lang.System.out;
-
 public class ConfigLoader {
 
     private Main plugin = Main.getInstance();
+    private Utils utils = new Utils();
     private StorageHandler storageHandler = new StorageHandler();
     public static FileConfiguration config;
     public static YamlConfiguration miles;
@@ -69,6 +68,7 @@ public class ConfigLoader {
     }
 
     public Milestone getMilestone(String name) {
+        Bukkit.broadcastMessage("Milestones: " + milestones.keySet());
         return milestones.get(name);
     }
 
@@ -83,8 +83,6 @@ public class ConfigLoader {
         boolean perPlayer = section.getBoolean("global-milestone");
         boolean onlyOnce = section.getBoolean("log-only-once");
 
-        out.print(reward.getInformMessage());
-
         Milestone milestone = new Milestone(name, displayName, condition, reward, onlyOnce, perPlayer);
 
         return milestone;
@@ -94,82 +92,15 @@ public class ConfigLoader {
     public Reward getReward(String name) {
         ConfigurationSection section = miles.getConfigurationSection(name);
 
-        if (!section.contains("rewards"))
-            return null;
-
         String broadcastMessage = section.getString("rewards.broadcast-message");
         String informMessage = section.getString("rewards.inform-message");
 
         List<String> commands = section.getStringList("rewards.commands");
         List<String> itemNames = section.getStringList("rewards.items");
 
-        Reward reward = new Reward(commands, itemNames, informMessage, broadcastMessage);
-
-        Bukkit.broadcastMessage("THE FIRST TIME: \n" + reward.getInformMessage() + "\n ------");
+        Reward reward = new Reward(commands, itemNames, utils.checkString(broadcastMessage), utils.checkString(informMessage));
 
         return reward;
-    }
-
-    public HashMap<String, Milestone> setMilestones() {
-        HashMap<String, Milestone> milestones = new HashMap<>();
-
-        for (String name : getMileNames()) {
-            milestones.put(name, createMilestone(name));
-        }
-
-        return milestones;
-    }
-
-    public List<Milestone> getMilestones() {
-        return new ArrayList<>(milestones.values());
-    }
-
-    public List<Milestone> getGlobalMilestones() {
-        List<Milestone> output = new ArrayList<>();
-
-        for (Milestone milestone : getMilestones()) {
-            if (milestone.isGlobal())
-                output.add(milestone);
-        }
-
-        return output;
-    }
-
-    public List<Milestone> getPersonalMilestones() {
-        List<Milestone> output = new ArrayList<>();
-
-        for (Milestone milestone : getMilestones()) {
-            if (!milestone.isGlobal())
-                output.add(milestone);
-        }
-
-        return output;
-    }
-
-    public List<String> getMileNames() {
-        return new ArrayList<>(miles.getKeys(false));
-    }
-
-    public List<String> getPersonalMileNames() {
-        List<Milestone> milestones = getPersonalMilestones();
-        List<String> milenames = new ArrayList<>();
-
-        for (Milestone milestone : milestones) {
-            milenames.add(milestone.getName());
-        }
-
-        return milenames;
-    }
-
-    public List<String> getGlobalMileNames() {
-        List<Milestone> milestones = getGlobalMilestones();
-        List<String> milenames = new ArrayList<>();
-
-        for (Milestone milestone : milestones) {
-            milenames.add(milestone.getName());
-        }
-
-        return milenames;
     }
 
     /*
@@ -237,6 +168,72 @@ public class ConfigLoader {
         }
 
         return condition;
+    }
+
+    public HashMap<String, Milestone> setMilestones() {
+        HashMap<String, Milestone> milestones = new HashMap<>();
+
+        Bukkit.broadcastMessage("Miles: " + getMileNames());
+
+        for (String name : getMileNames()) {
+            milestones.put(name, createMilestone(name));
+        }
+
+        Bukkit.broadcastMessage("Milestones: " + milestones.keySet());
+
+        return milestones;
+    }
+
+    public List<Milestone> getMilestones() {
+        return new ArrayList<>(milestones.values());
+    }
+
+    public List<Milestone> getGlobalMilestones() {
+        List<Milestone> output = new ArrayList<>();
+
+        for (Milestone milestone : getMilestones()) {
+            if (milestone.isGlobal())
+                output.add(milestone);
+        }
+
+        return output;
+    }
+
+    public List<Milestone> getPersonalMilestones() {
+        List<Milestone> output = new ArrayList<>();
+
+        for (Milestone milestone : getMilestones()) {
+            if (!milestone.isGlobal())
+                output.add(milestone);
+        }
+
+        return output;
+    }
+
+    public List<String> getMileNames() {
+        return new ArrayList<>(miles.getKeys(false));
+    }
+
+    public List<String> getPersonalMileNames() {
+        List<Milestone> milestones = getPersonalMilestones();
+        List<String> milenames = new ArrayList<>();
+
+        for (Milestone milestone : milestones) {
+            milenames.add(milestone.getName());
+        }
+
+        return milenames;
+    }
+
+    public List<String> getGlobalMileNames() {
+        List<Milestone> milestones = getGlobalMilestones();
+        List<String> milenames = new ArrayList<>();
+
+        for (Milestone milestone : milestones) {
+            milenames.add(milestone.getName());
+        }
+
+        return milenames;
     }
 
     public String format(String msg) {
