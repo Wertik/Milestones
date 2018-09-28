@@ -89,7 +89,7 @@ public class Messanger {
         if (!milestone.getCondition().getToolTypes().isEmpty()) {
             p.sendMessage("  §3Tool Types:");
             for (ItemStack tool : milestone.getCondition().getToolTypes()) {
-                p.sendMessage("  §8- §f" + tool);
+                p.sendMessage("  §8- §f" + tool.getType());
             }
         }
         if (!milestone.getCondition().getTargetTypes().isEmpty()) {
@@ -101,7 +101,7 @@ public class Messanger {
         if (!milestone.getCondition().getInInventory().isEmpty()) {
             p.sendMessage("  §3In-inventory item types:");
             for (ItemStack item : milestone.getCondition().getInInventory()) {
-                p.sendMessage("  §8- §f" + item);
+                p.sendMessage("  §8- §f" + item.getType());
             }
         }
         if (!milestone.getCondition().getBiomes().isEmpty()) {

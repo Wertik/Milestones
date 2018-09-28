@@ -1,5 +1,6 @@
 package me.wertik.milestones;
 
+import me.wertik.milestones.handlers.DataHandler;
 import me.wertik.milestones.handlers.StorageHandler;
 import me.wertik.milestones.objects.Condition;
 import me.wertik.milestones.objects.Milestone;
@@ -108,7 +109,7 @@ public class ConfigLoader {
     public List<StagedReward> getStagedRewards(String name) {
         ConfigurationSection section = miles.getConfigurationSection(name);
 
-        if (!miles.contains(name+".staged-rewards"))
+        if (!miles.contains(name + ".staged-rewards"))
             return null;
 
         List<StagedReward> stagedRewards = new ArrayList<>();
@@ -202,13 +203,9 @@ public class ConfigLoader {
     public HashMap<String, Milestone> setMilestones() {
         HashMap<String, Milestone> milestones = new HashMap<>();
 
-        Bukkit.broadcastMessage("Miles: " + getMileNames());
-
         for (String name : getMileNames()) {
             milestones.put(name, createMilestone(name));
         }
-
-        Bukkit.broadcastMessage("Milestones: " + milestones.keySet());
 
         return milestones;
     }
@@ -290,11 +287,15 @@ public class ConfigLoader {
      * */
 
     public String parseString(String msg, Player p, Milestone milestone) {
+        DataHandler dataHandler = new DataHandler();
+
         msg = parseString(msg, p);
         if (msg.contains("%milestone_name%"))
             msg = msg.replace("%milestone_name%", milestone.getName());
         if (msg.contains("%milestone_displayName%"))
             msg = msg.replace("%milestone_displayName%", milestone.getDisplayName());
+        if (msg.contains("%milestone_score%"))
+            msg = msg.replace("%milestone_score%", String.valueOf(dataHandler.getScore(p.getName(), milestone.getName())));
         return msg;
     }
 

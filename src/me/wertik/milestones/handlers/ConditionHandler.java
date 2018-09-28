@@ -79,7 +79,6 @@ public class ConditionHandler {
         if (i == condition.getToolTypes().size())
             return;
 
-
         // regionNames
         LocalPlayer localPlayer = wg.wrapPlayer(p);
         Vector vector = localPlayer.getPosition();
@@ -159,6 +158,9 @@ public class ConditionHandler {
             p.getInventory().addItem(item);
         }
 
+        if (milestone.getStagedRewards() == null)
+            return;
+
         // Staged Rewards
         int score = dataHandler.getScore(p.getName(), milestone.getName());
 
@@ -166,23 +168,23 @@ public class ConditionHandler {
 
             if (stagedReward.getCount() == score) {
                 // Messages
-                if (!milestone.getReward().getBroadcastMessage().equals("")) {
+                if (!stagedReward.getReward().getBroadcastMessage().equals("")) {
                     for (Player t : plugin.getServer().getOnlinePlayers()) {
-                        t.sendMessage(cload.getFinalString(milestone.getReward().getBroadcastMessage(), p, milestone));
+                        t.sendMessage(cload.getFinalString(stagedReward.getReward().getBroadcastMessage(), p, milestone));
                     }
                 }
 
-                if (!milestone.getReward().getInformMessage().equals("")) {
-                    p.sendMessage(cload.getFinalString(milestone.getReward().getInformMessage(), p, milestone));
+                if (!stagedReward.getReward().getInformMessage().equals("")) {
+                    p.sendMessage(cload.getFinalString(stagedReward.getReward().getInformMessage(), p, milestone));
                 }
 
                 // Commands
-                for (String command : milestone.getReward().getCommands()) {
+                for (String command : stagedReward.getReward().getCommands()) {
                     plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), cload.parseString(command, p, milestone));
                 }
 
                 // Items
-                for (ItemStack item : milestone.getReward().getItems()) {
+                for (ItemStack item : stagedReward.getReward().getItems()) {
                     p.getInventory().addItem(item);
                 }
             }

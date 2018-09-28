@@ -41,6 +41,9 @@ public class Commands implements CommandExecutor {
 
             switch (args[0]) {
                 case "reload":
+                    dataHandler.saveDataFiles();
+                    dataHandler.saveGlobalMileFile();
+                    storageHandler.saveStorage();
                     cload.loadYamls();
                     cload.loadMilestones();
                     dataHandler.loadFiles();
@@ -189,8 +192,28 @@ public class Commands implements CommandExecutor {
                     storageHandler.saveItem(args[1], p.getInventory().getItemInMainHand());
                     break;
                 case "getitem":
+                    // /mile getitem (name)
+                    if (!(sender instanceof Player)) {
+                        sender.sendMessage("§cOnly players please.");
+                        return false;
+                    }
+
                     p = (Player) sender;
-                    p.getInventory().setItem(p.getInventory().getHeldItemSlot(), storageHandler.getItem(args[1]));
+
+                    if (args.length < 2) {
+                        p.sendMessage("§cNot enough. /mile getitem (name)");
+                        return false;
+                    } else if (args.length > 2) {
+                        p.sendMessage("§cThat's too much,.. /mile getitem (name)");
+                        return false;
+                    }
+
+                    if (!storageHandler.getItemNames().contains(args[1])) {
+                        p.sendMessage("§cThat item is not listed.");
+                        return false;
+                    }
+
+                    p.getInventory().addItem(storageHandler.getItem(args[1]));
                     break;
                 default:
                     mess.help(sender);

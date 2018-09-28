@@ -85,7 +85,12 @@ public class StorageHandler {
     }
 
     public List<ItemStack> getItems() {
-        return null;
+        List<ItemStack> items = new ArrayList<>();
+
+        for (String name : getItemNames()) {
+            items.add(getItem(name));
+        }
+        return items;
     }
 
     public ItemStack getItem(String name) {
