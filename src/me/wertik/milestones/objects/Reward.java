@@ -1,8 +1,14 @@
 package me.wertik.milestones.objects;
 
+import me.wertik.milestones.handlers.StorageHandler;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Reward {
+
+    private StorageHandler storageHandler = new StorageHandler();
 
     private String broadcastMessage;
     private String informMessage;
@@ -30,5 +36,14 @@ public class Reward {
 
     public List<String> getItemNames() {
         return itemNames;
+    }
+
+    public List<ItemStack> getItems() {
+        List<ItemStack> items = new ArrayList<>();
+
+        for (String name : itemNames) {
+            items.add(storageHandler.getItem(name));
+        }
+        return items;
     }
 }

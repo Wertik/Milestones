@@ -4,6 +4,7 @@ import me.wertik.milestones.handlers.StorageHandler;
 import me.wertik.milestones.objects.Condition;
 import me.wertik.milestones.objects.Milestone;
 import me.wertik.milestones.objects.Reward;
+import me.wertik.milestones.objects.StagedReward;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -83,7 +84,7 @@ public class ConfigLoader {
         boolean perPlayer = section.getBoolean("global-milestone");
         boolean onlyOnce = section.getBoolean("log-only-once");
 
-        Milestone milestone = new Milestone(name, displayName, condition, reward, onlyOnce, perPlayer);
+        Milestone milestone = new Milestone(name, displayName, condition, reward, getStagedRewards(name), onlyOnce, perPlayer);
 
         return milestone;
     }
@@ -101,6 +102,34 @@ public class ConfigLoader {
         Reward reward = new Reward(commands, itemNames, utils.checkString(broadcastMessage), utils.checkString(informMessage));
 
         return reward;
+    }
+
+    // Staged rewards
+    public List<StagedReward> getStagedRewards(String name) {
+        ConfigurationSection section = miles.getConfigurationSection(name);
+
+        if (!miles.contains(name+".staged-rewards"))
+            return null;
+
+        List<StagedReward> stagedRewards = new ArrayList<>();
+        List<String> stagedNames = new ArrayList<>(section.getConfigurationSection("staged-rewards").getKeys(false));
+
+        for (String staged : stagedNames) {
+
+            String broadcastMessage = section.getString("staged-rewards." + staged + ".broadcast-message");
+            String informMessage = section.getString("staged-rewards." + staged + ".inform-message");
+
+            List<String> commands = section.getStringList("staged-rewards." + staged + ".commands");
+            List<String> itemNames = section.getStringList("staged-rewards." + staged + ".items");
+
+            Reward reward = new Reward(commands, itemNames, utils.checkString(broadcastMessage), utils.checkString(informMessage));
+
+            StagedReward stagedReward = new StagedReward(Integer.valueOf(staged), reward);
+
+            stagedRewards.add(stagedReward);
+        }
+
+        return stagedRewards;
     }
 
     /*

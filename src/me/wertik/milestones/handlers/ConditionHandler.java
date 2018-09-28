@@ -8,6 +8,7 @@ import me.wertik.milestones.Main;
 import me.wertik.milestones.Utils;
 import me.wertik.milestones.objects.Condition;
 import me.wertik.milestones.objects.Milestone;
+import me.wertik.milestones.objects.StagedReward;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -121,10 +122,10 @@ public class ConditionHandler {
         reward(milestone, p);
     }
 
-
     // reward system
     public void reward(Milestone milestone, Player p) {
 
+        // Score
         if (milestone.isGlobal()) {
             dataHandler.addGlobalScore(milestone.getName());
         } else {
@@ -138,21 +139,53 @@ public class ConditionHandler {
         }
 
         // Messages
-        if (milestone.getReward().getBroadcastMessage() != null) {
+        if (!milestone.getReward().getBroadcastMessage().equals("")) {
             for (Player t : plugin.getServer().getOnlinePlayers()) {
-                if (!milestone.getReward().getBroadcastMessage().equals(""))
-                    t.sendMessage(cload.getFinalString(milestone.getReward().getBroadcastMessage(), p, milestone));
+                t.sendMessage(cload.getFinalString(milestone.getReward().getBroadcastMessage(), p, milestone));
             }
         }
 
-        if (milestone.getReward().getInformMessage() != null) {
-            if (!milestone.getReward().getInformMessage().equals(""))
-                p.sendMessage(cload.getFinalString(milestone.getReward().getInformMessage(), p, milestone));
+        if (!milestone.getReward().getInformMessage().equals("")) {
+            p.sendMessage(cload.getFinalString(milestone.getReward().getInformMessage(), p, milestone));
         }
 
         // Commands
         for (String command : milestone.getReward().getCommands()) {
             plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), cload.parseString(command, p, milestone));
+        }
+
+        // Items
+        for (ItemStack item : milestone.getReward().getItems()) {
+            p.getInventory().addItem(item);
+        }
+
+        // Staged Rewards
+        int score = dataHandler.getScore(p.getName(), milestone.getName());
+
+        for (StagedReward stagedReward : milestone.getStagedRewards()) {
+
+            if (stagedReward.getCount() == score) {
+                // Messages
+                if (!milestone.getReward().getBroadcastMessage().equals("")) {
+                    for (Player t : plugin.getServer().getOnlinePlayers()) {
+                        t.sendMessage(cload.getFinalString(milestone.getReward().getBroadcastMessage(), p, milestone));
+                    }
+                }
+
+                if (!milestone.getReward().getInformMessage().equals("")) {
+                    p.sendMessage(cload.getFinalString(milestone.getReward().getInformMessage(), p, milestone));
+                }
+
+                // Commands
+                for (String command : milestone.getReward().getCommands()) {
+                    plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), cload.parseString(command, p, milestone));
+                }
+
+                // Items
+                for (ItemStack item : milestone.getReward().getItems()) {
+                    p.getInventory().addItem(item);
+                }
+            }
         }
     }
 }

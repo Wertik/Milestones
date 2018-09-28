@@ -5,6 +5,7 @@ import me.wertik.milestones.ConfigLoader;
 import me.wertik.milestones.Main;
 import me.wertik.milestones.handlers.DataHandler;
 import me.wertik.milestones.objects.Milestone;
+import me.wertik.milestones.objects.StagedReward;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
 
@@ -59,9 +60,12 @@ public class Messanger {
         p.sendMessage(" §3Global: §f" + milestone.isGlobal());
         p.sendMessage(" §3Only once: §f" + milestone.isOnlyOnce());
         p.sendMessage(" §3Type: §f" + milestone.getCondition().getType());
-        p.sendMessage(" §aRewards:");
-        p.sendMessage("  §3Broadcast message: §f" + milestone.getReward().getBroadcastMessage());
-        p.sendMessage("  §3Inform message: §f" + milestone.getReward().getInformMessage());
+        if (!milestone.getReward().getBroadcastMessage().equals("") && !milestone.getReward().getInformMessage().equals("") && !milestone.getReward().getCommands().isEmpty() && !milestone.getReward().getItemNames().isEmpty())
+            p.sendMessage(" §aRewards:");
+        if (!milestone.getReward().getBroadcastMessage().equals(""))
+            p.sendMessage("  §3Broadcast message: §f" + milestone.getReward().getBroadcastMessage());
+        if (!milestone.getReward().getInformMessage().equals(""))
+            p.sendMessage("  §3Inform message: §f" + milestone.getReward().getInformMessage());
         if (!milestone.getReward().getCommands().isEmpty()) {
             p.sendMessage("  §3Commands:");
             for (String command : milestone.getReward().getCommands()) {
@@ -73,6 +77,12 @@ public class Messanger {
             p.sendMessage("  §3Items:");
             for (String itemName : milestone.getReward().getItemNames()) {
                 p.sendMessage(" §8- §f" + itemName);
+            }
+        }
+        if (milestone.getStagedRewards() != null) {
+            p.sendMessage(" §aStaged:");
+            for (StagedReward stagedReward : milestone.getStagedRewards()) {
+                p.sendMessage("  §8- §f" + stagedReward.getCount());
             }
         }
         p.sendMessage(" §aConditions:");
