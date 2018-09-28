@@ -70,7 +70,6 @@ public class ConfigLoader {
     }
 
     public Milestone getMilestone(String name) {
-        Bukkit.broadcastMessage("Milestones: " + milestones.keySet());
         return milestones.get(name);
     }
 
