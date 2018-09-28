@@ -2,8 +2,8 @@ package me.wertik.milestones.commands;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import me.wertik.milestones.ConfigLoader;
-import me.wertik.milestones.handlers.DataHandler;
 import me.wertik.milestones.Main;
+import me.wertik.milestones.handlers.DataHandler;
 import me.wertik.milestones.objects.Milestone;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.ItemStack;
@@ -35,6 +35,7 @@ public class Messanger {
                 "§3/mile list (params::planned) §7== " + "§3list milestone data\n" +
                 "§3/mile stats (player/global) §7== §3player/global stats\n" +
                 "§3/mile info (milestone) §7== §3info about a milestone\n" +
+                "§3/mile additem (name) §7== §3add item in your hand to the data storage\n" +
                 "§3/mile credits §7== §3authors, version, stuff.");
     }
 
@@ -58,12 +59,20 @@ public class Messanger {
         p.sendMessage(" §3Global: §f" + milestone.isGlobal());
         p.sendMessage(" §3Only once: §f" + milestone.isOnlyOnce());
         p.sendMessage(" §3Type: §f" + milestone.getCondition().getType());
-        p.sendMessage(" §3Broadcast message: §f" + milestone.getBroadcastMessage());
-        p.sendMessage(" §3Inform message: §f" + milestone.getInformMessage());
-        if (!milestone.getCommandsReward().isEmpty()) {
-            p.sendMessage(" §3Commands:");
-            for (String command : milestone.getCommandsReward()) {
+        p.sendMessage(" §aRewards:");
+        p.sendMessage("  §3Broadcast message: §f" + milestone.getReward().getBroadcastMessage());
+        p.sendMessage("  §3Inform message: §f" + milestone.getReward().getInformMessage());
+        if (!milestone.getReward().getCommands().isEmpty()) {
+            p.sendMessage("  §3Commands:");
+            for (String command : milestone.getReward().getCommands()) {
                 p.sendMessage(" §8- §f" + command);
+            }
+        }
+        // Items
+        if (!milestone.getReward().getItemNames().isEmpty()) {
+            p.sendMessage("  §3Items:");
+            for (String itemName : milestone.getReward().getItemNames()) {
+                p.sendMessage(" §8- §f" + itemName);
             }
         }
         p.sendMessage(" §aConditions:");

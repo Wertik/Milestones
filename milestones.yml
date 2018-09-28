@@ -13,23 +13,26 @@ blockbreak-global:
     - FOREST
     - PLAINS
   global-milestone: true
-  broadcast: true
-  broadcast-message: '&f%player% &3has just earned some cool stuff tho.'
-  inform-player: false
-  inform-message: '...'
-  commands:
-  - say You did it!
-testing-milestone-2:
-  type: blockbreak
+  log-only-once: false
+  rewards:
+    broadcast-message: '&3%player% &7is so cool! He had broken a freakin diamond ore!'
+    inform-message: '&7Completing &f%milestone_name% &7made you so famous you can buy your own mansion! Oh, wait. No, you cant.'
+    commands:
+    - say Hello world!
+    items:
+    - pvpsword
+pvp:
+  type: entitykill
+  display-name: '&cPvP &7(Player vs Pig)'
   conditions:
     tool-types:
-    - IRON_SPADE
-    in-inventory:
-    - APPLE
-    block-types:
-    - DIRT
+    - DIAMOND_SWORD
+    mob-types:
+    - PIG
     biome-types:
     - FOREST
     - PLAINS
+    region-names:
+    - pvp_region
   global-milestone: false
-  log-only-once: true
+  log-only-once: false

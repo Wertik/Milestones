@@ -12,16 +12,17 @@ CONDITIONS:
   - regionNames == list of region names
 
  PLANNED:
-  - block under the player..
+  - block under the player.. idk..
 
 OPTIONS:
-  - inform-player == boolean
-  - inform-message == string, the message only the player gets
-  - broadcast == boolean
-  - broadcast-message == string, the message all of the players get
   - log-only-once == count the milestone only once, doesn't work on global milestones curently
   - global-milestone == boolean, the milestone counts for all of the players together
+
+REWARDS:
+  - inform-message == string, the message only the player gets
+  - broadcast-message == string, the message all of the players get
   - commands == list<string>, list of commands that run after completing the milestone
+  - items == list of items from data storage the player gets
   
 LOGGED EVENTS:
   - entityDeath

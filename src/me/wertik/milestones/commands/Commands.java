@@ -173,6 +173,14 @@ public class Commands implements CommandExecutor {
 
                     Player p = (Player) sender;
 
+                    if (args.length < 2) {
+                        p.sendMessage("§cNot enough. /mile additem (name)");
+                        return false;
+                    } else if (args.length > 2) {
+                        p.sendMessage("§cThat's too much,.. /mile additem (name)");
+                        return false;
+                    }
+
                     if (p.getInventory().getItemInMainHand().getType().toString().equals("AIR")) {
                         p.sendMessage("§cAir is useless to save, instead, consider breathing it.");
                         return false;
@@ -181,7 +189,6 @@ public class Commands implements CommandExecutor {
                     storageHandler.saveItem(args[1], p.getInventory().getItemInMainHand());
                     break;
                 case "getitem":
-                    sender.sendMessage("ok..");
                     p = (Player) sender;
                     p.getInventory().setItem(p.getInventory().getHeldItemSlot(), storageHandler.getItem(args[1]));
                     break;

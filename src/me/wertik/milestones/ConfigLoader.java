@@ -3,6 +3,8 @@ package me.wertik.milestones;
 import me.wertik.milestones.handlers.StorageHandler;
 import me.wertik.milestones.objects.Condition;
 import me.wertik.milestones.objects.Milestone;
+import me.wertik.milestones.objects.Reward;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -13,7 +15,10 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import static java.lang.System.out;
 
 public class ConfigLoader {
 
@@ -25,7 +30,7 @@ public class ConfigLoader {
     public static File storageFile;
     public static YamlConfiguration storage;
 
-    private static List<Milestone> milestones;
+    private static HashMap<String, Milestone> milestones;
 
     public ConfigLoader() {
     }
@@ -64,35 +69,59 @@ public class ConfigLoader {
     }
 
     public Milestone getMilestone(String name) {
-        Condition condition = getCondition(name);
-
-        String displayName = miles.getString(name + ".display-name");
-
-        boolean perPlayer = miles.getBoolean(name + ".global-milestone");
-        boolean onlyOnce = miles.getBoolean(name + ".log-only-once");
-        boolean broadcast = miles.getBoolean(name + ".broadcast");
-        boolean inform = miles.getBoolean(name + ".inform-player");
-
-        String broadcastMessage = miles.getString(name + ".broadcast-message");
-        String informMessage = miles.getString(name + ".inform-message");
-
-        List<String> commands = miles.getStringList(name + ".commands");
-
-        return new Milestone(name, displayName, condition, onlyOnce, perPlayer, broadcast, broadcastMessage, inform, informMessage, commands);
+        return milestones.get(name);
     }
 
-    public List<Milestone> setMilestones() {
-        List<Milestone> milestones = new ArrayList<>();
+    public Milestone createMilestone(String name) {
+        Condition condition = getCondition(name);
+        Reward reward = getReward(name);
+
+        ConfigurationSection section = miles.getConfigurationSection(name);
+
+        String displayName = section.getString("display-name");
+
+        boolean perPlayer = section.getBoolean("global-milestone");
+        boolean onlyOnce = section.getBoolean("log-only-once");
+
+        out.print(reward.getInformMessage());
+
+        Milestone milestone = new Milestone(name, displayName, condition, reward, onlyOnce, perPlayer);
+
+        return milestone;
+    }
+
+    // commmands, items, broadcast, inform
+    public Reward getReward(String name) {
+        ConfigurationSection section = miles.getConfigurationSection(name);
+
+        if (!section.contains("rewards"))
+            return null;
+
+        String broadcastMessage = section.getString("rewards.broadcast-message");
+        String informMessage = section.getString("rewards.inform-message");
+
+        List<String> commands = section.getStringList("rewards.commands");
+        List<String> itemNames = section.getStringList("rewards.items");
+
+        Reward reward = new Reward(commands, itemNames, informMessage, broadcastMessage);
+
+        Bukkit.broadcastMessage("THE FIRST TIME: \n" + reward.getInformMessage() + "\n ------");
+
+        return reward;
+    }
+
+    public HashMap<String, Milestone> setMilestones() {
+        HashMap<String, Milestone> milestones = new HashMap<>();
 
         for (String name : getMileNames()) {
-            milestones.add(getMilestone(name));
+            milestones.put(name, createMilestone(name));
         }
 
         return milestones;
     }
 
     public List<Milestone> getMilestones() {
-        return milestones;
+        return new ArrayList<>(milestones.values());
     }
 
     public List<Milestone> getGlobalMilestones() {
