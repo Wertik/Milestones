@@ -76,21 +76,6 @@ public class Main extends JavaPlugin {
             console.sendMessage("§aGenerated default §f" + storageFile.getName());
         }
 
-        // Global Milestones
-        File globalMileFile = new File(getDataFolder() + "/globalmilestones.yml");
-
-        if (!globalMileFile.exists()) {
-            saveResource("globalmilestones.yml", false);
-            YamlConfiguration globalMiles = YamlConfiguration.loadConfiguration(globalMileFile);
-            globalMiles.options().copyDefaults(true);
-            try {
-                globalMiles.save(globalMileFile);
-            } catch (IOException e) {
-                console.sendMessage("§cCould not save the file, that's bad tho.");
-            }
-            console.sendMessage("§aGenerated default §f" + globalMileFile.getName());
-        }
-
         // Data folder
         File folder = new File(getDataFolder() + "/data");
         if (!folder.exists()) {
@@ -144,7 +129,6 @@ public class Main extends JavaPlugin {
         DataHandler dataHandler = new DataHandler();
         StorageHandler storageHandler = new StorageHandler();
         storageHandler.saveStorage();
-        dataHandler.saveGlobalMileFile();
         dataHandler.saveDataFiles();
         console.sendMessage("§2It's okay now, i got all data i could ever dream of. :)");
     }

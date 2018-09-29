@@ -15,31 +15,23 @@ public class DataHandler {
     ConfigLoader cload = new ConfigLoader();
     Main plugin = Main.getInstance();
     private static HashMap<String, YamlConfiguration> files;
-    private static File globalMileFile;
-    private static YamlConfiguration globalMiles;
+    private static HashMap<String, YamlConfiguration> globalFiles;
 
     public DataHandler() {
     }
 
     public void loadFiles() {
 
-        globalMileFile = new File(plugin.getDataFolder() + "/globalmilestones.yml");
-        globalMiles = YamlConfiguration.loadConfiguration(globalMileFile);
-
         files = new HashMap<>();
-        List<String> names = cload.getMileNames();
 
-        for (String name : names) {
-            if (!cload.getMilestone(name).isGlobal()) {
-                files.put(name, createDataFile(name));
-            }
-            // global milestones
-            else {
-                if (!globalMiles.contains(name)) {
-                    globalMiles.set(name, 0);
-                    saveGlobalMileFile();
-                }
-            }
+        for (String name : cload.getPersonalMileNames()) {
+            createDataFile(name);
+        }
+
+        globalFiles = new HashMap<>();
+
+        for (String name : cload.getGlobalMileNames()) {
+            createGlobalDataFile(name);
         }
     }
 
@@ -84,15 +76,15 @@ public class DataHandler {
     }
 
     public void clearGlobalScore(String name) {
-        globalMiles.set(name, 0);
+        globalFiles.get(name).set("Players", new ArrayList<>());
+        globalFiles.get(name).set("Score", 0);
+        saveDataFile(name);
     }
 
     // Clear all globalMilestones
     public void clearGlobalScores() {
-        List<String> globalMilestones = new ArrayList<>(globalMiles.getKeys(false));
-
-        for (String globalMilestone : globalMilestones) {
-            globalMiles.set(globalMilestone, 0);
+        for (String globalMilestone : cload.getGlobalMileNames()) {
+            clearMilestoneScores(globalMilestone);
         }
     }
 
@@ -101,24 +93,28 @@ public class DataHandler {
     // add a point. :)
     public void addScore(String playerName, String name) {
         files.get(name).set(playerName, getScore(playerName, name) + 1);
+        saveDataFile(name);
     }
 
     // add a global point
-    public void addGlobalScore(String name) {
-        globalMiles.set(name, getGlobalScore(name) + 1);
+    public void addGlobalScore(String name, String playerName) {
+        globalFiles.get(name).set("Score", getGlobalScore(name) + 1);
+        List<String> playerNames = new ArrayList<>(getGlobalLoggedPlayers(name));
+        if (!playerNames.contains(playerName))
+            playerNames.add(playerName);
+        globalFiles.get(name).set("Players", playerNames);
+        saveDataFile(name);
+    }
+
+    public List<String> getGlobalLoggedPlayers(String name) {
+        return globalFiles.get(name).getStringList("Players");
     }
 
     public int getGlobalScore(String name) {
-        return globalMiles.getInt(name);
-    }
-
-    // Add player to the Scoreboard
-    public void addPlayer(String playerName, String name) {
-        files.get(name).set(playerName, 0);
+        return globalFiles.get(name).getInt("Score");
     }
 
     public boolean isLogged(String playerName, String name) {
-
         if (files.get(name).contains(playerName))
             return true;
         else
@@ -138,19 +134,10 @@ public class DataHandler {
         return false;
     }
 
-    public List<String> getLoggedPlayers() {
-        List<String> playerNames = new ArrayList<>();
-
-        for (YamlConfiguration yaml : files.values()) {
-            playerNames.addAll(yaml.getKeys(false));
-        }
-        return playerNames;
-    }
-
     // GETTER
     public int getScore(String playerName, String name) {
         if (!files.get(name).contains(playerName))
-            addPlayer(playerName, name);
+            return 0;
         return files.get(name).getInt(playerName);
     }
 
@@ -161,11 +148,32 @@ public class DataHandler {
 
         files.put(name, yaml);
 
+        if (!file.exists())
+            plugin.getServer().getConsoleSender().sendMessage("§aCreated file for §f" + file.getName().replace(".yml", ""));
+
+        saveDataFile(name);
+
+        files.put(name, yaml);
+
+        return yaml;
+    }
+
+    public YamlConfiguration createGlobalDataFile(String name) {
+        File file = new File(plugin.getDataFolder() + "/data/" + name + ".yml");
+        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+
+        globalFiles.put(name, yaml);
+
         if (!file.exists()) {
             plugin.getServer().getConsoleSender().sendMessage("§aCreated file for §f" + file.getName().replace(".yml", ""));
 
-            saveDataFile(name);
+            yaml.set("Score", 0);
+            yaml.set("Players", new ArrayList<>());
         }
+
+        saveDataFile(name);
+
+        globalFiles.put(name, yaml);
 
         return yaml;
     }
@@ -173,7 +181,12 @@ public class DataHandler {
     public void saveDataFile(String name) {
         File file = new File(plugin.getDataFolder() + "/data/" + name + ".yml");
         try {
-            files.get(name).save(file);
+            if (files.containsKey(name))
+                files.get(name).save(file);
+            else if (globalFiles.containsKey(name))
+                globalFiles.get(name).save(file);
+            else
+                plugin.getServer().getConsoleSender().sendMessage("§cCould not save data file §f" + file.getName());
         } catch (IOException e) {
             plugin.getServer().getConsoleSender().sendMessage("§cCould not save data file §f" + file.getName());
         }
@@ -183,19 +196,9 @@ public class DataHandler {
         for (String name : files.keySet()) {
             saveDataFile(name);
         }
-        plugin.getServer().getConsoleSender().sendMessage("§aData files saved.");
-    }
-
-    public void saveGlobalMileFile() {
-        try {
-            globalMiles.save(globalMileFile);
-        } catch (IOException e) {
-            plugin.getServer().getConsoleSender().sendMessage("§cCould not save data file §fglobalmilestones.yml");
+        for (String name : globalFiles.keySet()) {
+            saveDataFile(name);
         }
-    }
-
-    public void removeDataFile(String name) {
-        File file = new File(plugin.getDataFolder() + "/data/" + name + ".yml");
-        file.delete();
+        plugin.getServer().getConsoleSender().sendMessage("§aData files saved.");
     }
 }

@@ -52,7 +52,6 @@ public class StorageHandler {
             plugin.getServer().getConsoleSender().sendMessage("§cCould not save the storage.. idk what to do, send help.");
             return;
         }
-        plugin.getServer().getConsoleSender().sendMessage("§aStorage saved.");
     }
 
     // TOGGLES SECTION
@@ -67,11 +66,14 @@ public class StorageHandler {
         return false;
     }
 
-    public ItemStack parseForItem(String msg) {
+    public String parseForItemName(String msg) {
         msg = msg.replace("%item_", "");
         msg = msg.replace("%", "");
+        return msg;
+    }
 
-        return getItem(msg);
+    public ItemStack parseForItem(String msg) {
+        return getItem(parseForItemName(msg));
     }
 
     public boolean saveItem(String name, ItemStack item) {
@@ -82,15 +84,6 @@ public class StorageHandler {
 
     public List<String> getItemNames() {
         return new ArrayList<>(items.getKeys(false));
-    }
-
-    public List<ItemStack> getItems() {
-        List<ItemStack> items = new ArrayList<>();
-
-        for (String name : getItemNames()) {
-            items.add(getItem(name));
-        }
-        return items;
     }
 
     public ItemStack getItem(String name) {

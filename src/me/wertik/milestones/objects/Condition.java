@@ -18,17 +18,17 @@ public class Condition {
      * */
 
     private String type;
-    private List<ItemStack> toolTypes;
-    private List<String> targetTypes;
+    private List<ItemStack> inHand;
+    private List<String> targets;
     private List<ItemStack> inInventory;
     private List<String> biomes;
     private List<String> regionNames;
 
-    public Condition(String type, List<ItemStack> inInventory, List<ItemStack> toolTypes, List<String> targetTypes, List<String> biomes, List<String> regionNames) {
+    public Condition(String type, List<ItemStack> inInventory, List<ItemStack> inHand, List<String> targets, List<String> biomes, List<String> regionNames) {
         this.type = type;
-        this.toolTypes = toolTypes;
+        this.inHand = inHand;
         this.inInventory = inInventory;
-        this.targetTypes = targetTypes;
+        this.targets = targets;
         this.biomes = biomes;
         this.regionNames = regionNames;
     }
@@ -37,12 +37,12 @@ public class Condition {
         return type;
     }
 
-    public List<ItemStack> getToolTypes() {
-        return toolTypes;
+    public List<ItemStack> getInHand() {
+        return inHand;
     }
 
-    public List<String> getTargetTypes() {
-        return targetTypes;
+    public List<String> getTargets() {
+        return targets;
     }
 
     public List<ItemStack> getInInventory() {

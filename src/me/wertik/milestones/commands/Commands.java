@@ -42,7 +42,6 @@ public class Commands implements CommandExecutor {
             switch (args[0]) {
                 case "reload":
                     dataHandler.saveDataFiles();
-                    dataHandler.saveGlobalMileFile();
                     storageHandler.saveStorage();
                     cload.loadYamls();
                     cload.loadMilestones();
@@ -214,6 +213,7 @@ public class Commands implements CommandExecutor {
                     }
 
                     p.getInventory().addItem(storageHandler.getItem(args[1]));
+                    p.sendMessage("§3Item added. Use §f%item_"+args[1]+"§f%§3 to reference it.");
                     break;
                 default:
                     mess.help(sender);

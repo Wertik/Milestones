@@ -51,8 +51,8 @@ public class ConditionHandler {
             return;
 
         // targetTypes
-        if (condition.getTargetTypes() != null)
-            if (!condition.getTargetTypes().contains(targetType) && !condition.getTargetTypes().isEmpty() && targetType != null)
+        if (condition.getTargets() != null)
+            if (!condition.getTargets().contains(targetType) && !condition.getTargets().isEmpty() && targetType != null)
                 return;
 
         // biomeTypes
@@ -62,11 +62,11 @@ public class ConditionHandler {
 
         // toolTypes
         int i = 0;
-        for (ItemStack tool : condition.getToolTypes()) {
+        for (ItemStack tool : condition.getInHand()) {
 
             i++;
 
-            if (condition.getToolTypes() == null || condition.getToolTypes().isEmpty() || condition.getType().equals("blockplace") || condition.getType().equals("playerjoin") || condition.getType().equals("playerquit")) {
+            if (condition.getInHand() == null || condition.getInHand().isEmpty() || condition.getType().equals("blockplace") || condition.getType().equals("playerjoin") || condition.getType().equals("playerquit")) {
                 i = 0;
                 break;
             }
@@ -78,7 +78,7 @@ public class ConditionHandler {
             }
         }
 
-        if (i == condition.getToolTypes().size() && condition.getToolTypes().size() != 0)
+        if (i == condition.getInHand().size() && condition.getInHand().size() != 0)
             return;
 
         // regionNames
@@ -128,12 +128,19 @@ public class ConditionHandler {
 
         // Score
         if (milestone.isGlobal()) {
-            dataHandler.addGlobalScore(milestone.getName());
+            if (milestone.isOnlyOnce()) {
+
+                if (!dataHandler.getGlobalLoggedPlayers(milestone.getName()).contains(p.getName()))
+                    return;
+                else
+                    dataHandler.addGlobalScore(milestone.getName(), p.getName());
+            } else
+                dataHandler.addGlobalScore(milestone.getName(), p.getName());
         } else {
             if (milestone.isOnlyOnce()) {
-                if (dataHandler.getScore(p.getName(), milestone.getName()) == 0) {
-                    dataHandler.addScore(p.getName(), milestone.getName());
-                } else
+                if (!dataHandler.isLogged(p.getName(), milestone.getName()))
+                    dataHandler.addScore(milestone.getName(), p.getName());
+                else
                     return;
             } else
                 dataHandler.addScore(p.getName(), milestone.getName());
@@ -161,6 +168,10 @@ public class ConditionHandler {
         }
 
         if (milestone.getStagedRewards() == null)
+            return;
+
+        // Not done yet.
+        if (milestone.isGlobal())
             return;
 
         // Staged Rewards

@@ -6,6 +6,7 @@ import me.wertik.milestones.objects.Condition;
 import me.wertik.milestones.objects.Milestone;
 import me.wertik.milestones.objects.Reward;
 import me.wertik.milestones.objects.StagedReward;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -164,7 +165,8 @@ public class ConfigLoader {
 
         for (String row : toolTypesString) {
             if (storageHandler.lookForItem(row)) {
-                toolTypes.add(storageHandler.parseForItem(row));
+                if (storageHandler.getItemNames().contains(storageHandler.parseForItemName(row)))
+                    toolTypes.add(storageHandler.parseForItem(row));
                 continue;
             }
 
@@ -174,21 +176,11 @@ public class ConfigLoader {
         List<String> biomes = section.getStringList("conditions.biome-types");
         List<String> regionNames = section.getStringList("conditions.region-names");
 
-        Condition condition = null;
+        List<String> targets = section.getStringList("conditions.targets");
+
+        Condition condition = new Condition(type, inInventory, toolTypes, targets, biomes, regionNames);
 
         switch (type) {
-            case "entitykill":
-                List<String> mobTypes = section.getStringList("conditions.mob-types");
-                condition = new Condition(type, inInventory, toolTypes, mobTypes, biomes, regionNames);
-                break;
-            case "blockbreak":
-                List<String> blockTypes = section.getStringList("conditions.block-types");
-                condition = new Condition(type, inInventory, toolTypes, blockTypes, biomes, regionNames);
-                break;
-            case "blockplace":
-                blockTypes = section.getStringList("conditions.block-types");
-                condition = new Condition(type, inInventory, toolTypes, blockTypes, biomes, regionNames);
-                break;
             case "playerjoin":
                 //                                            (inHand)
                 condition = new Condition(type, inInventory, toolTypes, null, biomes, regionNames);
@@ -196,10 +188,6 @@ public class ConfigLoader {
             case "playerquit":
                 //                                            (inHand)
                 condition = new Condition(type, inInventory, toolTypes, null, biomes, regionNames);
-                break;
-            case "playerchat":
-                List<String> messages = section.getStringList("conditions.messages");
-                condition = new Condition(type, inInventory, toolTypes, messages, biomes, regionNames);
                 break;
         }
 

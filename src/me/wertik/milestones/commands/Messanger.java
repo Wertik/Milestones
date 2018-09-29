@@ -86,15 +86,15 @@ public class Messanger {
             }
         }
         p.sendMessage(" §aConditions:");
-        if (!milestone.getCondition().getToolTypes().isEmpty()) {
+        if (!milestone.getCondition().getInHand().isEmpty()) {
             p.sendMessage("  §3Tool Types:");
-            for (ItemStack tool : milestone.getCondition().getToolTypes()) {
+            for (ItemStack tool : milestone.getCondition().getInHand()) {
                 p.sendMessage("  §8- §f" + tool.getType());
             }
         }
-        if (!milestone.getCondition().getTargetTypes().isEmpty()) {
+        if (!milestone.getCondition().getTargets().isEmpty()) {
             p.sendMessage("  §3Target Types:");
-            for (String target : milestone.getCondition().getTargetTypes()) {
+            for (String target : milestone.getCondition().getTargets()) {
                 p.sendMessage("  §8- §f" + target);
             }
         }
