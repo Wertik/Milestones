@@ -8,3 +8,6 @@ commands:
   milestones:
     aliases: [mile, miles]
     description: Main plugin command, try out.
+  datastorage:
+    aliases: [ds, datas, dstorage]
+    description: Manipulates the database.

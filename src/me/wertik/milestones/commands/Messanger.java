@@ -13,10 +13,10 @@ import java.util.List;
 
 public class Messanger {
 
-    DataHandler dataHandler = new DataHandler();
-    ConfigLoader cload = new ConfigLoader();
-    Main plugin = Main.getInstance();
-    WorldGuardPlugin wg = plugin.getWorldGuard();
+    private Main plugin = Main.getInstance();
+    private DataHandler dataHandler = plugin.getDataHandler();
+    private ConfigLoader configLoader = plugin.getConfigLoader();
+    private WorldGuardPlugin worldGuard = plugin.getWorldGuard();
 
     public Messanger() {
     }
@@ -44,14 +44,14 @@ public class Messanger {
 
         p.sendMessage("§dScores for player §f" + targetName);
 
-        for (String milestone : cload.getPersonalMileNames()) {
+        for (String milestone : configLoader.getPersonalMileNames()) {
             p.sendMessage("§3Score of §f" + milestone + "§3 is §f" + dataHandler.getScore(targetName, milestone));
         }
     }
 
     public void info(CommandSender p, String name) {
 
-        Milestone milestone = cload.getMilestone(name);
+        Milestone milestone = configLoader.getMilestone(name);
 
         p.sendMessage("§dInfo about §f" + milestone.getName());
 
@@ -110,7 +110,7 @@ public class Messanger {
                 p.sendMessage("  §8- §f" + biome);
             }
         }
-        if (wg != null) {
+        if (worldGuard != null) {
             if (!milestone.getCondition().getRegionNames().isEmpty()) {
                 p.sendMessage("  §3Regions:");
                 for (String region : milestone.getCondition().getRegionNames()) {
@@ -122,14 +122,14 @@ public class Messanger {
 
     public void list(CommandSender p) {
         p.sendMessage("§dList of all milestones:");
-        for (String name : cload.getMileNames()) {
+        for (String name : configLoader.getMileNames()) {
             p.sendMessage("§f" + name);
         }
     }
 
     public void statsGlobal(CommandSender p) {
 
-        List<String> milestones = cload.getGlobalMileNames();
+        List<String> milestones = configLoader.getGlobalMileNames();
 
         p.sendMessage("§dGlobal scores:");
 

@@ -12,25 +12,32 @@ import java.util.List;
 
 public class DataHandler {
 
-    ConfigLoader cload = new ConfigLoader();
-    Main plugin = Main.getInstance();
     private static HashMap<String, YamlConfiguration> files;
     private static HashMap<String, YamlConfiguration> globalFiles;
+    private Main plugin = Main.getInstance();
+    private ConfigLoader configLoader = plugin.getConfigLoader();
 
     public DataHandler() {
     }
 
     public void loadFiles() {
 
+        // Data folder
+        File folder = new File(plugin.getDataFolder() + "/data");
+        if (!folder.exists()) {
+            folder.mkdir();
+            plugin.getServer().getConsoleSender().sendMessage("§aCreating folder §f" + folder.getName());
+        }
+
         files = new HashMap<>();
 
-        for (String name : cload.getPersonalMileNames()) {
+        for (String name : configLoader.getPersonalMileNames()) {
             createDataFile(name);
         }
 
         globalFiles = new HashMap<>();
 
-        for (String name : cload.getGlobalMileNames()) {
+        for (String name : configLoader.getGlobalMileNames()) {
             createGlobalDataFile(name);
         }
     }
@@ -83,7 +90,7 @@ public class DataHandler {
 
     // Clear all globalMilestones
     public void clearGlobalScores() {
-        for (String globalMilestone : cload.getGlobalMileNames()) {
+        for (String globalMilestone : configLoader.getGlobalMileNames()) {
             clearMilestoneScores(globalMilestone);
         }
     }
@@ -122,7 +129,7 @@ public class DataHandler {
     }
 
     public boolean isLogged(String playerName) {
-        List<String> milestones = cload.getMileNames();
+        List<String> milestones = configLoader.getMileNames();
 
         for (String milestone : milestones) {
             if (isLogged(playerName, milestone))
@@ -130,7 +137,6 @@ public class DataHandler {
             else
                 continue;
         }
-
         return false;
     }
 

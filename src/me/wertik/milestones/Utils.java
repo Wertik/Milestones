@@ -1,9 +1,6 @@
 package me.wertik.milestones;
 
-import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
-
-import static java.lang.System.out;
 
 public class Utils {
 

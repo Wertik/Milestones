@@ -12,8 +12,8 @@ public class PlaceholderAPIHook extends EZPlaceholderHook {
      * */
 
     private Main plugin;
-    private DataHandler dataHandler = new DataHandler();
-    private ConfigLoader cload = new ConfigLoader();
+    private DataHandler dataHandler = Main.getInstance().getDataHandler();
+    private ConfigLoader cload = Main.getInstance().getConfigLoader();
 
     @Override
     public String onPlaceholderRequest(Player p, String params) {

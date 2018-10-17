@@ -19,7 +19,7 @@ import java.util.List;
 
 public class StorageHandler {
 
-    Main plugin = Main.getInstance();
+    private Main plugin = Main.getInstance();
     private static YamlConfiguration storage;
     private static File storageFile;
     private static ConfigurationSection toggles;
@@ -29,8 +29,21 @@ public class StorageHandler {
     }
 
     public void setYamls() {
-        storage = ConfigLoader.storage;
-        storageFile = ConfigLoader.storageFile;
+
+        // Other data
+        storageFile = new File(plugin.getDataFolder() + "/datastorage.yml");
+
+        if (!storageFile.exists()) {
+            plugin.saveResource("datastorage.yml", false);
+            storage = YamlConfiguration.loadConfiguration(storageFile);
+            storage.options().copyDefaults(true);
+            try {
+                storage.save(storageFile);
+            } catch (IOException e) {
+                plugin.getServer().getConsoleSender().sendMessage("§cCould not save the file, that's bad tho.");
+            }
+            plugin.getServer().getConsoleSender().sendMessage("§aGenerated default §f" + storageFile.getName());
+        }
 
         if (storage.contains("Toggles"))
             toggles = storage.getConfigurationSection("Toggles");

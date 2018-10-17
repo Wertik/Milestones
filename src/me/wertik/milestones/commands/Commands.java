@@ -11,11 +11,11 @@ import org.bukkit.entity.Player;
 
 public class Commands implements CommandExecutor {
 
-    ConfigLoader cload = new ConfigLoader();
-    DataHandler dataHandler = new DataHandler();
-    Main plugin = Main.getInstance();
-    Messanger mess = new Messanger();
-    StorageHandler storageHandler = new StorageHandler();
+    private Main plugin = Main.getInstance();
+    private ConfigLoader configLoader = plugin.getConfigLoader();
+    private DataHandler dataHandler = plugin.getDataHandler();
+    private Messanger mess = new Messanger();
+    private StorageHandler storageHandler = plugin.getStorageHandler();
 
     /*
      * Soo... plans:
@@ -43,8 +43,8 @@ public class Commands implements CommandExecutor {
                 case "reload":
                     dataHandler.saveDataFiles();
                     storageHandler.saveStorage();
-                    cload.loadYamls();
-                    cload.loadMilestones();
+                    configLoader.loadYamls();
+                    configLoader.loadMilestones();
                     dataHandler.loadFiles();
                     plugin.reloadConfig();
                     storageHandler.setYamls();
@@ -70,7 +70,7 @@ public class Commands implements CommandExecutor {
                             dataHandler.clearGlobalScores();
                             sender.sendMessage("§cData wipe you requested should be done sir.");
                         } else {
-                            if (cload.getGlobalMileNames().contains(args[2])) {
+                            if (configLoader.getGlobalMileNames().contains(args[2])) {
                                 dataHandler.clearGlobalScore(args[2]);
                                 sender.sendMessage("§cData wipe you requested should be done sir.");
                             } else
@@ -97,7 +97,7 @@ public class Commands implements CommandExecutor {
                             return true;
                         }
 
-                        if (cload.getPersonalMileNames().contains(args[2])) {
+                        if (configLoader.getPersonalMileNames().contains(args[2])) {
                             dataHandler.clearScore(args[1], args[2]);
                             sender.sendMessage("§cDone.");
                         } else
@@ -155,7 +155,7 @@ public class Commands implements CommandExecutor {
                         sender.sendMessage("§cSpecify milestone name plz.");
                     } else {
 
-                        if (cload.getMileNames().contains(args[1])) {
+                        if (configLoader.getMileNames().contains(args[1])) {
                             mess.info(sender, args[1]);
                         } else
                             sender.sendMessage("§cThat one is from another universe. Use the list to display the ones from Earth-12");

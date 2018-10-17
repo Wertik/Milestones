@@ -6,7 +6,6 @@ import me.wertik.milestones.objects.Condition;
 import me.wertik.milestones.objects.Milestone;
 import me.wertik.milestones.objects.Reward;
 import me.wertik.milestones.objects.StagedReward;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,22 +15,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class ConfigLoader {
 
-    private Main plugin = Main.getInstance();
-    private Utils utils = new Utils();
-    private StorageHandler storageHandler = new StorageHandler();
     public static FileConfiguration config;
     public static YamlConfiguration miles;
     public static File mileFile;
-    public static File storageFile;
-    public static YamlConfiguration storage;
-
     private static HashMap<String, Milestone> milestones;
+    private Main plugin = Main.getInstance();
+    private Utils utils = plugin.getUtils();
+    private StorageHandler storageHandler = plugin.getStorageHandler();
+    private DataHandler dataHandler = plugin.getDataHandler();
 
     public ConfigLoader() {
     }
@@ -43,14 +41,34 @@ public class ConfigLoader {
      * */
 
     public void loadYamls() {
+        // CF
+        File configFile = new File(plugin.getDataFolder() + "/config.yml");
+
+        if (!configFile.exists()) {
+            plugin.getConfig().options().copyDefaults(true);
+            plugin.saveConfig();
+            plugin.getServer().getConsoleSender().sendMessage("§aGenerated default §f" + configFile.getName());
+        }
+
         config = plugin.getConfig();
+
+        // Milestone file
         mileFile = new File(plugin.getDataFolder() + "/milestones.yml");
-        miles = YamlConfiguration.loadConfiguration(mileFile);
-        storageFile = new File(plugin.getDataFolder() + "/datastorage.yml");
-        storage = YamlConfiguration.loadConfiguration(storageFile);
+
+        if (!mileFile.exists()) {
+            plugin.saveResource("milestones.yml", false);
+            miles = YamlConfiguration.loadConfiguration(mileFile);
+            miles.options().copyDefaults(true);
+            try {
+                miles.save(mileFile);
+            } catch (IOException e) {
+                plugin.getServer().getConsoleSender().sendMessage("§cCould not save the file, that's bad tho.");
+            }
+            plugin.getServer().getConsoleSender().sendMessage("§aGenerated default §f" + mileFile.getName());
+        }
     }
 
-    // Toggles
+    // Toggles, not done yet.
     public void togglePlayer(String playerName) {
     }
 
@@ -285,7 +303,6 @@ public class ConfigLoader {
      * */
 
     public String parseString(String msg, Player p, Milestone milestone) {
-        DataHandler dataHandler = new DataHandler();
 
         msg = parseString(msg, p);
         if (msg.contains("%milestone_name%"))

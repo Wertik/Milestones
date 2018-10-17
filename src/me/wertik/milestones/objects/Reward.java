@@ -1,5 +1,6 @@
 package me.wertik.milestones.objects;
 
+import me.wertik.milestones.Main;
 import me.wertik.milestones.handlers.StorageHandler;
 import org.bukkit.inventory.ItemStack;
 
@@ -8,7 +9,7 @@ import java.util.List;
 
 public class Reward {
 
-    private StorageHandler storageHandler = new StorageHandler();
+    private StorageHandler storageHandler = Main.getInstance().getStorageHandler();
 
     private String broadcastMessage;
     private String informMessage;

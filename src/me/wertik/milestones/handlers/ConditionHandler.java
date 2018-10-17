@@ -26,14 +26,14 @@ public class ConditionHandler {
      *
      * */
 
-    ConfigLoader cload = new ConfigLoader();
-    DataHandler dataHandler = new DataHandler();
-    Main plugin = Main.getInstance();
-    WorldGuardPlugin wg = plugin.getWorldGuard();
-    Utils utils = new Utils();
+    private Main plugin = Main.getInstance();
+    private ConfigLoader configLoader = plugin.getConfigLoader();
+    private DataHandler dataHandler = plugin.getDataHandler();
+    private WorldGuardPlugin worldGuard = plugin.getWorldGuard();
+    private Utils utils = plugin.getUtils();
 
     public void process(String type, String targetType, Player p) {
-        for (Milestone milestone : cload.getMilestones()) {
+        for (Milestone milestone : configLoader.getMilestones()) {
             process(milestone, type, targetType, p);
         }
     }
@@ -82,9 +82,9 @@ public class ConditionHandler {
             return;
 
         // regionNames
-        LocalPlayer localPlayer = wg.wrapPlayer(p);
+        LocalPlayer localPlayer = worldGuard.wrapPlayer(p);
         Vector vector = localPlayer.getPosition();
-        List<String> regionSet = wg.getRegionManager(p.getWorld()).getApplicableRegionsIDs(vector);
+        List<String> regionSet = worldGuard.getRegionManager(p.getWorld()).getApplicableRegionsIDs(vector);
 
         if (!condition.getRegionNames().isEmpty() && regionSet.isEmpty())
             return;
@@ -149,17 +149,17 @@ public class ConditionHandler {
         // Messages
         if (!milestone.getReward().getBroadcastMessage().equals("")) {
             for (Player t : plugin.getServer().getOnlinePlayers()) {
-                t.sendMessage(cload.getFinalString(milestone.getReward().getBroadcastMessage(), p, milestone));
+                t.sendMessage(configLoader.getFinalString(milestone.getReward().getBroadcastMessage(), p, milestone));
             }
         }
 
         if (!milestone.getReward().getInformMessage().equals("")) {
-            p.sendMessage(cload.getFinalString(milestone.getReward().getInformMessage(), p, milestone));
+            p.sendMessage(configLoader.getFinalString(milestone.getReward().getInformMessage(), p, milestone));
         }
 
         // Commands
         for (String command : milestone.getReward().getCommands()) {
-            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), cload.parseString(command, p, milestone));
+            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), configLoader.parseString(command, p, milestone));
         }
 
         // Items
@@ -183,17 +183,17 @@ public class ConditionHandler {
                 // Messages
                 if (!stagedReward.getReward().getBroadcastMessage().equals("")) {
                     for (Player t : plugin.getServer().getOnlinePlayers()) {
-                        t.sendMessage(cload.getFinalString(stagedReward.getReward().getBroadcastMessage(), p, milestone));
+                        t.sendMessage(configLoader.getFinalString(stagedReward.getReward().getBroadcastMessage(), p, milestone));
                     }
                 }
 
                 if (!stagedReward.getReward().getInformMessage().equals("")) {
-                    p.sendMessage(cload.getFinalString(stagedReward.getReward().getInformMessage(), p, milestone));
+                    p.sendMessage(configLoader.getFinalString(stagedReward.getReward().getInformMessage(), p, milestone));
                 }
 
                 // Commands
                 for (String command : stagedReward.getReward().getCommands()) {
-                    plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), cload.parseString(command, p, milestone));
+                    plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), configLoader.parseString(command, p, milestone));
                 }
 
                 // Items

@@ -2,89 +2,42 @@ package me.wertik.milestones;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import me.wertik.milestones.commands.Commands;
+import me.wertik.milestones.handlers.ConditionHandler;
 import me.wertik.milestones.handlers.DataHandler;
 import me.wertik.milestones.handlers.StorageHandler;
 import me.wertik.milestones.listeners.*;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.File;
-import java.io.IOException;
 
 public class Main extends JavaPlugin {
 
     private static Main instance;
-
-    private static void setInstance(Main instance) {
-        Main.instance = instance;
-    }
+    private static ConfigLoader configLoader;
+    private static DataHandler dataHandler;
+    private static StorageHandler storageHandler;
+    private static Utils utils;
+    private static ConditionHandler conditionHandler;
 
     public static Main getInstance() {
         return Main.instance;
     }
 
-    // Let's do it.
+    // Let's do this.
     @Override
     public void onEnable() {
         ConsoleCommandSender console = getServer().getConsoleSender();
-        console.sendMessage("§2Enabling milestones, sign your GDPR, i'm gonna steal your data.");
+        console.sendMessage("§2Enabling milestones, sign your GDPR, i am going to steal your data.");
+        console.sendMessage("§f-------------------------------------");
 
-        setInstance(this);
-
-        // Files
-        // CF
-        File configfile = new File(getDataFolder() + "/config.yml");
-        FileConfiguration config = getConfig();
-
-        if (!configfile.exists()) {
-            getConfig().options().copyDefaults(true);
-            saveConfig();
-            console.sendMessage("§aGenerated default §f" + configfile.getName());
-        }
-
-        // Milestone file
-        File milefile = new File(getDataFolder() + "/milestones.yml");
-
-        if (!milefile.exists()) {
-            saveResource("milestones.yml", false);
-            YamlConfiguration mileyaml = YamlConfiguration.loadConfiguration(milefile);
-            mileyaml.options().copyDefaults(true);
-            try {
-                mileyaml.save(milefile);
-            } catch (IOException e) {
-                console.sendMessage("§cCould not save the file, that's bad tho.");
-            }
-            console.sendMessage("§aGenerated default §f" + milefile.getName());
-        }
-
-        // Other data
-        File storageFile = new File(getDataFolder() + "/datastorage.yml");
-
-        if (!storageFile.exists()) {
-            saveResource("datastorage.yml", false);
-            YamlConfiguration storageYaml = YamlConfiguration.loadConfiguration(storageFile);
-            storageYaml.options().copyDefaults(true);
-            try {
-                storageYaml.save(storageFile);
-            } catch (IOException e) {
-                console.sendMessage("§cCould not save the file, that's bad tho.");
-            }
-            console.sendMessage("§aGenerated default §f" + storageFile.getName());
-        }
-
-        // Data folder
-        File folder = new File(getDataFolder() + "/data");
-        if (!folder.exists()) {
-            folder.mkdir();
-            console.sendMessage("§aCreating folder §f" + folder.getName());
-        }
+        instance = this;
+        configLoader = new ConfigLoader();
+        dataHandler = new DataHandler();
+        storageHandler = new StorageHandler();
+        utils = new Utils();
 
         // Commands, listeners
-        getCommand("milestones").setExecutor(new Commands());
+        getCommand("milestones").setExecutor(new me.wertik.milestones.commands.Commands());
 
         getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
         getServer().getPluginManager().registerEvents(new BlockPlaceListener(), this);
@@ -111,16 +64,16 @@ public class Main extends JavaPlugin {
         } else
             console.sendMessage("§aWorld Guard hooked successfuly.");
 
-        ConfigLoader cload = new ConfigLoader();
-        cload.loadYamls();
+        configLoader.loadYamls();
 
-        StorageHandler storageHandler = new StorageHandler();
         storageHandler.setYamls();
 
-        cload.loadMilestones();
+        configLoader.loadMilestones();
 
-        DataHandler dataHandler = new DataHandler();
         dataHandler.loadFiles();
+
+        console.sendMessage("§f-------------------------------------");
+        console.sendMessage("§2Successfuly enabled Data Stealer §f" + getDescription().getVersion());
     }
 
     @Override
@@ -131,6 +84,24 @@ public class Main extends JavaPlugin {
         storageHandler.saveStorage();
         dataHandler.saveDataFiles();
         console.sendMessage("§2It's okay now, i got all data i could ever dream of. :)");
+    }
+
+    public ConfigLoader getConfigLoader() {return configLoader;}
+
+    public DataHandler getDataHandler() {
+        return dataHandler;
+    }
+
+    public StorageHandler getStorageHandler() {
+        return storageHandler;
+    }
+
+    public Utils getUtils() {
+        return utils;
+    }
+
+    public ConditionHandler getConditionHandler() {
+        return conditionHandler;
     }
 
     public WorldGuardPlugin getWorldGuard() {
