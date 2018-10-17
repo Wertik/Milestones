@@ -43,7 +43,8 @@ public class StorageHandler {
                 plugin.getServer().getConsoleSender().sendMessage("§cCould not save the file, that's bad tho.");
             }
             plugin.getServer().getConsoleSender().sendMessage("§aGenerated default §f" + storageFile.getName());
-        }
+        } else
+            storage = YamlConfiguration.loadConfiguration(storageFile);
 
         if (storage.contains("Toggles"))
             toggles = storage.getConfigurationSection("Toggles");

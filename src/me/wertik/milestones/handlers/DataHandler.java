@@ -15,12 +15,13 @@ public class DataHandler {
     private static HashMap<String, YamlConfiguration> files;
     private static HashMap<String, YamlConfiguration> globalFiles;
     private Main plugin = Main.getInstance();
-    private ConfigLoader configLoader = plugin.getConfigLoader();
 
     public DataHandler() {
     }
 
     public void loadFiles() {
+
+        ConfigLoader configLoader = plugin.getConfigLoader();
 
         // Data folder
         File folder = new File(plugin.getDataFolder() + "/data");
@@ -90,6 +91,7 @@ public class DataHandler {
 
     // Clear all globalMilestones
     public void clearGlobalScores() {
+        ConfigLoader configLoader = plugin.getConfigLoader();
         for (String globalMilestone : configLoader.getGlobalMileNames()) {
             clearMilestoneScores(globalMilestone);
         }
@@ -129,6 +131,7 @@ public class DataHandler {
     }
 
     public boolean isLogged(String playerName) {
+        ConfigLoader configLoader = plugin.getConfigLoader();
         List<String> milestones = configLoader.getMileNames();
 
         for (String milestone : milestones) {

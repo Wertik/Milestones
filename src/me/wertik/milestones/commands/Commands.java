@@ -12,10 +12,7 @@ import org.bukkit.entity.Player;
 public class Commands implements CommandExecutor {
 
     private Main plugin = Main.getInstance();
-    private ConfigLoader configLoader = plugin.getConfigLoader();
-    private DataHandler dataHandler = plugin.getDataHandler();
     private Messanger mess = new Messanger();
-    private StorageHandler storageHandler = plugin.getStorageHandler();
 
     /*
      * Soo... plans:
@@ -33,6 +30,10 @@ public class Commands implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+
+        DataHandler dataHandler = plugin.getDataHandler();
+        StorageHandler storageHandler = plugin.getStorageHandler();
+        ConfigLoader configLoader = plugin.getConfigLoader();
 
         // Fuu..
         if (args.length == 0) {

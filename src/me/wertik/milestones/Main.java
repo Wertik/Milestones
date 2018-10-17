@@ -34,17 +34,13 @@ public class Main extends JavaPlugin {
         configLoader = new ConfigLoader();
         dataHandler = new DataHandler();
         storageHandler = new StorageHandler();
+        conditionHandler = new ConditionHandler();
         utils = new Utils();
 
         // Commands, listeners
         getCommand("milestones").setExecutor(new me.wertik.milestones.commands.Commands());
 
-        getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
-        getServer().getPluginManager().registerEvents(new BlockPlaceListener(), this);
-        getServer().getPluginManager().registerEvents(new EntityDeathListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerChatListener(), this);
+        getServer().getPluginManager().registerEvents(new EventListener(), this);
 
         // Placeholder API
         if (this.getServer().getPluginManager().getPlugin("PlaceholderAPI").isEnabled()) {

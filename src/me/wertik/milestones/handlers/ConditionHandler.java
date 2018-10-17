@@ -27,12 +27,9 @@ public class ConditionHandler {
      * */
 
     private Main plugin = Main.getInstance();
-    private ConfigLoader configLoader = plugin.getConfigLoader();
-    private DataHandler dataHandler = plugin.getDataHandler();
-    private WorldGuardPlugin worldGuard = plugin.getWorldGuard();
-    private Utils utils = plugin.getUtils();
 
     public void process(String type, String targetType, Player p) {
+        ConfigLoader configLoader = plugin.getConfigLoader();
         for (Milestone milestone : configLoader.getMilestones()) {
             process(milestone, type, targetType, p);
         }
@@ -44,6 +41,8 @@ public class ConditionHandler {
         // player
         // Too lazy..
 
+        Utils utils = plugin.getUtils();
+        WorldGuardPlugin worldGuard = plugin.getWorldGuard();
         Condition condition = milestone.getCondition();
 
         // Type of the condition
@@ -125,6 +124,9 @@ public class ConditionHandler {
 
     // reward system
     public void reward(Milestone milestone, Player p) {
+
+        DataHandler dataHandler = plugin.getDataHandler();
+        ConfigLoader configLoader = plugin.getConfigLoader();
 
         // Score
         if (milestone.isGlobal()) {

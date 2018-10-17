@@ -27,9 +27,6 @@ public class ConfigLoader {
     public static File mileFile;
     private static HashMap<String, Milestone> milestones;
     private Main plugin = Main.getInstance();
-    private Utils utils = plugin.getUtils();
-    private StorageHandler storageHandler = plugin.getStorageHandler();
-    private DataHandler dataHandler = plugin.getDataHandler();
 
     public ConfigLoader() {
     }
@@ -65,7 +62,8 @@ public class ConfigLoader {
                 plugin.getServer().getConsoleSender().sendMessage("§cCould not save the file, that's bad tho.");
             }
             plugin.getServer().getConsoleSender().sendMessage("§aGenerated default §f" + mileFile.getName());
-        }
+        } else
+            miles = YamlConfiguration.loadConfiguration(mileFile);
     }
 
     // Toggles, not done yet.
@@ -109,6 +107,7 @@ public class ConfigLoader {
 
     // commmands, items, broadcast, inform
     public Reward getReward(String name) {
+        Utils utils = plugin.getUtils();
         ConfigurationSection section = miles.getConfigurationSection(name);
 
         String broadcastMessage = section.getString("rewards.broadcast-message");
@@ -124,6 +123,7 @@ public class ConfigLoader {
 
     // Staged rewards
     public List<StagedReward> getStagedRewards(String name) {
+        Utils utils = plugin.getUtils();
         ConfigurationSection section = miles.getConfigurationSection(name);
 
         if (!miles.contains(name + ".staged-rewards"))
@@ -159,6 +159,7 @@ public class ConfigLoader {
      * */
 
     public Condition getCondition(String name) {
+        StorageHandler storageHandler = plugin.getStorageHandler();
         // get type, sort by it
         ConfigurationSection section = miles.getConfigurationSection(name);
 
@@ -198,20 +199,13 @@ public class ConfigLoader {
 
         Condition condition = new Condition(type, inInventory, toolTypes, targets, biomes, regionNames);
 
-        switch (type) {
-            case "playerjoin":
-                //                                            (inHand)
-                condition = new Condition(type, inInventory, toolTypes, null, biomes, regionNames);
-                break;
-            case "playerquit":
-                //                                            (inHand)
-                condition = new Condition(type, inInventory, toolTypes, null, biomes, regionNames);
-                break;
-        }
+        if (type.equalsIgnoreCase("playerjoin") || type.equalsIgnoreCase("playerquit"))
+            condition = new Condition(type, inInventory, toolTypes, null, biomes, regionNames);
 
-        if (condition == null) {
+
+        if (condition == null)
             plugin.getServer().getConsoleSender().sendMessage("§cLol, you made a mistake in the config. Typos are common, check it.");
-        }
+
 
         return condition;
     }
@@ -303,6 +297,8 @@ public class ConfigLoader {
      * */
 
     public String parseString(String msg, Player p, Milestone milestone) {
+
+        DataHandler dataHandler = plugin.getDataHandler();
 
         msg = parseString(msg, p);
         if (msg.contains("%milestone_name%"))

@@ -12,17 +12,19 @@ public class PlaceholderAPIHook extends EZPlaceholderHook {
      * */
 
     private Main plugin;
-    private DataHandler dataHandler = Main.getInstance().getDataHandler();
-    private ConfigLoader cload = Main.getInstance().getConfigLoader();
 
     @Override
     public String onPlaceholderRequest(Player p, String params) {
+
+        DataHandler dataHandler = plugin.getDataHandler();
+        ConfigLoader configLoader = plugin.getConfigLoader();
+
         if (p == null)
             return "";
 
         // %milestones_<name>%
 
-        if (cload.getMileNames().contains(params))
+        if (configLoader.getMileNames().contains(params))
             return String.valueOf(dataHandler.getScore(p.getName(), params));
 
         return null;

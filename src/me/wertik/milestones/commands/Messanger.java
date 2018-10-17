@@ -14,9 +14,6 @@ import java.util.List;
 public class Messanger {
 
     private Main plugin = Main.getInstance();
-    private DataHandler dataHandler = plugin.getDataHandler();
-    private ConfigLoader configLoader = plugin.getConfigLoader();
-    private WorldGuardPlugin worldGuard = plugin.getWorldGuard();
 
     public Messanger() {
     }
@@ -41,6 +38,8 @@ public class Messanger {
     }
 
     public void stats(CommandSender p, String targetName) {
+        ConfigLoader configLoader = plugin.getConfigLoader();
+        DataHandler dataHandler = plugin.getDataHandler();
 
         p.sendMessage("§dScores for player §f" + targetName);
 
@@ -50,6 +49,8 @@ public class Messanger {
     }
 
     public void info(CommandSender p, String name) {
+        ConfigLoader configLoader = plugin.getConfigLoader();
+        WorldGuardPlugin worldGuard = plugin.getWorldGuard();
 
         Milestone milestone = configLoader.getMilestone(name);
 
@@ -121,6 +122,7 @@ public class Messanger {
     }
 
     public void list(CommandSender p) {
+        ConfigLoader configLoader = plugin.getConfigLoader();
         p.sendMessage("§dList of all milestones:");
         for (String name : configLoader.getMileNames()) {
             p.sendMessage("§f" + name);
@@ -128,6 +130,8 @@ public class Messanger {
     }
 
     public void statsGlobal(CommandSender p) {
+        ConfigLoader configLoader = plugin.getConfigLoader();
+        DataHandler dataHandler = plugin.getDataHandler();
 
         List<String> milestones = configLoader.getGlobalMileNames();
 
