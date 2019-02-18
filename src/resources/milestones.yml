@@ -1,0 +1,30 @@
+# Just read the instructions and no matter what i do to you while configuring.. just remember: of course i still love you.
+pvp:
+  type: entitykill
+  display-name: '&cPvP &7(Player vs Pig)'
+  conditions:
+    tools:
+      - DIAMOND_SWORD
+    targets:
+      - PIG
+    biomes:
+      - FOREST
+      - PLAINS
+    reions:
+      - pvp_region
+    worlds:
+      - world
+  global-milestone: false
+  log-only-once: false
+  rewards:
+    commands:
+      - mi load Custom vy-fly-1h %player% 1
+    items:
+      - aPPle
+  staged-rewards:
+    '10':
+      broadcast-message: '&f%player% &3hit &f10&3 scores in &f%milestone_name%&3!'
+      commands:
+        - say .. :)
+    '20':
+      broadcast-message: '&f%player% &3hit &f20&3 scores in &f%milestone_name%&3!'

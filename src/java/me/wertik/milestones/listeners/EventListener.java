@@ -19,33 +19,32 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
-        conditionHandler.process("blockbreak", e.getBlock().getType().toString(), e.getPlayer());
+        conditionHandler.process(e.getPlayer(), e.getBlock());
     }
 
     @EventHandler
     public void onPlace(BlockPlaceEvent e) {
-        conditionHandler.process("blockplace", e.getBlock().getType().toString(), e.getPlayer());
+        conditionHandler.process(e.getPlayer());
     }
 
     @EventHandler
     public void onDeath(EntityDeathEvent e) {
         if (e.getEntity().getKiller() instanceof Player)
-            conditionHandler.process("entitykill", e.getEntity().getType().toString(), e.getEntity().getKiller());
+            conditionHandler.process(e.getEntity().getKiller(), e.getEntity());
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChat(AsyncPlayerChatEvent e) {
-        conditionHandler.process("playerchat", e.getMessage(), e.getPlayer());
+        conditionHandler.process(e.getPlayer(), e.getMessage());
     }
 
     @EventHandler
     public void onPlace(PlayerJoinEvent e) {
-        conditionHandler.process("playerjoin", null, e.getPlayer());
+        conditionHandler.process(e.getPlayer());
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
-        conditionHandler.process("playerquit", null, e.getPlayer());
+        conditionHandler.process(e.getPlayer());
     }
-
 }
