@@ -1,5 +1,4 @@
 # Milestones
-KMR - Future milestone system prototype
 
 GOAL:
   Making it possible to create your own statistics, in here so called "Milestones".
