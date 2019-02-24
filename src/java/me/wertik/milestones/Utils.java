@@ -6,7 +6,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.io.BukkitObjectInputStream;
+import org.bukkit.util.io.BukkitObjectOutputStream;
+import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,5 +110,44 @@ public class Utils {
             outPut.add(item);
         }
         return outPut;
+    }
+
+    // Base64
+    public static String itemStackToBase64(ItemStack item) {
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
+
+            // Save every element in the list
+            dataOutput.writeObject(item);
+
+            // Serialize that array
+            dataOutput.close();
+            return Base64Coder.encodeLines(outputStream.toByteArray());
+        } catch (IllegalStateException e) {
+            Bukkit.getLogger().warning("§cCould not save the item stack.. i've failed you.. :(");
+        } catch (IOException e) {
+            Bukkit.getLogger().warning("§cCould not save the item stack.. i've failed you.. :(");
+        }
+        return null;
+    }
+
+    public static ItemStack itemStackFromBase64(String data) {
+        ItemStack item = null;
+        try {
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
+            BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
+
+            // Read the serialized inventory
+            item = (ItemStack) dataInput.readObject();
+
+            dataInput.close();
+            return item;
+        } catch (ClassNotFoundException e) {
+            Bukkit.getLogger().warning("§cCould not get the item stack.. i've failed you.. :(");
+        } catch (IOException e) {
+            Bukkit.getLogger().warning("§cCould not get the item stack.. i've failed you.. :(");
+        }
+        return item;
     }
 }

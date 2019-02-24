@@ -87,10 +87,8 @@ public class ExactCondition {
                 return false;
 
         // Base conditions
-        if (!baseCondition.check(player)) {
-            player.sendMessage("§cDid not pass BaseCondition check");
+        if (!baseCondition.check(player))
             return false;
-        }
 
         return true;
     }

@@ -14,14 +14,16 @@ public class DataHandler {
 
     private static HashMap<String, YamlConfiguration> files;
     private static HashMap<String, YamlConfiguration> globalFiles;
-    private Main plugin = Main.getInstance();
+
+    private Main plugin;
+    private ConfigLoader configLoader;
 
     public DataHandler() {
+        plugin = Main.getInstance();
+        configLoader = plugin.getConfigLoader();
     }
 
     public void loadFiles() {
-
-        ConfigLoader configLoader = plugin.getConfigLoader();
 
         // Data folder
         File folder = new File(plugin.getDataFolder() + "/data");

@@ -11,8 +11,19 @@ import org.bukkit.entity.Player;
 
 public class Commands implements CommandExecutor {
 
-    private Main plugin = Main.getInstance();
-    private Messanger mess = new Messanger();
+    private Main plugin;
+    private Messanger messanger;
+    private DataHandler dataHandler;
+    private StorageHandler storageHandler;
+    private ConfigLoader configLoader;
+
+    public Commands() {
+        plugin = Main.getInstance();
+        messanger = new Messanger();
+        configLoader = plugin.getConfigLoader();
+        storageHandler = plugin.getStorageHandler();
+        dataHandler = plugin.getDataHandler();
+    }
 
     /*
      * Soo... plans:
@@ -30,13 +41,9 @@ public class Commands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-        DataHandler dataHandler = plugin.getDataHandler();
-        StorageHandler storageHandler = plugin.getStorageHandler();
-        ConfigLoader configLoader = plugin.getConfigLoader();
-
         // Fuu..
         if (args.length == 0) {
-            mess.help(sender);
+            messanger.help(sender);
         } else {
 
             switch (args[0]) {
@@ -45,7 +52,7 @@ public class Commands implements CommandExecutor {
                     sender.sendMessage("§3Should be reloaded.");
                     break;
                 case "toggle":
-                // /mile toggle player/*
+                    // /mile toggle player/*
                     if (args.length > 4) {
                         sender.sendMessage("§cToo many args.");
                         sender.sendMessage("§c/mile toggle (player/*) (world/*) (milestone/*)");
@@ -69,11 +76,13 @@ public class Commands implements CommandExecutor {
 
                     Main.getInstance().getStorageHandler().toggleLogger(playerName, milestoneName, worldName);
 
-                    if (playerName.equalsIgnoreCase("*"))
+                    if (playerName.equalsIgnoreCase("*")) {
                         playerName = "all players";
-                    if (worldName.equalsIgnoreCase("*"))
-                        worldName = "all worlds";
+                    }
 
+                    if (worldName.equalsIgnoreCase("*")) {
+                        worldName = "all worlds";
+                    }
                     sender.sendMessage("§3Logger of §f" + milestoneName + " §3for §f" + playerName + " §3in §f" + worldName + "§3toggled to §f" + Main.getInstance().getStorageHandler().isToggled(args[1], args[3], args[2]) + " §3state.");
                     sender.sendMessage("§e! §7You can fix any errors in datastorage.yml file. Listed players are disabled.");
                     break;
@@ -135,7 +144,7 @@ public class Commands implements CommandExecutor {
                     if (args.length == 1) {
                         // data for sender (if player)
                         if (sender instanceof Player) {
-                            mess.stats(sender, sender.getName());
+                            messanger.stats(sender, sender.getName());
                             return true;
                         } else
                             sender.sendMessage("§cYou're not a player. Console don't play stuff.");
@@ -148,7 +157,7 @@ public class Commands implements CommandExecutor {
                     // global
                     if (args[1].equalsIgnoreCase("global")) {
 
-                        mess.statsGlobal(sender);
+                        messanger.statsGlobal(sender);
 
                         // player
                     } else {
@@ -157,7 +166,7 @@ public class Commands implements CommandExecutor {
                         String targetName = args[1];
 
                         if (dataHandler.isLogged(targetName)) {
-                            mess.stats(sender, targetName);
+                            messanger.stats(sender, targetName);
                             return true;
                         } else
                             sender.sendMessage("§cPlayer is not logged, or you just made his name up.");
@@ -170,7 +179,7 @@ public class Commands implements CommandExecutor {
                         return true;
                     }
 
-                    mess.list(sender);
+                    messanger.list(sender);
                     break;
                 case "info":
                     if (args.length > 2) {
@@ -180,7 +189,7 @@ public class Commands implements CommandExecutor {
                     } else {
 
                         if (configLoader.getMileNames().contains(args[1])) {
-                            mess.info(sender, args[1]);
+                            messanger.info(sender, args[1]);
                         } else
                             sender.sendMessage("§cThat one is from another universe. Use the list to display the ones from Earth-12");
 
@@ -237,7 +246,7 @@ public class Commands implements CommandExecutor {
                     p.sendMessage("§3Given!");
                     break;
                 default:
-                    mess.help(sender);
+                    messanger.help(sender);
                     break;
             }
         }

@@ -19,9 +19,11 @@ public class ConditionHandler {
      * */
 
     private Main plugin;
+    private DataHandler dataHandler;
 
     public ConditionHandler() {
         plugin = Main.getInstance();
+        dataHandler = plugin.getDataHandler();
     }
 
     public void process(Player player, Entity entity) {
@@ -66,8 +68,6 @@ public class ConditionHandler {
 
     public void process(Player player, Block block) {
         for (Milestone milestone : Main.getInstance().getConfigLoader().getMilestones()) {
-            player.sendMessage("§aParsing for " + milestone.getName());
-
             ExactCondition condition = milestone.getConditions();
 
             if (!condition.check(player, block))
@@ -80,8 +80,6 @@ public class ConditionHandler {
 
     // reward system
     public void reward(Milestone milestone, Player player) {
-
-        DataHandler dataHandler = plugin.getDataHandler();
 
         // Score
         if (milestone.isGlobal()) {

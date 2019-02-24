@@ -1,7 +1,7 @@
 # Used for storing other plugin data. Items and Toggles now. (made an update, lol.)
 Toggles:
   milestone:
-    global-enabled: true
+    enabled: true
     world:
       - playerName
     world_nether:

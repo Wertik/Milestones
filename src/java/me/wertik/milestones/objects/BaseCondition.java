@@ -100,17 +100,13 @@ public class BaseCondition {
 
         // Worlds
         if (!worldNames.isEmpty())
-            if (!worldNames.contains(player.getWorld().getName())) {
-                player.sendMessage("§cInvalid world.");
+            if (!worldNames.contains(player.getWorld().getName()))
                 return false;
-            }
 
         // Biomes
         if (!biomeTypes.isEmpty())
-            if (!biomeTypes.contains(player.getLocation().getBlock().getBiome().toString())) {
-                player.sendMessage("§cInvalid biome");
+            if (!biomeTypes.contains(player.getLocation().getBlock().getBiome().toString()))
                 return false;
-            }
 
         // Tools (in hand items)
         if (!inHandItems.isEmpty()) {
@@ -125,13 +121,8 @@ public class BaseCondition {
                     break;
 
                 i++;
-                if (i == inHandItems.size()) {
-                    player.sendMessage(inHandItems.toString());
-                    player.sendMessage("------------");
-                    player.sendMessage(player.getInventory().getItemInMainHand().toString());
-                    player.sendMessage("§cTool check didnt work out tho");
+                if (i == inHandItems.size())
                     return false;
-                }
             }
         }
 
@@ -145,10 +136,8 @@ public class BaseCondition {
                     break;
 
                 i++;
-                if (i == regionSet.size()) {
-                    player.sendMessage("§cInvalid region");
+                if (i == regionSet.size())
                     return false;
-                }
             }
         }
 
@@ -157,10 +146,8 @@ public class BaseCondition {
             List<ItemStack> contents = Utils.listToArray(player.getInventory().getContents());
 
             for (ItemStack item : inInventory) {
-                if (!contents.contains(item)) {
-                    player.sendMessage("§cYou're missing an item");
+                if (!contents.contains(item))
                     return false;
-                }
             }
         }
 
