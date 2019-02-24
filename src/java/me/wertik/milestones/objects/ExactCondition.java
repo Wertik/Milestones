@@ -68,9 +68,10 @@ public class ExactCondition {
 
     public boolean check(Player player, Entity entity) {
         // Entity
-        if (!entityTypes.isEmpty())
-            if (!entityTypes.contains(entity.getType()))
-                return false;
+        if (entityTypes != null)
+            if (!entityTypes.isEmpty())
+                if (!entityTypes.contains(entity.getType()))
+                    return false;
 
         // Base conditions
         if (!baseCondition.check(player))
@@ -82,9 +83,10 @@ public class ExactCondition {
     public boolean check(Player player, Block block) {
 
         // Block
-        if (!blockTypes.isEmpty())
-            if (!blockTypes.contains(Utils.toBTypeString(block.getType(), block.getData())))
-                return false;
+        if (blockTypes != null)
+            if (!blockTypes.isEmpty())
+                if (!blockTypes.contains(Utils.toBTypeString(block.getType(), block.getData())))
+                    return false;
 
         // Base conditions
         if (!baseCondition.check(player))
@@ -96,9 +98,10 @@ public class ExactCondition {
     public boolean check(Player player, String message) {
 
         // Block
-        if (!messages.isEmpty())
-            if (!messages.contains(message))
-                return false;
+        if (messages != null)
+            if (!messages.isEmpty())
+                if (!messages.contains(message))
+                    return false;
 
         // Base conditions
         if (!baseCondition.check(player))

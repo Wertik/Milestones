@@ -1,10 +1,10 @@
 name: Milestones
-version: 2.1
+version: 1.0
 author: Wertik1206
 main: me.wertik.milestones.Main
-description: Loging data, doing some cool stuff.
+description: Logging data, doing some cool stuff
 softdepend: [PlaceholderAPI]
 commands:
   milestones:
     aliases: [mile, miles]
-    description: Main plugin command, try out.
+    description: Main plugin command
