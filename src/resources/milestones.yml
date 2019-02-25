@@ -1,30 +1,69 @@
-# Just read the instructions and no matter what i do to you while configuring.. just remember: of course i still love you.
+# milestones.yml
+# It is possible to delete any section to disable it entirely.
+
+# Whatever name you want.
 pvp:
+  # Required
+  # entitykill/blockbreak/blockplace/playerjoin/playerquit/playerchat
   type: entitykill
+  # Required
+  # Displayed in the info, pretty much useless for now.
   display-name: '&cPvP &7(Player vs Pig)'
+  # Condition section
   conditions:
+    # Set item type, or an item from the datastorage.yml
+    # format: MATERIAL_NAME;DATA
+    # ex.: STONE;2
+    # Using datastorage to add item:
+    # Save item in-game using /miles addItem <itemName>
+    # Add to the list below with the following placeholder:
+    # %item_<itemName>%
+    # Can be used in tools, reward items and in-inventory.
+    # This section is also used with blockplace event.
     tools:
       - DIAMOND_SWORD
+    # Used to determine what type of block/entity or which message should count.
+    # blockbreak == block material
+    # entitykill == entity type
+    # playerchat == message
     targets:
       - PIG
+    # Too see biome names, simply press F3..
     biomes:
       - FOREST
       - PLAINS
+    # Checks for region names the player is standing in. Requires WorldGuard..
     reions:
       - pvp_region
+    # I think the description is a bit useless on some nodes..
     worlds:
       - world
+    # Items required to be in the inventory.
+    in-inventory:
+      - WHEAT
+  # Global  milestone means that the points are counted for all players.
+  # The rewards don't work well with this, will improve.
   global-milestone: false
+  # Counts the milestone only once, works with both global and personal milestones.
   log-only-once: false
   rewards:
+    # Commands to run by console.
     commands:
       - mi load Custom vy-fly-1h %player% 1
+    # Items to give the player, won't work with full inv.
+    # Not case sensitive, can use item placeholder.
     items:
       - aPPle
+    # Message sent to the player.
+    inform-message:
+      - '&cYou just killed an innocent pig.. GJ tho!'
+    # Message broadcasted to all.
+    broadcast-message:
+      - '&c%player_name% is a pig killer! Congrats!'
   staged-rewards:
+    # Count of points required to get the rewards.
     '10':
+      # Same as basic rewards.
       broadcast-message: '&f%player% &3hit &f10&3 scores in &f%milestone_name%&3!'
-      commands:
-        - say .. :)
     '20':
       broadcast-message: '&f%player% &3hit &f20&3 scores in &f%milestone_name%&3!'

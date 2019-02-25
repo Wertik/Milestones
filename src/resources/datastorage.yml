@@ -1,4 +1,5 @@
-# Used for storing other plugin data. Items and Toggles now. (made an update, lol.)
+# Used for storing internal plugin data.
+# Toggles not working yet.
 Toggles:
   milestone:
     enabled: true
