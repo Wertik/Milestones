@@ -54,7 +54,7 @@ public class Messanger {
         p.sendMessage(" §3Only once: §f" + milestone.isOnlyOnce());
         p.sendMessage(" §3Type: §f" + milestone.getConditions().type().toString());
 
-        if (!milestone.getReward().getBroadcastMessage().equals("") && !milestone.getReward().getInformMessage().equals("") && !milestone.getReward().getCommands().isEmpty() && !milestone.getReward().getRewardItems().isEmpty()) {
+        if (!milestone.getReward().getBroadcastMessage().equals("") && !milestone.getReward().getInformMessage().equals("") && !milestone.getReward().getConsoleCommands().isEmpty() && !milestone.getReward().getRewardItems().isEmpty()) {
             p.sendMessage(" §aRewards:");
 
             if (!milestone.getReward().getBroadcastMessage().equals(""))
@@ -63,9 +63,9 @@ public class Messanger {
             if (!milestone.getReward().getInformMessage().equals(""))
                 p.sendMessage("  §3Inform message: §f" + milestone.getReward().getInformMessage());
 
-            if (!milestone.getReward().getCommands().isEmpty()) {
+            if (!milestone.getReward().getConsoleCommands().isEmpty()) {
                 p.sendMessage("  §3Commands:");
-                for (String command : milestone.getReward().getCommands()) {
+                for (String command : milestone.getReward().getConsoleCommands()) {
                     p.sendMessage(" §8- §f" + command);
                 }
             }
@@ -135,8 +135,8 @@ public class Messanger {
     public void list(CommandSender p) {
         ConfigLoader configLoader = plugin.getConfigLoader();
         String types = "§3List of milestones:§f";
-        for (String name : configLoader.getMileNames()) {
-            if (configLoader.getMileNames().indexOf(name) == (configLoader.getMileNames().size() - 1)) {
+        for (String name : configLoader.getMilestoneNames()) {
+            if (configLoader.getMilestoneNames().indexOf(name) == (configLoader.getMilestoneNames().size() - 1)) {
                 types = types + " " + name + ".";
                 break;
             }

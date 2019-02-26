@@ -30,23 +30,21 @@ public class BaseCondition {
     private List<ItemStack> inHandItems;
     private List<String> inHandItemsList;
 
+    // Permissions
+    private List<String> permissions;
+
     // Hmm...
-    public BaseCondition(List<String> inInventoryList, List<String> biomeTypes, List<String> regionNames, List<String> worldNames, List<String> inHandItemsList) {
+    public BaseCondition(List<String> inInventoryList, List<String> biomeTypes, List<String> regionNames, List<String> worldNames, List<String> inHandItemsList, List<String> permissions) {
 
         storageHandler = Main.getInstance().getStorageHandler();
 
-        if (biomeTypes != null)
-            this.biomeTypes = biomeTypes;
-        else
-            this.biomeTypes = new ArrayList<>();
-        if (regionNames != null)
-            this.regionNames = regionNames;
-        else
-            this.regionNames = new ArrayList<>();
-        if (worldNames != null)
-            this.worldNames = worldNames;
-        else
-            this.worldNames = new ArrayList<>();
+        this.biomeTypes = Utils.checkStringList(biomeTypes);
+
+        this.regionNames = Utils.checkStringList(regionNames);
+
+        this.worldNames = Utils.checkStringList(worldNames);
+
+        this.permissions = Utils.checkStringList(permissions);
 
         if (inInventoryList != null) {
             this.inInventoryList = inInventoryList;
@@ -70,6 +68,10 @@ public class BaseCondition {
 
     public List<ItemStack> getInInventory() {
         return inInventory;
+    }
+
+    public List<String> getPermissions() {
+        return permissions;
     }
 
     public List<String> getInInventoryList() {
@@ -149,6 +151,15 @@ public class BaseCondition {
                 if (!contents.contains(item))
                     return false;
             }
+        }
+
+        // Permissions
+        if (Main.getInstance().getServer().getPluginManager().getPlugin("Vault").isEnabled()) {
+            if (!permissions.isEmpty())
+                for (String permission : permissions) {
+                    if (!player.hasPermission(permission))
+                        return false;
+                }
         }
 
         return true;

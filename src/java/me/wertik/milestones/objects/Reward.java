@@ -2,10 +2,12 @@ package me.wertik.milestones.objects;
 
 import me.wertik.milestones.ConfigLoader;
 import me.wertik.milestones.Main;
+import me.wertik.milestones.Utils;
 import me.wertik.milestones.handlers.StorageHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Reward {
@@ -15,71 +17,81 @@ public class Reward {
     private ConfigLoader configLoader;
 
     // Broadcast to all players
-    private String broadcastMessage;
+    private List<String> broadcastMessage;
 
     // Seend to player
-    private String informMessage;
+    private List<String> informMessage;
 
     // Commands executed by console
-    private List<String> commands;
+    private List<String> consoleCommands;
+
+    // Commands executed by player
+    private List<String> playerCommands;
 
     // Items to give to the player
     private List<ItemStack> rewardItems;
     private List<String> rewardItemsList;
 
-    // Todo rewrite messages to String List
-    public Reward(List<String> commands, List<String> rewardItemsList, String informMessage, String broadcastMessage) {
-        this.broadcastMessage = broadcastMessage;
-        this.commands = commands;
-        this.informMessage = informMessage;
-        this.rewardItemsList = rewardItemsList;
+    public Reward(List<String> consoleCommands, List<String> playerCommands, List<String> rewardItemsList, List<String> informMessage, List<String> broadcastMessage) {
+        this.broadcastMessage = Utils.checkStringList(broadcastMessage);
+        this.consoleCommands = Utils.checkStringList(consoleCommands);
+        this.playerCommands = Utils.checkStringList(playerCommands);
+        this.informMessage = Utils.checkStringList(informMessage);
+        this.rewardItemsList = Utils.checkStringList(rewardItemsList);
 
         plugin = Main.getInstance();
         configLoader = plugin.getConfigLoader();
         storageHandler = plugin.getStorageHandler();
 
-        this.rewardItems = storageHandler.parseForItemPlaceholders(rewardItemsList);
+        this.rewardItems = storageHandler.parseForItemPlaceholders(Utils.checkStringList(rewardItemsList));
     }
 
     public List<String> getRewardItemsList() {
         return rewardItemsList;
     }
 
-    public String getBroadcastMessage() {
+    public List<String> getBroadcastMessage() {
         return broadcastMessage;
     }
 
-    public String getInformMessage() {
+    public List<String> getInformMessage() {
         return informMessage;
     }
 
-    public List<String> getCommands() {
-        return commands;
+    public List<String> getConsoleCommands() {
+        return consoleCommands;
     }
 
     public List<ItemStack> getRewardItems() {
         return rewardItems;
     }
 
+    public List<String> getPlayerCommands() {
+        return playerCommands;
+    }
+
     // Easier.. ;)
     public void give(Player player, Milestone milestone) {
+
         // Messages
-        if (!broadcastMessage.equals(""))
+        if (!broadcastMessage.isEmpty())
             for (Player target : plugin.getServer().getOnlinePlayers()) {
-                target.sendMessage(configLoader.getFinalString(broadcastMessage, player, milestone));
+                broadcastMessage.forEach(line -> target.sendMessage(Utils.color(Utils.parse(line, player, milestone))));
             }
 
-        if (!informMessage.equals(""))
-            player.sendMessage(configLoader.getFinalString(informMessage, player, milestone));
-
+        if (!informMessage.isEmpty())
+            informMessage.forEach(line -> player.sendMessage(Utils.color(Utils.parse(line, player, milestone))));
 
         // Commands
-        for (String command : milestone.getReward().getCommands())
-            plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), configLoader.parseString(command, player, milestone));
+        if (!consoleCommands.isEmpty())
+            consoleCommands.forEach(command -> plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), Utils.parse(command, player, milestone)));
 
+        // Player Commands
+        if (!playerCommands.isEmpty())
+            playerCommands.forEach(command -> player.performCommand(Utils.parse(command, player, milestone)));
 
         // Items
-        for (ItemStack item : rewardItems)
-            player.getInventory().addItem(item);
+        if (!rewardItems.isEmpty())
+            rewardItems.forEach(item -> player.getInventory().addItem(item));
     }
 }

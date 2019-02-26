@@ -25,7 +25,7 @@ public class StorageHandler {
         plugin = Main.getInstance();
     }
 
-    public void setYamls() {
+    public void loadYamls() {
 
         // Other data
         storageFile = new File(plugin.getDataFolder() + "/datastorage.yml");
@@ -37,21 +37,14 @@ public class StorageHandler {
 
         storage = YamlConfiguration.loadConfiguration(storageFile);
 
-        toggles = storage.getConfigurationSection("Toggles");
-
-        items = storage.getConfigurationSection("Items");
-
-        for (String milestoneName : Main.getInstance().getConfigLoader().getMileNames()) {
-            if (!toggles.contains(milestoneName)) {
-                ConfigurationSection section = toggles.createSection(milestoneName);
-                section.set("global-enabled", true);
-            }
-            for (String worldName : Main.getInstance().getWorldNames()) {
-                if (!toggles.getConfigurationSection(milestoneName).contains(worldName)) {
-                    toggles.getConfigurationSection(milestoneName).set(worldName, new ArrayList<>());
-                }
-            }
-        }
+        if (storage.contains("Toggles"))
+            toggles = storage.getConfigurationSection("Toggles");
+        else
+            toggles = storage.createSection("Toggles");
+        if (storage.contains("Items"))
+            items = storage.getConfigurationSection("Items");
+        else
+            items = storage.createSection("Items");
 
         saveStorage();
     }
@@ -61,10 +54,11 @@ public class StorageHandler {
 
         for (String row : list) {
             if (containsItemHolder(row)) {
-                if (storage.getConfigurationSection("Items").contains(row.replace("%item_", "").replace("%", "")))
-                    outPut.add(parseForItem(row));
+                String itemName = parseForItemName(row);
+                if (items.contains(itemName))
+                        outPut.add(getItem(itemName));
                 else
-                    plugin.getServer().getLogger().warning("Item " + row.replace("%item_", "").replace("%", "") + " is not saved in the data storage, cannot use it.");
+                    plugin.getServer().getLogger().warning("Item " + parseForItemName(row) + " is not saved in the data storage, cannot use it.");
                 continue;
             } else
                 outPut.add(new ItemStack(Material.valueOf(row.toUpperCase()), -1));
@@ -87,9 +81,8 @@ public class StorageHandler {
 
     // %item_(name)%
     public boolean containsItemHolder(String msg) {
-        if (msg.contains("%item_")) {
+        if (msg.contains("%item_"))
             return true;
-        }
         return false;
     }
 
@@ -97,10 +90,6 @@ public class StorageHandler {
         msg = msg.replace("%item_", "");
         msg = msg.replace("%", "");
         return msg;
-    }
-
-    public ItemStack parseForItem(String msg) {
-        return getItem(parseForItemName(msg));
     }
 
     public boolean saveItem(String name, ItemStack item) {
@@ -118,20 +107,42 @@ public class StorageHandler {
     }
 
     public void toggleLogger(String playerName, String milestoneName, String worldName) {
+        if (milestoneName.equals("*"))
+            storage.set("Toggles", "*");
+        else if (worldName.equals("*"))
+            toggles.set(milestoneName, "*");
+        else if (playerName.equals("*"))
+            toggles.set(milestoneName + "." + worldName, "*");
+        else {
+            if (!toggles.contains(milestoneName))
+                toggles.createSection(milestoneName);
+            if (!toggles.getConfigurationSection(milestoneName).contains(worldName))
+                toggles.set(milestoneName + "." + worldName, new ArrayList<>());
 
-        if (worldName.equalsIgnoreCase("*")) {
+            List<String> players = toggles.getStringList(milestoneName + "." + worldName);
 
+            if (!toggles.getStringList(milestoneName + "." + worldName).contains(playerName))
+                players.add(playerName);
+            else
+                players.remove(playerName);
+
+            toggles.set(milestoneName + "." + worldName, players);
         }
-
-        boolean contains = toggles.getConfigurationSection(milestoneName + "." + worldName).contains(playerName);
-
-        if (contains)
-            toggles.set(milestoneName + "." + worldName, toggles.getStringList(milestoneName + "." + worldName).remove(playerName));
-        else
-            toggles.set(milestoneName + "." + worldName, toggles.getStringList(milestoneName + "." + worldName).add(playerName));
     }
 
     public boolean isToggled(String playerName, String milestoneName, String worldName) {
-        return !toggles.getConfigurationSection(milestoneName + "." + worldName).contains(playerName);
+        if (!toggles.contains(milestoneName))
+            return false;
+        if (!toggles.getConfigurationSection(milestoneName).contains(worldName))
+            return false;
+        if (!toggles.getStringList(milestoneName + "." + worldName).contains(playerName))
+            return false;
+        if (toggles.get(milestoneName).equals("*"))
+            return false;
+        if (toggles.get(milestoneName + "." + worldName).equals("*"))
+            return false;
+        if (toggles.equals("*"))
+            return false;
+        return true;
     }
 }

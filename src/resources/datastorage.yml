@@ -1,9 +1,1 @@
 # Used for storing internal plugin data.
-# Toggles not working yet.
-Toggles:
-  milestone:
-    enabled: true
-    world:
-      - playerName
-    world_nether:
-      - playerName

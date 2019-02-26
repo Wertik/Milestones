@@ -6,7 +6,6 @@ import me.wertik.milestones.handlers.ConditionHandler;
 import me.wertik.milestones.handlers.DataHandler;
 import me.wertik.milestones.handlers.StorageHandler;
 import me.wertik.milestones.listeners.EventListener;
-import me.wertik.milestones.listeners.TestListner;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.command.ConsoleCommandSender;
@@ -34,10 +33,12 @@ public class Main extends JavaPlugin {
     }
 
     // Let's do this.
+    // Todo PlaceholderAPI integration
     @Override
     public void onEnable() {
         ConsoleCommandSender console = getServer().getConsoleSender();
         console.sendMessage("§2Enabling milestones.");
+        console.sendMessage("§e! §7Some messages are seriously retarded, watch out!");
         console.sendMessage("§f-------------------------------------");
 
         instance = this;
@@ -57,6 +58,14 @@ public class Main extends JavaPlugin {
             console.sendMessage("§aPlaceholder API hooked successfully.");
         }
 
+        if (!getServer().getPluginManager().getPlugin("Vault").isEnabled())
+            console.sendMessage("§eVault not found, permissions, prefixes & suffixes won't be available.");
+        else {
+            console.sendMessage("§aSuccessfully hooked up with Vault.");
+            setupChat();
+            setupPermissions();
+        }
+
         // WorldEdit
         if (this.getWorldEdit() == null) {
             console.sendMessage("§cWorld Edit is fine, why don't you use it?");
@@ -71,7 +80,7 @@ public class Main extends JavaPlugin {
 
         configLoader.loadYamls();
 
-        storageHandler.setYamls();
+        storageHandler.loadYamls();
 
         configLoader.loadMilestones();
 
@@ -92,11 +101,15 @@ public class Main extends JavaPlugin {
     public void reload() {
         dataHandler.saveDataFiles();
         storageHandler.saveStorage();
+
         configLoader.loadYamls();
+
+        storageHandler.loadYamls();
+
         configLoader.loadMilestones();
+
         dataHandler.loadFiles();
         reloadConfig();
-        storageHandler.setYamls();
     }
 
     public ConfigLoader getConfigLoader() {

@@ -2,6 +2,7 @@ package me.wertik.milestones;
 
 import me.clip.placeholderapi.external.EZPlaceholderHook;
 import me.wertik.milestones.handlers.DataHandler;
+import me.wertik.milestones.objects.Milestone;
 import org.bukkit.entity.Player;
 
 public class PlaceholderAPIHook extends EZPlaceholderHook {
@@ -24,10 +25,13 @@ public class PlaceholderAPIHook extends EZPlaceholderHook {
 
         // %milestones_<name>%
 
-        if (configLoader.getMileNames().contains(params))
-            return String.valueOf(dataHandler.getScore(p.getName(), params));
-
-        p.sendMessage(configLoader.getMileNames().toString());
+        if (configLoader.getMilestoneNames().contains(params)) {
+            Milestone milestone = configLoader.getMilestone(params);
+            if (milestone.isGlobal())
+                return String.valueOf(dataHandler.getGlobalScore(milestone.getName()));
+            else
+                return String.valueOf(dataHandler.getScore(p.getName(), milestone.getName()));
+        }
 
         return null;
     }

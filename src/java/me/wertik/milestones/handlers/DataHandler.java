@@ -111,11 +111,17 @@ public class DataHandler {
     }
 
     public List<String> getGlobalLoggedPlayers(String name) {
-        return globalFiles.get(name).getStringList("Players");
+        if (globalFiles.containsKey(name))
+            return globalFiles.get(name).getStringList("Players");
+        else
+            return new ArrayList<>();
     }
 
     public int getGlobalScore(String name) {
-        return globalFiles.get(name).getInt("Score");
+        if (globalFiles.containsKey(name))
+            return globalFiles.get(name).getInt("Score");
+        else
+            return 0;
     }
 
     public boolean isLogged(String playerName, String name) {
@@ -124,7 +130,7 @@ public class DataHandler {
 
     public boolean isLogged(String playerName) {
         ConfigLoader configLoader = plugin.getConfigLoader();
-        List<String> milestones = configLoader.getMileNames();
+        List<String> milestones = configLoader.getMilestoneNames();
 
         for (String milestone : milestones) {
             if (isLogged(playerName, milestone))

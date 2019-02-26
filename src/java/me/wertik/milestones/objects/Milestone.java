@@ -1,6 +1,8 @@
 package me.wertik.milestones.objects;
 
-import java.util.ArrayList;
+import me.wertik.milestones.Main;
+import org.bukkit.entity.Player;
+
 import java.util.List;
 
 public class Milestone {
@@ -20,10 +22,7 @@ public class Milestone {
         this.onlyOnce = onlyOnce;
         this.global = global;
         this.reward = reward;
-        if (stagedRewards != null)
-            this.stagedRewards = stagedRewards;
-        else
-            this.stagedRewards = new ArrayList<>();
+        this.stagedRewards = stagedRewards;
     }
 
     public ExactCondition getConditions() {
@@ -55,5 +54,9 @@ public class Milestone {
 
     public List<StagedReward> getStagedRewards() {
         return stagedRewards;
+    }
+
+    public boolean checkToggles(Player player) {
+        return !Main.getInstance().getStorageHandler().isToggled(player.getName(), name, player.getWorld().getName());
     }
 }

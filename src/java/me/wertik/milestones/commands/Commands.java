@@ -41,12 +41,12 @@ public class Commands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
-        // Fuu..
+        // Fuu.. Commands are always boring.
         if (args.length == 0) {
             messanger.help(sender);
         } else {
 
-            switch (args[0]) {
+            switch (args[0].toLowerCase()) {
                 case "reload":
                     Main.getInstance().reload();
                     sender.sendMessage("§3Should be reloaded.");
@@ -67,7 +67,7 @@ public class Commands implements CommandExecutor {
                     String worldName = args[2];
                     String milestoneName = args[3];
 
-                    if (!Main.getInstance().getConfigLoader().getMileNames().contains(milestoneName)) {
+                    if (!Main.getInstance().getConfigLoader().getMilestoneNames().contains(milestoneName)) {
                         sender.sendMessage("§cThat milestone does not exist.");
                         sender.sendMessage("§c/mile toggle (player/*) (world/*) (milestone/*)");
                         sender.sendMessage("§e! §7See /mile list for available ones.");
@@ -83,7 +83,8 @@ public class Commands implements CommandExecutor {
                     if (worldName.equalsIgnoreCase("*")) {
                         worldName = "all worlds";
                     }
-                    sender.sendMessage("§3Logger of §f" + milestoneName + " §3for §f" + playerName + " §3in §f" + worldName + "§3toggled to §f" + Main.getInstance().getStorageHandler().isToggled(args[1], args[3], args[2]) + " §3state.");
+
+                    sender.sendMessage("§3Logger of §f" + milestoneName + " §3for §f" + playerName + " §3in §f" + worldName + " §3toggled to §f" + !Main.getInstance().getStorageHandler().isToggled(args[1], args[3], args[2]));
                     sender.sendMessage("§e! §7You can fix any errors in datastorage.yml file. Listed players are disabled.");
                     break;
                 case "clear":
@@ -92,7 +93,7 @@ public class Commands implements CommandExecutor {
                         sender.sendMessage("§cThat's not enough.. /mile clear (player/global/*) (milestone/*)");
                         return true;
                     } else if (args.length > 3) {
-                        sender.sendMessage("§cThat's too much. Stop plox.");
+                        sender.sendMessage("§cThat's too much. Stop please.");
                         return true;
                     }
 
@@ -101,15 +102,14 @@ public class Commands implements CommandExecutor {
 
                         if (args[2].equalsIgnoreCase("*")) {
                             dataHandler.clearGlobalScores();
-                            sender.sendMessage("§cData wipe you requested should be done sir.");
+                            sender.sendMessage("§cData wipe you requested should be done by now, sir.");
                         } else {
                             if (configLoader.getGlobalMileNames().contains(args[2])) {
                                 dataHandler.clearGlobalScore(args[2]);
-                                sender.sendMessage("§cData wipe you requested should be done sir.");
+                                sender.sendMessage("§cData wipe you requested should be done by now, sir.");
                             } else
-                                sender.sendMessage("§cThat milestone is non-existant.");
+                                sender.sendMessage("§cThat milestone exists only in your imagination.");
                         }
-
                         return true;
                     } else if (args[1].equalsIgnoreCase("*")) {
 
@@ -120,21 +120,21 @@ public class Commands implements CommandExecutor {
                         }
 
                         dataHandler.clearMilestoneScores(args[2]);
-                        sender.sendMessage("§cWipeout performed!");
+                        sender.sendMessage("§cWipe-out performed!");
                         return true;
                     } else {
                         // player
                         if (args[2].equalsIgnoreCase("*")) {
                             dataHandler.clearPlayerScore(args[1]);
-                            sender.sendMessage("§cAaaand he's out.");
+                            sender.sendMessage("§cAaaand it's out.");
                             return true;
                         }
 
                         if (configLoader.getPersonalMileNames().contains(args[2])) {
                             dataHandler.clearScore(args[1], args[2]);
-                            sender.sendMessage("§cDone.");
+                            sender.sendMessage("§cDone my lord.");
                         } else
-                            sender.sendMessage("§cStop bullshitting me, that one's not real.");
+                            sender.sendMessage("§cThat milestone's not real.");
                     }
                     break;
                 case "stats":
@@ -147,10 +147,10 @@ public class Commands implements CommandExecutor {
                             messanger.stats(sender, sender.getName());
                             return true;
                         } else
-                            sender.sendMessage("§cYou're not a player. Console don't play stuff.");
+                            sender.sendMessage("§cYou're not a player. Consoles don't play stuff.");
 
                     } else if (args.length > 2) {
-                        sender.sendMessage("§cThat's too much args, /mile stats (player/'global') ");
+                        sender.sendMessage("§cThat's too many args, /mile stats (player/'global') ");
                         return true;
                     }
 
@@ -175,7 +175,7 @@ public class Commands implements CommandExecutor {
                 case "list":
 
                     if (args.length > 1) {
-                        sender.sendMessage("§cToo many args tho. /mile list");
+                        sender.sendMessage("§cToo many args. /mile list");
                         return true;
                     }
 
@@ -183,16 +183,15 @@ public class Commands implements CommandExecutor {
                     break;
                 case "info":
                     if (args.length > 2) {
-                        sender.sendMessage("§cThat's too much tho, stop it. /mile info (milestone)");
+                        sender.sendMessage("§cThat's too much, turn it down a little. /mile info (milestone)");
                     } else if (args.length < 2) {
-                        sender.sendMessage("§cSpecify milestone name plz.");
+                        sender.sendMessage("§cSpecify milestone name please.");
                     } else {
 
-                        if (configLoader.getMileNames().contains(args[1])) {
+                        if (configLoader.getMilestoneNames().contains(args[1])) {
                             messanger.info(sender, args[1]);
                         } else
-                            sender.sendMessage("§cThat one is from another universe. Use the list to display the ones from Earth-12");
-
+                            sender.sendMessage("§cThat one is from another universe. Use the list to display the ones from Earth-12 that we're in.");
                     }
                     break;
                 case "additem":

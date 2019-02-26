@@ -21,7 +21,7 @@ OPTIONS:
 REWARDS:
   - inform-message == string, the message only the player gets
   - broadcast-message == string, the message all of the players get
-  - commands == list<string>, list of commands that run after completing the milestone
+  - consoleCommands == list<string>, list of consoleCommands that run after completing the milestone
   - items == list of items from data storage the player gets
 
  STAGED REWARDS:
@@ -51,5 +51,5 @@ PLANS:
   - adding lang.yml to achieve the top level customisation
 
 ABOUT:
-  I'm still in the early process of learning Java. My structures are simple and made out of basic commands and syntaxes, easy to understand.
+  I'm still in the early process of learning Java. My structures are simple and made out of basic consoleCommands and syntaxes, easy to understand.
   If you find anything that i could improve, just pm. :^^

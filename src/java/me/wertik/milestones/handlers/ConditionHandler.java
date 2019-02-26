@@ -1,7 +1,7 @@
 package me.wertik.milestones.handlers;
 
 import me.wertik.milestones.Main;
-import me.wertik.milestones.events.EntityKillMilestoneCollectEvent;
+import me.wertik.milestones.events.MilestoneCollectEvent;
 import me.wertik.milestones.objects.ExactCondition;
 import me.wertik.milestones.objects.Milestone;
 import me.wertik.milestones.objects.StagedReward;
@@ -11,10 +11,10 @@ import org.bukkit.entity.Player;
 
 public class ConditionHandler {
 
-    // Simplify adding new conditions to the list. :)
+    //
     /*
      *
-     * Again, it's just easier for me. You'll find it absurd and ignorant.
+     * The main processes are handled here.
      *
      * */
 
@@ -38,7 +38,7 @@ public class ConditionHandler {
             reward(milestone, player);
 
             // Fire the event
-            plugin.getServer().getPluginManager().callEvent(new EntityKillMilestoneCollectEvent(player, milestone, entity));
+            plugin.getServer().getPluginManager().callEvent(new MilestoneCollectEvent(player, milestone, entity));
         }
     }
 
@@ -51,6 +51,8 @@ public class ConditionHandler {
 
             // Reward him.
             reward(milestone, player);
+
+            plugin.getServer().getPluginManager().callEvent(new MilestoneCollectEvent(player, milestone));
         }
     }
 
@@ -63,6 +65,8 @@ public class ConditionHandler {
 
             // Reward him.
             reward(milestone, player);
+
+            plugin.getServer().getPluginManager().callEvent(new MilestoneCollectEvent(player, milestone, message));
         }
     }
 
@@ -75,6 +79,8 @@ public class ConditionHandler {
 
             // Reward him.
             reward(milestone, player);
+
+            plugin.getServer().getPluginManager().callEvent(new MilestoneCollectEvent(player, milestone, block));
         }
     }
 
@@ -101,17 +107,25 @@ public class ConditionHandler {
                 dataHandler.addScore(player.getName(), milestone.getName());
         }
 
-        milestone.getReward().give(player, milestone);
-
-        if (milestone.getStagedRewards().isEmpty())
-            return;
-
         // Staged Rewards
         int score = dataHandler.getScore(player.getName(), milestone.getName());
+        boolean stagedRewarded = false;
 
-        for (StagedReward stagedReward : milestone.getStagedRewards())
-            if (stagedReward.getCount() == score)
-                stagedReward.give(player, milestone);
+        if (!milestone.getStagedRewards().isEmpty())
+            for (StagedReward stagedReward : milestone.getStagedRewards()) {
+                if (stagedReward.getCount() == score) {
+                    stagedReward.give(player, milestone);
+                    if (stagedReward.isDenyNormal())
+                        stagedRewarded = true;
+                } else if (stagedReward.isRepeat() && ((score % stagedReward.getCount()) == 0)) {
+                    stagedReward.give(player, milestone);
+                    if (stagedReward.isDenyNormal())
+                        stagedRewarded = true;
+                }
+            }
+
+        if (!stagedRewarded)
+            milestone.getReward().give(player, milestone);
     }
 }
 

@@ -41,23 +41,23 @@ public class Utils {
         return true;
     }
 
-    // Todo parse all messages through this
-
     public static String color(String string) {
         return ChatColor.translateAlternateColorCodes('&', string);
     }
 
-    // For future intern placeholders.
     public static String parse(String string, Milestone milestone) {
-        string = string.replace("%milestone%", milestone.getName());
+        string = string.replace("%milestoneName%", milestone.getName());
         string = string.replace("%milestoneDisplay%", milestone.getDisplayName());
-        string = string.replace("%milestoneScore%", String.valueOf(Main.getInstance().getDataHandler().getGlobalScore(milestone.getName())));
+        if (milestone.isGlobal())
+            string = string.replace("%milestoneScore%", String.valueOf(Main.getInstance().getDataHandler().getGlobalScore(milestone.getName())));
         return string;
     }
 
     public static String parse(String string, Player player, Milestone milestone) {
-        string = string.replace("%milestoneScore%", String.valueOf(Main.getInstance().getDataHandler().getScore(player.getName(), milestone.getName())));
+        string = parse(string, milestone);
         string = parse(string, player);
+        if (!milestone.isGlobal())
+            string = string.replace("%milestoneScore%", String.valueOf(Main.getInstance().getDataHandler().getScore(player.getName(), milestone.getName())));
         return string;
     }
 
@@ -81,6 +81,13 @@ public class Utils {
         if (string == null)
             string = "";
         return string;
+    }
+
+    public static List<String> checkStringList(List<String> list) {
+        if (list == null)
+            return new ArrayList<>();
+        else
+            return list;
     }
 
     public static String toBTypeString(String string) {

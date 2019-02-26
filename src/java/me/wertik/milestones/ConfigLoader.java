@@ -1,15 +1,11 @@
 package me.wertik.milestones;
 
-import me.wertik.milestones.handlers.DataHandler;
 import me.wertik.milestones.handlers.StorageHandler;
 import me.wertik.milestones.objects.*;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -40,6 +36,7 @@ public class ConfigLoader {
      * */
 
     public void loadYamls() {
+
         // CF
         File configFile = new File(plugin.getDataFolder() + "/config.yml");
 
@@ -91,35 +88,40 @@ public class ConfigLoader {
     public Reward loadReward(String name) {
         ConfigurationSection section = miles.getConfigurationSection(name);
 
-        String broadcastMessage = section.getString("rewards.broadcast-message");
-        String informMessage = section.getString("rewards.inform-message");
+        List<String> broadcastMessage = stringList(section, "rewards.broadcast-message");
+        List<String> informMessage = stringList(section, "rewards.inform-message");
 
-        List<String> commands = stringList(section, "rewards.commands");
+        List<String> consoleCommands = stringList(section, "rewards.console-commands");
+        List<String> playerCommands = stringList(section, "rewards.player-commands");
 
-        return new Reward(commands, stringList(section, "rewards.items"), Utils.checkString(broadcastMessage), Utils.checkString(informMessage));
+        return new Reward(consoleCommands, playerCommands, stringList(section, "rewards.items"), broadcastMessage, informMessage);
     }
 
     public List<StagedReward> loadStagedRewards(String name) {
         ConfigurationSection section = miles.getConfigurationSection(name);
 
         if (!miles.contains(name + ".staged-rewards"))
-            return null;
+            return new ArrayList<>();
 
         List<StagedReward> stagedRewards = new ArrayList<>();
         List<String> stagedNames = new ArrayList<>(section.getConfigurationSection("staged-rewards").getKeys(false));
 
         for (String staged : stagedNames) {
 
-            ConfigurationSection section1 = section.getConfigurationSection("staged-rewards."+staged);
+            ConfigurationSection section1 = section.getConfigurationSection("staged-rewards." + staged);
 
-            String broadcastMessage = section.getString("staged-rewards." + staged + ".broadcast-message");
-            String informMessage = section.getString("staged-rewards." + staged + ".inform-message");
+            List<String> broadcastMessage = stringList(section1, "broadcast-message");
+            List<String> informMessage = stringList(section1, "inform-message");
 
-            List<String> commands = stringList(section1, "commands");
+            List<String> consoleCommands = stringList(section1, "console-commands");
+            List<String> playerCommands = stringList(section1, "player-commands");
 
-            Reward reward = new Reward(commands, stringList(section1, "items"), Utils.checkString(broadcastMessage), Utils.checkString(informMessage));
+            boolean repeat = section1.getBoolean("repeat");
+            boolean denyNormal = section1.getBoolean("deny-normal");
 
-            StagedReward stagedReward = new StagedReward(Integer.valueOf(staged), reward);
+            Reward reward = new Reward(consoleCommands, playerCommands, stringList(section1, "items"), broadcastMessage, informMessage);
+
+            StagedReward stagedReward = new StagedReward(Integer.valueOf(staged), reward, repeat, denyNormal);
 
             stagedRewards.add(stagedReward);
         }
@@ -156,15 +158,15 @@ public class ConfigLoader {
         MilestoneType milestoneType = MilestoneType.fromString(section.getString("type"));
 
         if (milestoneType.equals(MilestoneType.PLAYER_JOIN) || milestoneType.equals(MilestoneType.PLAYER_QUIT) || milestoneType.equals(MilestoneType.BLOCK_PLACE))
-            return new ExactCondition(milestoneType, new BaseCondition(stringList(section, "conditions.in-inventory"), biomes, regionNames, worldNames, stringList(section, "conditions.tools")));
+            return new ExactCondition(milestoneType, new BaseCondition(stringList(section, "conditions.in-inventory"), biomes, regionNames, worldNames, stringList(section, "conditions.tools"), stringList(section, "conditions.permissions")));
         else
-            return new ExactCondition(milestoneType, new BaseCondition(stringList(section, "conditions.in-inventory"), biomes, regionNames, worldNames, stringList(section, "conditions.tools")), targets);
+            return new ExactCondition(milestoneType, new BaseCondition(stringList(section, "conditions.in-inventory"), biomes, regionNames, worldNames, stringList(section, "conditions.tools"), stringList(section, "conditions.permissions")), targets);
     }
 
     public HashMap<String, Milestone> setMilestones() {
         HashMap<String, Milestone> milestones = new HashMap<>();
 
-        for (String name : getMileNames()) {
+        for (String name : getMilestoneNames()) {
             milestones.put(name, loadMilestone(name));
         }
 
@@ -197,19 +199,19 @@ public class ConfigLoader {
         return output;
     }
 
-    public List<String> getMileNames() {
+    public List<String> getMilestoneNames() {
         return new ArrayList<>(miles.getKeys(false));
     }
 
     public List<String> getPersonalMileNames() {
         List<Milestone> milestones = getPersonalMilestones();
-        List<String> milenames = new ArrayList<>();
+        List<String> milestoneNames = new ArrayList<>();
 
         for (Milestone milestone : milestones) {
-            milenames.add(milestone.getName());
+            milestoneNames.add(milestone.getName());
         }
 
-        return milenames;
+        return milestoneNames;
     }
 
     public List<String> getGlobalMileNames() {
@@ -223,53 +225,11 @@ public class ConfigLoader {
         return milenames;
     }
 
-    // Placeholders..
-    /*
-     * %player%
-     * idk, lol..
-     *
-     *
-     * */
-
-    public String parseString(String msg, Player p) {
-        if (msg.contains("%player%"))
-            msg = msg.replace("%player%", p.getName());
-        return msg;
-    }
-
-    /*
-     * %milestone_name%
-     * %milestone_displayName%
-     *
-     * */
-
-    public String parseString(String msg, Player p, Milestone milestone) {
-
-        DataHandler dataHandler = plugin.getDataHandler();
-
-        msg = parseString(msg, p);
-        if (msg.contains("%milestone_name%"))
-            msg = msg.replace("%milestone_name%", milestone.getName());
-        if (msg.contains("%milestone_displayName%"))
-            msg = msg.replace("%milestone_displayName%", milestone.getDisplayName());
-        if (msg.contains("%milestone_score%"))
-            msg = msg.replace("%milestone_score%", String.valueOf(dataHandler.getScore(p.getName(), milestone.getName())));
-        return msg;
-    }
-
-    public List<String> parseStringList(List<String> msg, Player p) {
-        return null;
-    }
-
-    public List<String> parseStringList(List<String> msg, Player p, Milestone milestone) {
-        return null;
-    }
-
     public String getFinalString(String msg, Player p) {
-        return Utils.color(parseString(msg, p));
+        return Utils.color(Utils.parse(msg, p));
     }
 
     public String getFinalString(String msg, Player p, Milestone milestone) {
-        return Utils.color(parseString(msg, p, milestone));
+        return Utils.color(Utils.parse(msg, p, milestone));
     }
 }
