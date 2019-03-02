@@ -62,6 +62,8 @@ public class ExactCondition {
     }
 
     public boolean check(Player player) {
+        if (milestoneType.requiresTarget())
+            return false;
         // Base conditions
         return baseCondition.check(player);
     }

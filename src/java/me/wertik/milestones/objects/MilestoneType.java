@@ -1,17 +1,24 @@
 package me.wertik.milestones.objects;
 
 public enum MilestoneType {
-    BLOCK_BREAK("blockbreak"),
+    BLOCK_BREAK("blockbreak", true),
     BLOCK_PLACE("blockplace"),
-    ENTITY_KILL("entitykill"),
+    ENTITY_KILL("entitykill", true),
     PLAYER_JOIN("playerjoin"),
-    PLAYER_QUIT("playerkill"),
-    PLAYER_CHAT("playerchat");
+    PLAYER_QUIT("playerquit"),
+    PLAYER_CHAT("playerchat", true);
 
     private String type;
+    private boolean requiredTarget;
+
+    MilestoneType(String type, boolean requiresTarget) {
+        this.type = type;
+        this.requiredTarget = requiresTarget;
+    }
 
     MilestoneType(String type) {
         this.type = type;
+        requiredTarget = false;
     }
 
     public String stringType() {
@@ -24,5 +31,13 @@ public enum MilestoneType {
                 return type;
         }
         return null;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+     public boolean requiresTarget() {
+        return requiredTarget;
     }
 }
