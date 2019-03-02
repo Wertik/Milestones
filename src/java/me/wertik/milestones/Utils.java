@@ -73,7 +73,7 @@ public class Utils {
         string = string.replace("%playerZ%", String.valueOf((int) player.getLocation().getZ()));
         string = string.replace("%playerWorld%", String.valueOf(player.getLocation().getWorld()));
         string = string.replace("%playerFood%", String.valueOf(player.getFoodLevel()));
-        string = string.replace("%playerLevel%", String.valueOf(player.getExpToLevel()));
+        string = string.replace("%playerLevel%", String.valueOf(player.getLevel()));
         return string;
     }
 
@@ -131,9 +131,7 @@ public class Utils {
             // Serialize that array
             dataOutput.close();
             return Base64Coder.encodeLines(outputStream.toByteArray());
-        } catch (IllegalStateException e) {
-            Bukkit.getLogger().warning("§cCould not save the item stack.. i've failed you.. :(");
-        } catch (IOException e) {
+        } catch (IllegalStateException | IOException e) {
             Bukkit.getLogger().warning("§cCould not save the item stack.. i've failed you.. :(");
         }
         return null;
@@ -150,9 +148,7 @@ public class Utils {
 
             dataInput.close();
             return item;
-        } catch (ClassNotFoundException e) {
-            Bukkit.getLogger().warning("§cCould not get the item stack.. i've failed you.. :(");
-        } catch (IOException e) {
+        } catch (ClassNotFoundException | IOException e) {
             Bukkit.getLogger().warning("§cCould not get the item stack.. i've failed you.. :(");
         }
         return item;

@@ -31,16 +31,19 @@ public class ExactCondition {
     // PLAYER_CHAT
     private List<String> messages;
 
+    // Time spent in conditions
+    private long time;
+
     public ExactCondition(MilestoneType milestoneType, BaseCondition baseCondition, List<String> targetTypes) {
-        this.blockTypes = new ArrayList<>();
-        this.entityTypes = new ArrayList<>();
         this.targetTypes = targetTypes;
 
-        if (milestoneType.equals(MilestoneType.ENTITY_KILL))
+        if (milestoneType.equals(MilestoneType.ENTITY_KILL)) {
+            entityTypes = new ArrayList<>();
             targetTypes.forEach(entityType -> entityTypes.add(EntityType.valueOf(entityType)));
-        else if (milestoneType.equals(MilestoneType.BLOCK_BREAK))
+        } else if (milestoneType.equals(MilestoneType.BLOCK_BREAK)) {
+            blockTypes = new ArrayList<>();
             targetTypes.forEach(blockType -> blockTypes.add(Utils.toBTypeString(blockType)));
-        else if (milestoneType.equals(milestoneType.PLAYER_CHAT))
+        } else if (milestoneType.equals(MilestoneType.PLAYER_CHAT))
             messages = targetTypes;
 
         this.baseCondition = baseCondition;
@@ -60,54 +63,48 @@ public class ExactCondition {
 
     public boolean check(Player player) {
         // Base conditions
-        if (!baseCondition.check(player))
-            return false;
-
-        return true;
+        return baseCondition.check(player);
     }
 
     public boolean check(Player player, Entity entity) {
         // Entity
-        if (entityTypes != null)
-            if (!entityTypes.isEmpty())
-                if (!entityTypes.contains(entity.getType()))
-                    return false;
+        if (!entityTypes.isEmpty())
+            if (!entityTypes.contains(entity.getType()))
+                return false;
 
-        // Base conditions
-        if (!baseCondition.check(player))
+        if (entityTypes == null)
             return false;
 
-        return true;
+        // Base conditions
+        return baseCondition.check(player);
     }
 
     public boolean check(Player player, Block block) {
 
         // Block
-        if (blockTypes != null)
-            if (!blockTypes.isEmpty())
-                if (!blockTypes.contains(Utils.toBTypeString(block.getType(), block.getData())))
-                    return false;
+        if (!blockTypes.isEmpty())
+            if (!blockTypes.contains(Utils.toBTypeString(block.getType(), block.getData())))
+                return false;
 
-        // Base conditions
-        if (!baseCondition.check(player))
+        if (blockTypes == null)
             return false;
 
-        return true;
+        // Base conditions
+        return baseCondition.check(player);
     }
 
     public boolean check(Player player, String message) {
 
         // Block
-        if (messages != null)
-            if (!messages.isEmpty())
-                if (!messages.contains(message))
-                    return false;
+        if (!messages.isEmpty())
+            if (!messages.contains(message))
+                return false;
 
-        // Base conditions
-        if (!baseCondition.check(player))
+        if (message == null)
             return false;
 
-        return true;
+        // Base conditions
+        return baseCondition.check(player);
     }
 
     public BaseCondition baseCondition() {
