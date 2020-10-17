@@ -2,6 +2,7 @@ package space.devport.wertik.milestones.system.milestone;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.Nullable;
+import space.devport.utils.ConsoleOutput;
 import space.devport.utils.configuration.Configuration;
 import space.devport.wertik.milestones.MilestonesPlugin;
 import space.devport.wertik.milestones.system.milestone.struct.Milestone;
@@ -35,8 +36,12 @@ public class MilestoneManager {
         FileConfiguration config = configuration.getFileConfiguration();
 
         for (String name : config.getKeys(false)) {
-
+            Milestone milestone = Milestone.load(configuration, name);
+            if (milestone == null)
+                continue;
+            this.loadedMilestones.put(name, milestone);
         }
+        ConsoleOutput.getInstance().debug("Loaded " + this.loadedMilestones.size() + " milestone(s)...");
     }
 
     public Map<String, Milestone> getLoadedMilestones() {

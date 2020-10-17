@@ -20,14 +20,11 @@ public class BlockCondition extends AbstractCondition {
     @Override
     public boolean onCheck(Player player, ActionContext context) {
         Block block = context.get(Block.class);
-        if (block == null)
-            return false;
-        return allowedMaterials.contains(block.getType());
+        return allowedMaterials.isEmpty() || block != null && allowedMaterials.contains(block.getType());
     }
 
     @Override
-    @NotNull
-    public AbstractCondition onLoad(Configuration configuration, ConfigurationSection section) {
+    public @NotNull AbstractCondition onLoad(Configuration configuration, ConfigurationSection section) {
         List<String> materials = section.getStringList("types");
         for (String material : materials) {
             Material mat = Material.matchMaterial(material);

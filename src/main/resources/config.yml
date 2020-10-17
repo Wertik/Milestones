@@ -1,6 +1,6 @@
-# Configuration for ${project.name}
+# Configuration for @name@
 #
-# Version: ${project.version}
+# Generated with version: @version@
 
 plugin-prefix: '&eMilestones &8| '
 debug-enabled: true
@@ -14,4 +14,8 @@ storage:
     user: 'root'
     pass: 'password'
     database: 'milestone_data'
-    table-prefix: ''
+
+# Auto save task
+auto-save:
+  enabled: true
+  interval: 300

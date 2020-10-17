@@ -16,6 +16,8 @@ import java.util.List;
 
 public class ActionRegistry {
 
+    //TODO Allow external sources to register an action before milestones are loaded.
+
     private final MilestonesPlugin plugin;
 
     private final List<AbstractActionListener> registeredListeners = new ArrayList<>();

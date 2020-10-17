@@ -7,6 +7,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import space.devport.utils.DevportPlugin;
 import space.devport.utils.UsageFlag;
+import space.devport.wertik.milestones.commands.MilestoneCommand;
+import space.devport.wertik.milestones.commands.subcommands.ReloadSubCommand;
+import space.devport.wertik.milestones.system.ReloadableTask;
 import space.devport.wertik.milestones.system.action.ActionRegistry;
 import space.devport.wertik.milestones.system.milestone.MilestoneManager;
 import space.devport.wertik.milestones.system.milestone.struct.condition.ConditionRegistry;
@@ -20,11 +23,6 @@ import java.util.stream.Collectors;
 public class MilestonesPlugin extends DevportPlugin {
 
     @Getter
-    private Permission permissions;
-    @Getter
-    private Chat chat;
-
-    @Getter
     private ActionRegistry actionRegistry;
 
     @Getter
@@ -35,6 +33,14 @@ public class MilestonesPlugin extends DevportPlugin {
 
     @Getter
     private UserManager userManager;
+
+    @Getter
+    private ReloadableTask saveTask;
+
+    @Getter
+    private Permission permissions;
+    @Getter
+    private Chat chat;
 
     public static MilestonesPlugin getInstance() {
         return getPlugin(MilestonesPlugin.class);
@@ -61,7 +67,19 @@ public class MilestonesPlugin extends DevportPlugin {
         this.userManager = new UserManager(this);
         setupStorage();
 
-        userManager.load(Bukkit.getOnlinePlayers().stream().map(Player::getUniqueId).collect(Collectors.toSet()));
+        // Load online players
+        userManager.load(Bukkit.getOnlinePlayers().stream()
+                .map(Player::getUniqueId)
+                .collect(Collectors.toSet()));
+
+        addMainCommand(new MilestoneCommand())
+                .addSubCommand(new ReloadSubCommand(this));
+
+        // Setup auto save
+        this.saveTask = new ReloadableTask(this)
+                .load(configuration, "auto-save")
+                .setup(() -> this.userManager.saveAll())
+                .start();
     }
 
     @Override
@@ -74,6 +92,7 @@ public class MilestonesPlugin extends DevportPlugin {
     @Override
     public void onReload() {
         milestoneManager.load();
+        saveTask.reload(configuration, "auto-save");
     }
 
     private void setupStorage() {

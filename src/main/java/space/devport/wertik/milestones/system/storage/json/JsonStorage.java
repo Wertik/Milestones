@@ -17,17 +17,17 @@ public class JsonStorage implements UserStorage {
     }
 
     @Override
-    public void deleteUser(@NotNull UUID uniqueID) {
+    public CompletableFuture<Void> deleteUser(@NotNull UUID uniqueID) {
         throw new NotImplementedException("Json storage is not implemented, use MySQL.");
     }
 
     @Override
-    public void saveUser(@NotNull User user) {
+    public CompletableFuture<Void> saveUser(@NotNull User user) {
         throw new NotImplementedException("Json storage is not implemented, use MySQL.");
     }
 
     @Override
-    public void saveUsers(@NotNull Set<User> users) {
+    public CompletableFuture<Void> saveUsers(@NotNull Set<User> users) {
         throw new NotImplementedException("Json storage is not implemented, use MySQL.");
     }
 }

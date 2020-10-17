@@ -44,8 +44,8 @@ public class MySQLUserStorage implements UserStorage {
     }
 
     @Override
-    public void deleteUser(@NotNull UUID uniqueID) {
-        CompletableFuture.runAsync(() -> {
+    public CompletableFuture<Void> deleteUser(@NotNull UUID uniqueID) {
+        return CompletableFuture.runAsync(() -> {
             for (MySQLStorage storage : connections.values()) {
                 storage.deleteRecord(uniqueID);
             }
@@ -53,8 +53,8 @@ public class MySQLUserStorage implements UserStorage {
     }
 
     @Override
-    public void saveUser(@NotNull User user) {
-        CompletableFuture.runAsync(() -> {
+    public CompletableFuture<Void> saveUser(@NotNull User user) {
+        return CompletableFuture.runAsync(() -> {
             for (MySQLStorage storage : connections.values()) {
                 storage.updateRecord(user.getUniqueID(), user.getRecord(storage.getTable()));
             }
@@ -62,8 +62,8 @@ public class MySQLUserStorage implements UserStorage {
     }
 
     @Override
-    public void saveUsers(@NotNull Set<User> users) {
-        CompletableFuture.runAsync(() -> {
+    public CompletableFuture<Void> saveUsers(@NotNull Set<User> users) {
+        return CompletableFuture.runAsync(() -> {
             for (User user : users)
                 saveUser(user);
         }).exceptionally((e) -> {

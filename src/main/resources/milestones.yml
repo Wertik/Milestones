@@ -1,6 +1,6 @@
-# Milestone configuration for ${project.name}
+# Milestone configuration for @name@
 #
-# Generated with version: ${project.version}
+# Generated with version: @version@
 
 # It is possible to delete any section to disable it entirely.
 # If a boolean is deleted, the plugin will default to false.
@@ -37,7 +37,7 @@ pvp:
     targets:
       - PIG
 
-    # Biome conditions
+    # Possible biomes to be in for the score to increase.
     biomes:
       - FOREST
       - PLAINS
@@ -55,7 +55,7 @@ pvp:
     in-inventory:
       - WHEAT
 
-    # Permission required, player has to have all of them.
+    # Permissions required, player has to have at least one of them.
     permissions:
       - 'some.made.up.permission'
 
@@ -86,18 +86,18 @@ pvp:
     broadcast-message:
       - '&c%player% is a pig killer!'
 
-  # After/Every x points...
-  cumulative:
+    # After/Every x points...
+    cumulative:
 
-    # Count of points required to get the rewards.
-    '10':
-      # These sections allow for same options as the base rewards.
+      # Count of points required to get the rewards.
+      '10':
+        # These sections allow for same options as the base rewards.
 
-      broadcast-message:
-        - '&f%player% &3hit &f10&3 scores in &f%milestoneName%&3!'
+        broadcast-message:
+          - '&f%player% &3hit &f10&3 scores in &f%milestoneName%&3!'
 
-      # Denies normal reward,.. the one that's given every time.
-      deny-base-reward: false
-    '20':
-      broadcast-message:
-        - '&f%player% &3hit &f20&3 scores in &f%milestoneName%&3!'
+        # Denies normal reward,.. the one that's given every time.
+        deny-base-reward: false
+      '20':
+        broadcast-message:
+          - '&f%player% &3hit &f20&3 scores in &f%milestoneName%&3!'

@@ -8,11 +8,12 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public interface UserStorage {
+
     @NotNull CompletableFuture<User> loadUser(@NotNull UUID uniqueID);
 
-    void deleteUser(@NotNull UUID uniqueID);
+    CompletableFuture<Void> deleteUser(@NotNull UUID uniqueID);
 
-    void saveUser(@NotNull User user);
+    CompletableFuture<Void> saveUser(@NotNull User user);
 
-    void saveUsers(@NotNull Set<User> users);
+    CompletableFuture<Void> saveUsers(@NotNull Set<User> users);
 }

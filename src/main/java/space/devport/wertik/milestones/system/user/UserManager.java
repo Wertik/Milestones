@@ -32,11 +32,14 @@ public class UserManager {
     }
 
     public CompletableFuture<Void> saveAll() {
-        return CompletableFuture.supplyAsync(() -> {
-            for (User user : this.loadedUsers.values()) {
+        return CompletableFuture.runAsync(() -> {
+            final Set<User> users = new HashSet<>(this.loadedUsers.values());
+
+            //TODO Stack the futures.
+            for (User user : users)
                 saveUser(user);
-            }
-            return null;
+
+            ConsoleOutput.getInstance().debug("Saved " + this.loadedUsers.size() + " users...");
         });
     }
 
@@ -69,18 +72,21 @@ public class UserManager {
         return user;
     }
 
-    public void saveUser(UUID uniqueID) {
-        storage.saveUser(getUser(uniqueID));
+    public CompletableFuture<Void> saveUser(UUID uniqueID) {
+        return storage.saveUser(getUser(uniqueID));
     }
 
-    public void saveUser(User user) {
-        storage.saveUser(user);
-        ConsoleOutput.getInstance().debug("Saved user " + user.getName());
+    public CompletableFuture<Void> saveUser(User user) {
+        return storage.saveUser(user).thenAccept((unused) -> ConsoleOutput.getInstance().debug("Saved user " + user.getName()));
     }
 
-    public void unloadUser(UUID uniqueID) {
+    public CompletableFuture<Void> unloadUser(UUID uniqueID) {
         this.loadedUsers.remove(uniqueID);
-        saveUser(uniqueID);
+        return saveUser(uniqueID);
+    }
+
+    public boolean isLoaded(UUID uniqueID) {
+        return this.loadedUsers.containsKey(uniqueID);
     }
 
     /**
@@ -89,8 +95,10 @@ public class UserManager {
     public CompletableFuture<Set<User>> load(Set<UUID> players) {
         return CompletableFuture.supplyAsync(() -> {
             Set<User> users = new HashSet<>();
+
             for (UUID uniqueID : players)
                 users.add(loadUser(uniqueID));
+
             ConsoleOutput.getInstance().debug("Loaded " + users.size() + " user(s)...");
             return users;
         });

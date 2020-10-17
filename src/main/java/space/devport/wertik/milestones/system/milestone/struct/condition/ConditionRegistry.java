@@ -23,7 +23,6 @@ public class ConditionRegistry {
     @NotNull
     public AbstractCondition load(String name, Configuration configuration, String path) {
         ConditionInstanceCreator loader = getLoaderOrDefault(name);
-
         return loader.createInstance().load(configuration, path);
     }
 
