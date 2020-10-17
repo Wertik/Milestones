@@ -1,0 +1,10 @@
+name: Milestones
+version: 2.0.0
+authors: [ qwz ]
+main: space.devport.wertik.milestones.MilestonesPlugin
+description: Logging data based on conditions.
+softdepend: [ PlaceholderAPI, Vault ]
+commands:
+  milestones:
+    aliases: [ mile, miles ]
+    description: Main plugin command

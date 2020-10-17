@@ -1,0 +1,17 @@
+# Configuration for ${project.name}
+#
+# Version: ${project.version}
+
+plugin-prefix: '&eMilestones &8| '
+debug-enabled: true
+
+storage:
+  # mysql
+  type: mysql
+  mysql:
+    host: localhost
+    port: 3306
+    user: 'root'
+    pass: 'password'
+    database: 'milestone_data'
+    table-prefix: ''

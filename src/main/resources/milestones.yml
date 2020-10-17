@@ -1,0 +1,103 @@
+# Milestone configuration for ${project.name}
+#
+# Generated with version: ${project.version}
+
+# It is possible to delete any section to disable it entirely.
+# If a boolean is deleted, the plugin will default to false.
+
+# Whatever name you want for the milestone.
+pvp:
+
+  # Milestone type.
+  # Options: kill, break, place, join, quit, chat
+  type: kill
+
+  # Milestone display name
+  display-name: '&cPvP &7(Player vs Pig)'
+
+  # Conditions for the milestone score to count.
+  conditions:
+
+    # Set item type, or an item from the datastorage.yml
+    # format: MATERIAL_NAME;DATA
+    # ex.: STONE;2
+    # Using datastorage to add item:
+    # Save item in-game using /miles addItem <itemName>
+    # Add to the list below with the following placeholder:
+    # %item_<itemName>%
+    # Can be used in tools, reward items and in-inventory.
+    # This section is also used with blockplace event.
+    tools:
+      - DIAMOND_SWORD
+
+    # Used to determine what type of block/entity or which message should count.
+    # break => block material
+    # kill => entity type
+    # chat => message
+    targets:
+      - PIG
+
+    # Biome conditions
+    biomes:
+      - FOREST
+      - PLAINS
+
+    # The name of a World Guard region the player has to be in.
+    # Requires WorldGuard installed.
+    reions:
+      - pvp_region
+
+    # Allowed worlds.
+    worlds:
+      - world
+
+    # Items required to be in the inventory, player has to have all of them.
+    in-inventory:
+      - WHEAT
+
+    # Permission required, player has to have all of them.
+    permissions:
+      - 'some.made.up.permission'
+
+  # Global  milestone means that the points are counted for all players.
+  # The rewards don't work well with this, will improve.
+  global-milestone: false
+
+  # Counts the milestone only once, works with both global and personal milestones.
+  log-only-once: false
+
+  # Rewards fired every time.
+  rewards:
+
+    # Commands to run by console.
+    console-commands:
+      - msg %player% Uumf, you did it, congrats.
+    # Commands run by the player
+    player-commands:
+      - say I'm the greatest.
+    # Items to give the player, won't work with full inv.
+    # Not case sensitive, can use item placeholder.
+    items:
+      - aPPle
+    # Message sent to the player.
+    inform-message:
+      - '&cYou just killed %milestoneScore%. innocent pig.. GJ!'
+    # Message broadcast to all.
+    broadcast-message:
+      - '&c%player% is a pig killer!'
+
+  # After/Every x points...
+  cumulative:
+
+    # Count of points required to get the rewards.
+    '10':
+      # These sections allow for same options as the base rewards.
+
+      broadcast-message:
+        - '&f%player% &3hit &f10&3 scores in &f%milestoneName%&3!'
+
+      # Denies normal reward,.. the one that's given every time.
+      deny-base-reward: false
+    '20':
+      broadcast-message:
+        - '&f%player% &3hit &f20&3 scores in &f%milestoneName%&3!'
