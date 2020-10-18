@@ -16,7 +16,7 @@ awesome-miner:
   # - Blocks (blocks): break, place, harvest
   # - WorldGuard: region_enter, region_leave (from)
   # - Shopkeepers: shopkeepers_trade
-  # - Votifier: vote
+  # - Votifier: vote (services)
   type: break
 
   # Milestone display name

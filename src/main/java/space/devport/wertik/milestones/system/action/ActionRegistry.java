@@ -11,7 +11,9 @@ import space.devport.wertik.milestones.system.action.struct.ActionContext;
 import space.devport.wertik.milestones.system.action.struct.impl.BlockActionListener;
 import space.devport.wertik.milestones.system.action.struct.impl.EntityActionListener;
 import space.devport.wertik.milestones.system.action.struct.impl.PlayerActionListener;
+import space.devport.wertik.milestones.system.action.struct.impl.VotifierActionListener;
 import space.devport.wertik.milestones.system.action.struct.impl.WorldActionListener;
+import space.devport.wertik.milestones.system.action.struct.impl.WorldGuardActionListener;
 import space.devport.wertik.milestones.system.milestone.struct.Milestone;
 import space.devport.wertik.milestones.system.user.struct.User;
 
@@ -34,18 +36,31 @@ public class ActionRegistry {
      */
     @ApiStatus.Internal
     public void register(AbstractActionListener abstractListener) {
+
+        // Load the listener for future attempts
         this.loadedListeners.add(abstractListener);
+
+        if (!abstractListener.canRegister()) {
+            ConsoleOutput.getInstance().debug("Failed to register action listener " + abstractListener.getClass().getSimpleName() + " [" + abstractListener.getRegisteredActions().toString() + "], cannot be registered.");
+            return;
+        }
+
         this.plugin.registerListener(abstractListener);
 
         abstractListener.registerConditions(this.plugin.getConditionRegistry());
-        ConsoleOutput.getInstance().debug("Registered action listener " + abstractListener.getClass().getSimpleName() + " that's providing action types " + abstractListener.getRegisteredActions().toString());
+        ConsoleOutput.getInstance().debug("Registered action listener " + abstractListener.getClass().getSimpleName() + " [" + abstractListener.getRegisteredActions().toString() + "]");
     }
 
+    /**
+     * Register default listeners.
+     */
     public void registerListeners() {
         new BlockActionListener(plugin).register();
         new EntityActionListener(plugin).register();
         new PlayerActionListener(plugin).register();
         new WorldActionListener(plugin).register();
+        new WorldGuardActionListener(plugin).register();
+        new VotifierActionListener(plugin).register();
     }
 
     /**

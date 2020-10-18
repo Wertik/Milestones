@@ -34,6 +34,11 @@ public class WorldGuardActionListener extends AbstractActionListener {
         registry.setInstanceCreator("handle_leave", RegionLeaveCondition::new);
     }
 
+    @Override
+    public boolean canRegister() {
+        return plugin.getPluginManager().isPluginEnabled("WorldGuard");
+    }
+
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
 

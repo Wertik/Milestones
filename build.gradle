@@ -53,7 +53,9 @@ dependencies {
     shadow 'com.sk89q.worldedit:worldedit-bukkit:7.1.0'
 
     shadow 'me.clip:placeholderapi:2.10.9'
-    shadow "com.github.MilkBowl:VaultAPI:1.7"
+    shadow 'com.github.MilkBowl:VaultAPI:1.7'
+
+    shadow 'com.vexsoftware:nuvotifier:2.7.1'
 
     compileOnly 'org.projectlombok:lombok:1.18.16'
     annotationProcessor 'org.projectlombok:lombok:1.18.16'
