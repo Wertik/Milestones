@@ -118,7 +118,7 @@ public class MilestonesPlugin extends DevportPlugin {
     public void onPluginDisable() {
         // Execute instantly on disable, async tasks are cut.
         userManager.saveAll().join();
-        this.actionRegistry.unregister();
+        this.actionRegistry.unregisterListeners();
     }
 
     @Override

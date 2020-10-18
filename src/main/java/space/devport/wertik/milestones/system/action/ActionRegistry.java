@@ -3,6 +3,7 @@ package space.devport.wertik.milestones.system.action;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.ApiStatus;
 import space.devport.utils.ConsoleOutput;
 import space.devport.wertik.milestones.MilestonesPlugin;
 import space.devport.wertik.milestones.system.action.struct.AbstractActionListener;
@@ -20,8 +21,6 @@ import java.util.stream.Collectors;
 
 public class ActionRegistry {
 
-    //TODO Unregister action listeners that are not in use.
-
     private final MilestonesPlugin plugin;
 
     private final List<AbstractActionListener> loadedListeners = new ArrayList<>();
@@ -30,24 +29,10 @@ public class ActionRegistry {
         this.plugin = plugin;
     }
 
-    public void registerListeners() {
-        new BlockActionListener(plugin).register();
-        new EntityActionListener(plugin).register();
-        new PlayerActionListener(plugin).register();
-        new WorldActionListener(plugin).register();
-    }
-
-    public void unregister() {
-        for (AbstractActionListener listener : loadedListeners) {
-            HandlerList.unregisterAll(listener);
-        }
-        this.loadedListeners.clear();
-    }
-
-    public boolean isRegistered(String name) {
-        return this.loadedListeners.stream().anyMatch(a -> a.getRegisteredActions().contains(name) && a.isRegistered());
-    }
-
+    /**
+     * Register the listener. Only internal, use AbstractActionListener#register() instead.
+     */
+    @ApiStatus.Internal
     public void register(AbstractActionListener abstractListener) {
         this.loadedListeners.add(abstractListener);
         this.plugin.registerListener(abstractListener);
@@ -56,21 +41,11 @@ public class ActionRegistry {
         ConsoleOutput.getInstance().debug("Registered action listener " + abstractListener.getClass().getSimpleName() + " that's providing action types " + abstractListener.getRegisteredActions().toString());
     }
 
-    public void unregister(AbstractActionListener abstractActionListener) {
-        this.loadedListeners.remove(abstractActionListener);
-    }
-
-    /**
-     * Unregister action listeners that are not used by any milestones.
-     */
-    public void unregisterUnused() {
-        List<String> usedActions = composeUsedActions();
-        for (AbstractActionListener listener : this.loadedListeners) {
-            if (listener.isRegistered() && listener.getRegisteredActions().stream().noneMatch(usedActions::contains)) {
-                listener.unregister();
-                ConsoleOutput.getInstance().debug("Unregistered unused action listener " + listener.getClass().getSimpleName() + " with actions " + listener.getRegisteredActions().toString());
-            }
-        }
+    public void registerListeners() {
+        new BlockActionListener(plugin).register();
+        new EntityActionListener(plugin).register();
+        new PlayerActionListener(plugin).register();
+        new WorldActionListener(plugin).register();
     }
 
     /**
@@ -86,15 +61,41 @@ public class ActionRegistry {
         }
     }
 
+    /**
+     * Unregister all listeners.
+     */
+    public void unregisterListeners() {
+        for (AbstractActionListener listener : loadedListeners) {
+            HandlerList.unregisterAll(listener);
+        }
+        this.loadedListeners.clear();
+    }
+
+    /**
+     * Unregister action listeners that are not used by any milestones.
+     */
+    public void unregisterUnused() {
+        List<String> usedActions = composeUsedActions();
+        for (AbstractActionListener listener : this.loadedListeners) {
+            if (listener.isRegistered() && listener.getRegisteredActions().stream().noneMatch(usedActions::contains)) {
+                listener.unregister();
+                ConsoleOutput.getInstance().debug("Unregistered unused action listener " + listener.getClass().getSimpleName() + " with actions " + listener.getRegisteredActions().toString());
+            }
+        }
+    }
+
     private List<String> composeUsedActions() {
         return this.plugin.getMilestoneManager().getLoadedMilestones().values().stream()
                 .map(Milestone::getActionName)
                 .collect(Collectors.toList());
     }
 
-    public boolean isUsed(String name) {
-        return this.plugin.getMilestoneManager().getLoadedMilestones().values().stream()
-                .anyMatch(m -> m.getActionName().equalsIgnoreCase(name));
+    public void unregister(AbstractActionListener abstractActionListener) {
+        this.loadedListeners.remove(abstractActionListener);
+    }
+
+    public boolean isRegistered(String name) {
+        return this.loadedListeners.stream().anyMatch(a -> a.getRegisteredActions().contains(name) && a.isRegistered());
     }
 
     /**
@@ -117,8 +118,7 @@ public class ActionRegistry {
                 user.incrementScore(milestone.getName());
 
                 // Fire rewards
-                //TODO Run rewards sync inside
-                Bukkit.getScheduler().runTask(plugin, () -> milestone.getRewards().give(user, milestone.getName()));
+                milestone.getRewards().give(user, milestone.getName());
 
                 ConsoleOutput.getInstance().debug("Incremented score for " + player.getName() + " in milestone " + milestone.getName() + " to " + user.getScore(milestone.getName()));
             });

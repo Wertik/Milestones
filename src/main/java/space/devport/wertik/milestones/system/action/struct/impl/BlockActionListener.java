@@ -24,7 +24,7 @@ public class BlockActionListener extends AbstractActionListener {
 
     @Override
     public List<String> getRegisteredActions() {
-        return Arrays.asList("break", "place");
+        return Arrays.asList("break", "place", "harvest");
     }
 
     @EventHandler

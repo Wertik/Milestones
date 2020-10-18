@@ -10,13 +10,23 @@ import space.devport.wertik.milestones.system.action.struct.ActionContext;
 import space.devport.wertik.milestones.system.milestone.struct.condition.ConditionRegistry;
 import space.devport.wertik.milestones.system.milestone.struct.condition.impl.MessageCondition;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 public class PlayerActionListener extends AbstractActionListener {
 
     public PlayerActionListener(MilestonesPlugin plugin) {
         super(plugin);
+    }
+
+    @Override
+    public List<String> getRegisteredActions() {
+        return Arrays.asList("join", "quit", "chat");
+    }
+
+    @Override
+    public void registerConditionLoaders(ConditionRegistry registry) {
+        registry.setInstanceCreator("chat", MessageCondition::new);
     }
 
     @EventHandler
@@ -39,15 +49,5 @@ public class PlayerActionListener extends AbstractActionListener {
         context.fromPlayer(event.getPlayer())
                 .add(event.getMessage());
         handle("chat", event.getPlayer(), context);
-    }
-
-    @Override
-    public void registerConditionLoaders(ConditionRegistry registry) {
-        registry.setInstanceCreator("chat", MessageCondition::new);
-    }
-
-    @Override
-    public List<String> getRegisteredActions() {
-        return Collections.singletonList("join");
     }
 }

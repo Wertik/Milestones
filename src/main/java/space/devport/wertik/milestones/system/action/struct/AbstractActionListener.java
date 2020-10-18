@@ -23,16 +23,22 @@ public abstract class AbstractActionListener implements Listener {
         plugin.getActionRegistry().handle(name, player, context);
     }
 
+    /**
+     * Register the listener.
+     */
     public void register() {
         plugin.getActionRegistry().register(this);
         this.registered = true;
     }
 
+    /**
+     * Unregister the listener.
+     */
     public void unregister() {
         plugin.getActionRegistry().unregister(this);
     }
 
-    public abstract void registerConditionLoaders(ConditionRegistry registry);
-
     public abstract List<String> getRegisteredActions();
+
+    public abstract void registerConditionLoaders(ConditionRegistry registry);
 }

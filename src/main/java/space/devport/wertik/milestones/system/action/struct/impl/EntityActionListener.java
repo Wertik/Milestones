@@ -18,7 +18,7 @@ import space.devport.wertik.milestones.system.milestone.struct.condition.Conditi
 import space.devport.wertik.milestones.system.milestone.struct.condition.impl.KillCondition;
 import space.devport.wertik.milestones.system.milestone.struct.condition.impl.TradeCondition;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 public class EntityActionListener extends AbstractActionListener {
@@ -29,7 +29,13 @@ public class EntityActionListener extends AbstractActionListener {
 
     @Override
     public List<String> getRegisteredActions() {
-        return Collections.singletonList("kill");
+        return Arrays.asList("kill", "trade");
+    }
+
+    @Override
+    public void registerConditionLoaders(ConditionRegistry registry) {
+        registry.setInstanceCreator("kill", KillCondition::new);
+        registry.setInstanceCreator("trade", TradeCondition::new);
     }
 
     @EventHandler
@@ -71,11 +77,5 @@ public class EntityActionListener extends AbstractActionListener {
                 .add(recipe)
                 .add(villager.getProfession());
         handle("trade", (Player) event.getWhoClicked(), context);
-    }
-
-    @Override
-    public void registerConditionLoaders(ConditionRegistry registry) {
-        registry.setInstanceCreator("kill", KillCondition::new);
-        registry.setInstanceCreator("trade", TradeCondition::new);
     }
 }
