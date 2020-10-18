@@ -9,10 +9,18 @@ import space.devport.wertik.milestones.system.action.struct.ActionContext;
 import space.devport.wertik.milestones.system.milestone.struct.condition.ConditionRegistry;
 import space.devport.wertik.milestones.system.milestone.struct.condition.impl.KillCondition;
 
+import java.util.Collections;
+import java.util.List;
+
 public class KillActionListener extends AbstractActionListener {
 
     public KillActionListener(MilestonesPlugin plugin) {
         super(plugin);
+    }
+
+    @Override
+    public List<String> getRegisteredActions() {
+        return Collections.singletonList("kill");
     }
 
     @EventHandler

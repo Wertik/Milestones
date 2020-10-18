@@ -4,7 +4,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import space.devport.utils.configuration.Configuration;
 import space.devport.wertik.milestones.system.action.struct.ActionContext;
 import space.devport.wertik.milestones.system.milestone.struct.condition.AbstractCondition;
@@ -24,13 +23,12 @@ public class BlockCondition extends AbstractCondition {
     }
 
     @Override
-    public @NotNull AbstractCondition onLoad(Configuration configuration, ConfigurationSection section) {
+    public void onLoad(Configuration configuration, ConfigurationSection section) {
         List<String> materials = section.getStringList("types");
         for (String material : materials) {
             Material mat = Material.matchMaterial(material);
             if (mat == null) continue;
             this.allowedMaterials.add(mat);
         }
-        return this;
     }
 }

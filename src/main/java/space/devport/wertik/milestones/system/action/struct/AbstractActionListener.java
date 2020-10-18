@@ -5,6 +5,8 @@ import org.bukkit.event.Listener;
 import space.devport.wertik.milestones.MilestonesPlugin;
 import space.devport.wertik.milestones.system.milestone.struct.condition.ConditionRegistry;
 
+import java.util.List;
+
 public abstract class AbstractActionListener implements Listener {
 
     protected final MilestonesPlugin plugin;
@@ -22,4 +24,6 @@ public abstract class AbstractActionListener implements Listener {
     }
 
     public abstract void registerConditionLoaders(ConditionRegistry registry);
+
+    public abstract List<String> getRegisteredActions();
 }

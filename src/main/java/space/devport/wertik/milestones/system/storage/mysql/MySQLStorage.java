@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import space.devport.utils.ConsoleOutput;
+import space.devport.utils.utility.FastUUID;
 import space.devport.wertik.milestones.system.user.struct.ScoreRecord;
 
 import java.sql.ResultSet;
@@ -35,7 +36,7 @@ public class MySQLStorage {
 
     public @NotNull CompletableFuture<ScoreRecord> loadRecord(@NotNull UUID uniqueID) {
         return CompletableFuture.supplyAsync(() -> {
-            ResultSet resultSet = connection.executeQuery(Query.GET_RECORD.get(table), uniqueID.toString());
+            ResultSet resultSet = connection.executeQuery(Query.GET_RECORD.get(table), FastUUID.toString(uniqueID));
 
             ScoreRecord record = new ScoreRecord(table);
             try {
@@ -55,7 +56,7 @@ public class MySQLStorage {
     }
 
     public void deleteRecord(@NotNull UUID uniqueID) {
-        CompletableFuture.runAsync(() -> connection.execute(Query.DELETE_RECORD.get(table), uniqueID.toString())).exceptionally((e) -> {
+        CompletableFuture.runAsync(() -> connection.execute(Query.DELETE_RECORD.get(table), FastUUID.toString(uniqueID))).exceptionally((e) -> {
             if (ConsoleOutput.getInstance().isDebug())
                 e.printStackTrace();
             return null;
@@ -65,15 +66,19 @@ public class MySQLStorage {
     public void updateRecord(@NotNull UUID uniqueID, @Nullable ScoreRecord record) {
 
         if (record == null) {
+            ConsoleOutput.getInstance().debug("User " + uniqueID + " has no records for this milestone, purging.");
             deleteRecord(uniqueID);
             return;
         }
 
-        CompletableFuture.runAsync(() -> connection.execute(Query.UPDATE_RECORD.get(table),
-                uniqueID.toString(),
-                record.getScore(),
-                uniqueID.toString(),
-                record.getScore())).exceptionally((e) -> {
+        CompletableFuture.runAsync(() -> {
+            String stringUUID = FastUUID.toString(uniqueID);
+            connection.execute(Query.UPDATE_RECORD.get(table),
+                    stringUUID,
+                    record.getScore(),
+                    stringUUID,
+                    record.getScore());
+        }).exceptionally((e) -> {
             if (ConsoleOutput.getInstance().isDebug())
                 e.printStackTrace();
             return null;

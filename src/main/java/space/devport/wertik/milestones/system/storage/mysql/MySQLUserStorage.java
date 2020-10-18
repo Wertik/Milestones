@@ -39,7 +39,7 @@ public class MySQLUserStorage implements UserStorage {
                 if (record != null)
                     user.updateRecord(storage.getTable(), record);
             }
-            return user;
+            return user.isEmpty() ? null : user;
         });
     }
 

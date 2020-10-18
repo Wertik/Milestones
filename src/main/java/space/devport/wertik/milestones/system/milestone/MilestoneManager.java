@@ -41,7 +41,7 @@ public class MilestoneManager {
                 continue;
             this.loadedMilestones.put(name, milestone);
         }
-        ConsoleOutput.getInstance().debug("Loaded " + this.loadedMilestones.size() + " milestone(s)...");
+        ConsoleOutput.getInstance().info("Loaded " + this.loadedMilestones.size() + " milestone(s)...");
     }
 
     public Map<String, Milestone> getLoadedMilestones() {

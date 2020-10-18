@@ -29,6 +29,7 @@ public class UserManager {
 
     public void initStorage(UserStorage storage) {
         this.storage = storage;
+        ConsoleOutput.getInstance().info("Initialized " + getClass().getSimpleName() + " with " + storage.getClass().getSimpleName() + " storage...");
     }
 
     public CompletableFuture<Void> saveAll() {
@@ -64,6 +65,9 @@ public class UserManager {
 
     @Nullable
     public User loadUser(UUID uniqueID) {
+        if (isLoaded(uniqueID))
+            return getUser(uniqueID);
+
         User user = storage.loadUser(uniqueID).join();
         if (user != null) {
             this.loadedUsers.put(uniqueID, user);

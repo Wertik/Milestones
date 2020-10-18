@@ -1,7 +1,7 @@
 package space.devport.wertik.milestones.system.storage.mysql;
 
+import com.google.common.base.Strings;
 import com.zaxxer.hikari.HikariDataSource;
-import jdk.internal.joptsimple.internal.Strings;
 import lombok.Getter;
 import space.devport.utils.ConsoleOutput;
 
@@ -14,13 +14,26 @@ import java.sql.SQLException;
 
 public class MySQLConnection {
 
-    private final HikariDataSource hikari;
+    private HikariDataSource hikari;
 
     @Getter
-    private final boolean connected;
+    private boolean connected = false;
 
-    public MySQLConnection(String host, int port, String user, String pass, String database) {
+    private final String host;
+    private final int port;
+    private final String user;
+    private final String password;
+    private final String database;
 
+    public MySQLConnection(String host, int port, String user, String password, String database) {
+        this.host = host;
+        this.port = port;
+        this.user = user;
+        this.password = password;
+        this.database = database;
+    }
+
+    public void connect() {
         if (Strings.isNullOrEmpty(host))
             throw new IllegalArgumentException("Host cannot be null.");
 
@@ -32,7 +45,7 @@ public class MySQLConnection {
         hikari.addDataSourceProperty("databaseName", database);
 
         hikari.addDataSourceProperty("user", user);
-        hikari.addDataSourceProperty("password", pass);
+        hikari.addDataSourceProperty("password", password);
         hikari.addDataSourceProperty("characterEncoding", "utf8");
         hikari.addDataSourceProperty("useUnicode", "true");
 

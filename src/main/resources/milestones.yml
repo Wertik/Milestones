@@ -6,14 +6,14 @@
 # If a boolean is deleted, the plugin will default to false.
 
 # Whatever name you want for the milestone.
-pvp:
+awesome-miner:
 
   # Milestone type.
   # Options: kill, break, place, join, quit, chat
-  type: kill
+  type: break
 
   # Milestone display name
-  display-name: '&cPvP &7(Player vs Pig)'
+  display-name: '&7Awesome miner'
 
   # Conditions for the milestone score to count.
   conditions:
@@ -28,14 +28,16 @@ pvp:
     # Can be used in tools, reward items and in-inventory.
     # This section is also used with blockplace event.
     tools:
-      - DIAMOND_SWORD
+      - DIAMOND_PICKAXE
 
     # Used to determine what type of block/entity or which message should count.
     # break => block material
     # kill => entity type
     # chat => message
-    targets:
-      - PIG
+    types:
+      - DIAMOND_ORE
+      - GOLD_ORE
+      - IRON_ORE
 
     # Possible biomes to be in for the score to increase.
     biomes:
@@ -59,32 +61,12 @@ pvp:
     permissions:
       - 'some.made.up.permission'
 
-  # Global  milestone means that the points are counted for all players.
-  # The rewards don't work well with this, will improve.
-  global-milestone: false
-
-  # Counts the milestone only once, works with both global and personal milestones.
-  log-only-once: false
-
   # Rewards fired every time.
   rewards:
 
-    # Commands to run by console.
-    console-commands:
-      - msg %player% Uumf, you did it, congrats.
     # Commands run by the player
-    player-commands:
-      - say I'm the greatest.
-    # Items to give the player, won't work with full inv.
-    # Not case sensitive, can use item placeholder.
-    items:
-      - aPPle
-    # Message sent to the player.
-    inform-message:
-      - '&cYou just killed %milestoneScore%. innocent pig.. GJ!'
-    # Message broadcast to all.
-    broadcast-message:
-      - '&c%player% is a pig killer!'
+    commands:
+      - 'p! me I mined something valuable!'
 
     # After/Every x points...
     cumulative:

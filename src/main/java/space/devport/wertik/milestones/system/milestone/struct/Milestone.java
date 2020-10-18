@@ -45,14 +45,15 @@ public class Milestone {
         }
 
         String type = section.getString("type");
-        if (!MilestonesPlugin.getInstance().getMilestoneManager().isValid(type)) {
-            ConsoleOutput.getInstance().warn("Milestone type " + type + " is not valid.");
+        if (!MilestonesPlugin.getInstance().getActionRegistry().isRegistered(type)) {
+            ConsoleOutput.getInstance().warn("Action " + type + " is not valid, cannot load milestone at " + configuration.getFile().getName() + "@" + path);
             return null;
         }
 
         Milestone milestone = new Milestone(path, type);
 
         AbstractCondition condition = MilestonesPlugin.getInstance().getConditionRegistry().load(type, configuration, path + ".conditions");
+        ConsoleOutput.getInstance().debug("Condition: " + condition.getClass().getSimpleName());
         milestone.setCondition(condition);
 
         MilestoneRewards rewards = MilestoneRewards.load(configuration, path + ".rewards");

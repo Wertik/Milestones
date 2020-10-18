@@ -8,6 +8,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import space.devport.utils.ConsoleOutput;
 import space.devport.utils.configuration.Configuration;
 import space.devport.wertik.milestones.Utils;
 import space.devport.wertik.milestones.system.action.struct.ActionContext;
@@ -19,30 +20,29 @@ import java.util.List;
 public abstract class AbstractCondition {
 
     @Getter
-    private List<Biome> biomes;
+    private final List<Biome> biomes = new ArrayList<>();
 
     @Getter
-    private List<String> regions;
+    private final List<String> regions = new ArrayList<>();
 
     @Getter
-    private List<String> worlds;
+    private final List<String> worlds = new ArrayList<>();
 
     @Getter
-    private List<ItemStack> tools;
+    private final List<String> permissions = new ArrayList<>();
 
     @Getter
-    private List<ItemStack> possessions;
+    private final List<ItemStack> tools = new ArrayList<>();
 
     @Getter
-    private List<String> permissions;
+    private final List<ItemStack> possessions = new ArrayList<>();
 
     public AbstractCondition() {
     }
 
     public abstract boolean onCheck(Player player, ActionContext context);
 
-    @NotNull
-    public abstract AbstractCondition onLoad(Configuration configuration, ConfigurationSection section);
+    public abstract void onLoad(Configuration configuration, ConfigurationSection section);
 
     @NotNull
     public AbstractCondition load(Configuration configuration, String path) {
@@ -55,7 +55,7 @@ public abstract class AbstractCondition {
 
         //TODO Load more basics
 
-        this.permissions = configuration.getStringList(path + ".permissions");
+        this.permissions.addAll(configuration.getStringList(path + ".permissions", new ArrayList<>()));
 
         List<String> biomeNames = configuration.getStringList(path + ".biomes", new ArrayList<>());
         for (String biomeName : biomeNames) {
@@ -64,17 +64,26 @@ public abstract class AbstractCondition {
                 this.biomes.add(biome);
         }
 
-        this.regions = configuration.getStringList(path + ".regions");
-        this.worlds = configuration.getStringList(path + ".worlds");
+        this.regions.addAll(configuration.getStringList(path + ".regions", new ArrayList<>()));
+        this.worlds.addAll(configuration.getStringList(path + ".worlds", new ArrayList<>()));
 
-        return onLoad(configuration, section);
+        try {
+            onLoad(configuration, section);
+        } catch (Exception e) {
+            ConsoleOutput.getInstance().err("There was an error loading additional parameters to condition " + getClass().getSimpleName()
+                    + " from " + configuration.getFile().getName() + "@" + path);
+        }
+
+        return this;
     }
 
     public boolean check(@NotNull Player player, ActionContext context) {
 
         // Permissions
-        if (!Utils.isListNullOrEmpty(permissions) && permissions.stream().anyMatch(perm -> !player.hasPermission(perm)))
+        if (!permissions.isEmpty() && permissions.stream().anyMatch(perm -> !player.hasPermission(perm))) {
+            ConsoleOutput.getInstance().debug("Check failed on permissions.");
             return false;
+        }
 
         Location location = context.get(Location.class);
         if (location == null)
@@ -85,59 +94,18 @@ public abstract class AbstractCondition {
             block = location.getBlock();
 
         // Biomes
-        if (!Utils.isListNullOrEmpty(biomes) && !biomes.contains(block.getBiome()))
+        if (!biomes.isEmpty() && !biomes.contains(block.getBiome())) {
+            ConsoleOutput.getInstance().debug("Check failed on biomes.");
             return false;
+        }
 
         // Worlds
-        if (!Utils.isListNullOrEmpty(worlds) && !worlds.contains(location.getWorld().getName()))
+        if (!worlds.isEmpty() && !worlds.contains(location.getWorld().getName())) {
+            ConsoleOutput.getInstance().debug("Check failed on worlds.");
             return false;
-
-        // Tools
-        //TODO
-        if (!Utils.isListNullOrEmpty(tools)) {
-            int i = 0;
-            for (ItemStack item : tools) {
-
-                if (item.getAmount() == -1)
-                    if (item.getType().equals(player.getInventory().getItemInMainHand().getType()))
-                        break;
-
-                if (Utils.compareItemStacks(item, player.getInventory().getItemInMainHand()))
-                    break;
-
-                i++;
-                if (i == tools.size())
-                    return false;
-            }
         }
 
-        // Regions
-        //TODO
-        if (!Utils.isListNullOrEmpty(regions)) {
-            List<String> regionSet = new ArrayList<>(); //MilestonesPlugin.getInstance().setupWorldGuard().getRegionManager(player.getWorld())
-            //.getApplicableRegionsIDs(MilestonesPlugin.getInstance().setupWorldGuard().wrapPlayer(player).getPosition());
-
-            int i = 0;
-            for (String region : regionSet) {
-                if (regions.contains(region))
-                    break;
-
-                i++;
-                if (i == regionSet.size())
-                    return false;
-            }
-        }
-
-        // Items in inventory
-        //TODO
-        if (!Utils.isListNullOrEmpty(possessions)) {
-            List<ItemStack> contents = Utils.listToArray(player.getInventory().getContents());
-
-            for (ItemStack item : possessions) {
-                if (!contents.contains(item))
-                    return false;
-            }
-        }
+        //TODO Tools, regions, possessions
 
         return onCheck(player, context);
     }

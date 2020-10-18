@@ -15,19 +15,17 @@ public class ManagementListener implements Listener {
         this.plugin = plugin;
     }
 
+    // Load user on join
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-
-        if (!plugin.getUserManager().isLoaded(player.getUniqueId())) {
-            plugin.getUserManager().loadUser(player.getUniqueId());
-        }
+        plugin.getUserManager().loadUser(player.getUniqueId());
     }
 
+    // Unload on quit
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-
         plugin.getUserManager().unloadUser(player.getUniqueId());
     }
 }

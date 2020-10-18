@@ -3,7 +3,7 @@ package space.devport.wertik.milestones.system.storage.mysql;
 public enum Query {
 
     CREATE_RECORD_TABLE("CREATE TABLE IF NOT EXISTS `%table%` (\n"
-            + "    `uuid` BINARY(16)  NOT NULL ,\n"
+            + "    `uuid` VARCHAR(36) NOT NULL ,\n"
             + "    `score` BIGINT NOT NULL DEFAULT 0 ,\n"
             + "    PRIMARY KEY (`uuid`), \n"
             + "    UNIQUE (`uuid`)\n"

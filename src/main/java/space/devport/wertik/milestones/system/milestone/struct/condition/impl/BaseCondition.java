@@ -2,7 +2,6 @@ package space.devport.wertik.milestones.system.milestone.struct.condition.impl;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import space.devport.utils.configuration.Configuration;
 import space.devport.wertik.milestones.system.action.struct.ActionContext;
 import space.devport.wertik.milestones.system.milestone.struct.condition.AbstractCondition;
@@ -18,8 +17,6 @@ public class BaseCondition extends AbstractCondition {
     }
 
     @Override
-    @NotNull
-    public AbstractCondition onLoad(Configuration configuration, ConfigurationSection section) {
-        return this;
+    public void onLoad(Configuration configuration, ConfigurationSection section) {
     }
 }

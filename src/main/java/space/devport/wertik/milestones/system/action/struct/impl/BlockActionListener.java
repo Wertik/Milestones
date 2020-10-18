@@ -1,6 +1,7 @@
 package space.devport.wertik.milestones.system.action.struct.impl;
 
 import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -10,17 +11,26 @@ import space.devport.wertik.milestones.system.action.struct.ActionContext;
 import space.devport.wertik.milestones.system.milestone.struct.condition.ConditionRegistry;
 import space.devport.wertik.milestones.system.milestone.struct.condition.impl.BlockCondition;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class BlockActionListener extends AbstractActionListener {
 
     public BlockActionListener(MilestonesPlugin plugin) {
         super(plugin);
     }
 
+    @Override
+    public List<String> getRegisteredActions() {
+        return Arrays.asList("break", "place");
+    }
+
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
+        final Block block = event.getBlock();
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             ActionContext context = new ActionContext();
-            context.fromBlock(event.getBlock())
+            context.fromBlock(block)
                     .fromPlayer(event.getPlayer());
             handle("break", event.getPlayer(), context);
         });

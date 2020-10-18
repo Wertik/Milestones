@@ -3,7 +3,6 @@ package space.devport.wertik.milestones.system.milestone.struct.condition.impl;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import space.devport.utils.configuration.Configuration;
 import space.devport.wertik.milestones.Utils;
 import space.devport.wertik.milestones.system.action.struct.ActionContext;
@@ -24,13 +23,12 @@ public class KillCondition extends AbstractCondition {
     }
 
     @Override
-    public @NotNull AbstractCondition onLoad(Configuration configuration, ConfigurationSection section) {
+    public void onLoad(Configuration configuration, ConfigurationSection section) {
         List<String> typeNames = section.getStringList("entity-types");
         for (String typeName : typeNames) {
             EntityType type = Utils.parseEnum(typeName, EntityType.class);
             if (type != null)
                 this.allowedTypes.add(type);
         }
-        return this;
     }
 }
