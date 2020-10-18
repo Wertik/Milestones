@@ -3,7 +3,7 @@ version: @version@
 authors: [ qwz ]
 main: @main_class@
 description: Logging data based on conditions.
-softdepend: [ PlaceholderAPI, Vault ]
+softdepend: [ PlaceholderAPI, Vault, WorldEdit, WorldGuard ]
 commands:
   milestones:
     aliases: [ mile, miles ]

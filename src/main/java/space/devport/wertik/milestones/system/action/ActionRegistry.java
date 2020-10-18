@@ -37,7 +37,7 @@ public class ActionRegistry {
         this.loadedListeners.add(abstractListener);
         this.plugin.registerListener(abstractListener);
 
-        abstractListener.registerConditionLoaders(this.plugin.getConditionRegistry());
+        abstractListener.registerConditions(this.plugin.getConditionRegistry());
         ConsoleOutput.getInstance().debug("Registered action listener " + abstractListener.getClass().getSimpleName() + " that's providing action types " + abstractListener.getRegisteredActions().toString());
     }
 

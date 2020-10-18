@@ -14,8 +14,9 @@ awesome-miner:
   # - Worlds: world_enter, world_leave (from)
   # - Entity: kill (entities), trade (professions, results)
   # - Blocks (blocks): break, place, harvest
-  # - WorldGuard: region_enter, region_leave
+  # - WorldGuard: region_enter, region_leave (from)
   # - Shopkeepers: shopkeepers_trade
+  # - Votifier: vote
   type: break
 
   # Milestone display name
@@ -52,6 +53,9 @@ awesome-miner:
     # Permissions required, player has to have at least one of them.
     permissions:
       - 'some.made.up.permission'
+
+    # Vault economy, has to have at least this amount.
+    money: 100
 
   # Rewards fired every time.
   rewards:

@@ -62,7 +62,7 @@ public class BlockActionListener extends AbstractActionListener {
     }
 
     @Override
-    public void registerConditionLoaders(ConditionRegistry registry) {
+    public void registerConditions(ConditionRegistry registry) {
         registry.setInstanceCreator("break", BlockCondition::new);
         registry.setInstanceCreator("place", BlockCondition::new);
         registry.setInstanceCreator("harvest", BlockCondition::new);

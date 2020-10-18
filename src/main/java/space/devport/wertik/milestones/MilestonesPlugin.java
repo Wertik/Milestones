@@ -1,14 +1,19 @@
 package space.devport.wertik.milestones;
 
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import lombok.Getter;
-import net.milkbowl.vault.chat.Chat;
-import net.milkbowl.vault.permission.Permission;
+import me.clip.placeholderapi.PlaceholderAPI;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import space.devport.utils.ConsoleOutput;
 import space.devport.utils.DevportPlugin;
 import space.devport.utils.UsageFlag;
 import space.devport.utils.commands.MainCommand;
+import space.devport.utils.utility.VersionUtil;
 import space.devport.wertik.milestones.commands.MilestoneCommand;
 import space.devport.wertik.milestones.commands.subcommands.ReloadSubCommand;
 import space.devport.wertik.milestones.listeners.ManagementListener;
@@ -43,9 +48,12 @@ public class MilestonesPlugin extends DevportPlugin {
     private ReloadableTask saveTask;
 
     @Getter
-    private Permission permissions;
+    private Economy economy;
+
     @Getter
-    private Chat chat;
+    private WorldGuardPlugin worldGuard;
+
+    private MilestonesExpansion placeholderExpansion;
 
     @Getter
     private StorageType currentStorage = StorageType.INVALID;
@@ -59,12 +67,8 @@ public class MilestonesPlugin extends DevportPlugin {
     @Override
     public void onPluginEnable() {
 
-        //TODO
-        // + PlaceholderAPI expansion
-        // + setupChat();
-        // + setupPermissions();
-        // + setupWorldEdit();
-        // + setupWorldGuard();
+        setupWorldGuard();
+        setupEconomy();
 
         this.conditionRegistry = new ConditionRegistry(this);
 
@@ -94,7 +98,7 @@ public class MilestonesPlugin extends DevportPlugin {
             return;
         }
 
-        addStorageDependantCommands(milestoneCommand);
+        addStorageDependantCommands();
 
         // Load online players
         userManager.load(Bukkit.getOnlinePlayers().stream()
@@ -103,6 +107,8 @@ public class MilestonesPlugin extends DevportPlugin {
 
         registerListener(new ManagementListener(this));
 
+        setupPlaceholders();
+
         // Setup auto save
         this.saveTask = new ReloadableTask(this)
                 .load(configuration, "auto-save")
@@ -110,7 +116,7 @@ public class MilestonesPlugin extends DevportPlugin {
                 .start();
     }
 
-    private void addStorageDependantCommands(MainCommand mainCommand) {
+    private void addStorageDependantCommands() {
         //TODO Add other commands
     }
 
@@ -152,7 +158,7 @@ public class MilestonesPlugin extends DevportPlugin {
             if (newType.isValid() && !currentStorage.isValid()) {
 
                 registerListener(new ManagementListener(this));
-                addStorageDependantCommands(milestoneCommand);
+                addStorageDependantCommands();
 
                 this.currentStorage = newType;
             }
@@ -215,6 +221,63 @@ public class MilestonesPlugin extends DevportPlugin {
         }
 
         return StorageType.INVALID;
+    }
+
+    private void setupEconomy() {
+
+        if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
+            consoleOutput.info("Not using Vault. &cEconomy conditions and rewards disabled.");
+            return;
+        }
+
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+
+        if (rsp == null) {
+            consoleOutput.info("Vault found, but no economy plugin. &cEconomy conditions and rewards disabled.");
+            return;
+        }
+
+        economy = rsp.getProvider();
+        consoleOutput.info("Vault & economy plugin found. &aEnabling economy conditions and rewards.");
+    }
+
+    private boolean setupWorldEdit() {
+        Plugin worldEditPlugin = this.getServer().getPluginManager().getPlugin("WorldEdit");
+        return worldEditPlugin instanceof WorldEditPlugin;
+    }
+
+    private void setupWorldGuard() {
+        Plugin worldGuardPlugin = getServer().getPluginManager().getPlugin("WorldGuard");
+
+        if (!(worldGuardPlugin instanceof WorldGuardPlugin)) {
+            consoleOutput.info("Not using WorldGuard. &cRegion conditions disabled.");
+            return;
+        }
+
+        if (!setupWorldEdit()) {
+            consoleOutput.info("Found WorldGuard, but WorldEdit is not installed. &cRegion conditions disabled.");
+            return;
+        }
+
+        consoleOutput.info("WorldGuard & WorldEdit found. &aUsing region conditions.");
+        this.worldGuard = (WorldGuardPlugin) worldGuardPlugin;
+    }
+
+    private void setupPlaceholders() {
+        if (getPluginManager().getPlugin("PlaceholderAPI") != null) {
+
+            if (this.placeholderExpansion == null)
+                this.placeholderExpansion = new MilestonesExpansion(this);
+
+            if (PlaceholderAPI.isRegistered("milestones") &&
+                    VersionUtil.compareVersions(getPluginManager().getPlugin("PlaceholderAPI").getDescription().getVersion(), "2.10.9") > -1) {
+                this.placeholderExpansion.unregister();
+                consoleOutput.info("Unregistered old expansion.");
+            }
+
+            this.placeholderExpansion.register();
+            consoleOutput.info("Registered placeholder expansion.");
+        }
     }
 
     @Override

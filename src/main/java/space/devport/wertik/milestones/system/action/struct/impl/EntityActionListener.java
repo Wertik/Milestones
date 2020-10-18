@@ -33,7 +33,7 @@ public class EntityActionListener extends AbstractActionListener {
     }
 
     @Override
-    public void registerConditionLoaders(ConditionRegistry registry) {
+    public void registerConditions(ConditionRegistry registry) {
         registry.setInstanceCreator("kill", KillCondition::new);
         registry.setInstanceCreator("trade", TradeCondition::new);
     }

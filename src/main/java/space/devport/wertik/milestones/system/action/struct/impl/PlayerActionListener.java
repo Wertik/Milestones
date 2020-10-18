@@ -25,7 +25,7 @@ public class PlayerActionListener extends AbstractActionListener {
     }
 
     @Override
-    public void registerConditionLoaders(ConditionRegistry registry) {
+    public void registerConditions(ConditionRegistry registry) {
         registry.setInstanceCreator("chat", MessageCondition::new);
     }
 

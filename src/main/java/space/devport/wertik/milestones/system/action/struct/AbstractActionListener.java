@@ -38,7 +38,14 @@ public abstract class AbstractActionListener implements Listener {
         plugin.getActionRegistry().unregister(this);
     }
 
+    /**
+     * Return whether or not the listener can be registered.
+     */
+    public boolean canRegister() {
+        return true;
+    }
+
     public abstract List<String> getRegisteredActions();
 
-    public abstract void registerConditionLoaders(ConditionRegistry registry);
+    public abstract void registerConditions(ConditionRegistry registry);
 }
