@@ -2,11 +2,13 @@ package space.devport.wertik.milestones.system.action.struct.impl;
 
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
-import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import space.devport.wertik.milestones.MilestonesPlugin;
 import space.devport.wertik.milestones.system.action.struct.AbstractActionListener;
 import space.devport.wertik.milestones.system.action.struct.ActionContext;
@@ -23,48 +25,56 @@ public class BlockActionListener extends AbstractActionListener {
     }
 
     @Override
-    public List<String> getRegisteredActions() {
+    public @NotNull List<String> getRegisteredActions() {
         return Arrays.asList("break", "place", "harvest");
     }
 
-    @EventHandler
-    public void onBreak(BlockBreakEvent event) {
-        final Block block = event.getBlock();
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            ActionContext context = new ActionContext();
-            context.fromBlock(block)
-                    .fromPlayer(event.getPlayer());
-            handle("break", event.getPlayer(), context);
-        });
-    }
-
-    @EventHandler
-    public void onPlace(BlockPlaceEvent event) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            ActionContext context = new ActionContext();
-            context.fromBlock(event.getBlock())
-                    .fromPlayer(event.getPlayer());
-            handle("place", event.getPlayer(), context);
-        });
-    }
-
-    @EventHandler
-    public void onHarvest(PlayerHarvestBlockEvent event) {
-        final Block block = event.getHarvestedBlock();
-        final List<ItemStack> harvestedItems = event.getItemsHarvested();
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            ActionContext context = new ActionContext();
-            context.fromBlock(block)
-                    .fromPlayer(event.getPlayer())
-                    .add(harvestedItems);
-            handle("harvest", event.getPlayer(), context);
-        });
-    }
-
     @Override
-    public void registerConditions(ConditionRegistry registry) {
+    public void registerConditions(@NotNull ConditionRegistry registry) {
         registry.setInstanceCreator("break", BlockCondition::new);
         registry.setInstanceCreator("place", BlockCondition::new);
         registry.setInstanceCreator("harvest", BlockCondition::new);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onBreak(BlockBreakEvent event) {
+
+        final Player player = event.getPlayer();
+        final Block block = event.getBlock();
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            ActionContext context = new ActionContext();
+            context.fromBlock(block)
+                    .fromPlayer(player);
+            handle("break", player, context);
+        });
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlace(BlockPlaceEvent event) {
+
+        final Player player = event.getPlayer();
+        final Block block = event.getBlockPlaced();
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            ActionContext context = new ActionContext();
+            context.fromBlock(block)
+                    .fromPlayer(player);
+            handle("place", player, context);
+        });
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onHarvest(PlayerHarvestBlockEvent event) {
+
+        final Player player = event.getPlayer();
+        final Block block = event.getHarvestedBlock();
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            ActionContext context = new ActionContext();
+            context.fromBlock(block)
+                    .fromPlayer(player);
+            handle("harvest", player, context);
+        });
     }
 }

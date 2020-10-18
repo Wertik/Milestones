@@ -47,7 +47,7 @@ awesome-miner:
       - world
 
     # Items required to be in the inventory, player has to have all of them.
-    in-inventory:
+    possessions:
       - WHEAT
 
     # Permissions required, player has to have at least one of them.

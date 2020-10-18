@@ -5,6 +5,8 @@ import com.vexsoftware.votifier.model.VotifierEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.jetbrains.annotations.NotNull;
 import space.devport.wertik.milestones.MilestonesPlugin;
 import space.devport.wertik.milestones.system.action.struct.AbstractActionListener;
 import space.devport.wertik.milestones.system.action.struct.ActionContext;
@@ -21,12 +23,12 @@ public class VotifierActionListener extends AbstractActionListener {
     }
 
     @Override
-    public List<String> getRegisteredActions() {
+    public @NotNull List<String> getRegisteredActions() {
         return Collections.singletonList("vote");
     }
 
     @Override
-    public void registerConditions(ConditionRegistry registry) {
+    public void registerConditions(@NotNull ConditionRegistry registry) {
         registry.setInstanceCreator("vote", VoteCondition::new);
     }
 
@@ -35,19 +37,21 @@ public class VotifierActionListener extends AbstractActionListener {
         return plugin.getPluginManager().isPluginEnabled("Votifier");
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onVote(VotifierEvent event) {
-        Vote vote = event.getVote();
 
-        Player player = Bukkit.getPlayer(vote.getUsername());
+        final Vote vote = event.getVote();
+        final Player player = Bukkit.getPlayer(vote.getUsername());
 
         // Only on online votes
         if (player == null)
             return;
 
-        ActionContext context = new ActionContext();
-        context.add(vote)
-                .fromPlayer(player);
-        handle("vote", player, context);
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            ActionContext context = new ActionContext();
+            context.add(vote)
+                    .fromPlayer(player);
+            handle("vote", player, context);
+        });
     }
 }

@@ -3,6 +3,7 @@ package space.devport.wertik.milestones.system.action.struct;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.jetbrains.annotations.NotNull;
 import space.devport.wertik.milestones.MilestonesPlugin;
 import space.devport.wertik.milestones.system.milestone.struct.condition.ConditionRegistry;
 
@@ -19,8 +20,16 @@ public abstract class AbstractActionListener implements Listener {
         this.plugin = plugin;
     }
 
-    public void handle(String name, Player player, ActionContext context) {
-        plugin.getActionRegistry().handle(name, player, context);
+    @NotNull
+    public abstract List<String> getRegisteredActions();
+
+    public abstract void registerConditions(@NotNull ConditionRegistry registry);
+
+    /**
+     * Return whether or not the listener can be registered.
+     */
+    public boolean canRegister() {
+        return true;
     }
 
     /**
@@ -38,14 +47,11 @@ public abstract class AbstractActionListener implements Listener {
         plugin.getActionRegistry().unregister(this);
     }
 
-    /**
-     * Return whether or not the listener can be registered.
-     */
-    public boolean canRegister() {
-        return true;
+    public void handle(@NotNull String name, @NotNull Player player, @NotNull ActionContext context) {
+        plugin.getActionRegistry().handle(name, player, context);
     }
 
-    public abstract List<String> getRegisteredActions();
-
-    public abstract void registerConditions(ConditionRegistry registry);
+    public void handle(@NotNull String name, @NotNull Player player) {
+        plugin.getActionRegistry().handle(name, player);
+    }
 }

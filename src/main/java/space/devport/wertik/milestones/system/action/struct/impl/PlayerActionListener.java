@@ -1,9 +1,13 @@
 package space.devport.wertik.milestones.system.action.struct.impl;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.NotNull;
 import space.devport.wertik.milestones.MilestonesPlugin;
 import space.devport.wertik.milestones.system.action.struct.AbstractActionListener;
 import space.devport.wertik.milestones.system.action.struct.ActionContext;
@@ -20,34 +24,50 @@ public class PlayerActionListener extends AbstractActionListener {
     }
 
     @Override
-    public List<String> getRegisteredActions() {
+    public @NotNull List<String> getRegisteredActions() {
         return Arrays.asList("join", "quit", "chat");
     }
 
     @Override
-    public void registerConditions(ConditionRegistry registry) {
+    public void registerConditions(@NotNull ConditionRegistry registry) {
         registry.setInstanceCreator("chat", MessageCondition::new);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onJoin(PlayerJoinEvent event) {
-        ActionContext context = new ActionContext();
-        context.fromPlayer(event.getPlayer());
-        handle("join", event.getPlayer(), context);
+
+        final Player player = event.getPlayer();
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            ActionContext context = new ActionContext();
+            context.fromPlayer(player);
+            handle("join", player, context);
+        });
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent event) {
-        ActionContext context = new ActionContext();
-        context.fromPlayer(event.getPlayer());
-        handle("quit", event.getPlayer(), context);
+
+        final Player player = event.getPlayer();
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            ActionContext context = new ActionContext();
+            context.fromPlayer(player);
+            handle("quit", player, context);
+        });
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onChat(AsyncPlayerChatEvent event) {
-        ActionContext context = new ActionContext();
-        context.fromPlayer(event.getPlayer())
-                .add(event.getMessage());
-        handle("chat", event.getPlayer(), context);
+
+        final Player player = event.getPlayer();
+        final String message = event.getMessage();
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            ActionContext context = new ActionContext();
+            context.fromPlayer(player)
+                    .add(message);
+            handle("chat", player, context);
+        });
     }
 }

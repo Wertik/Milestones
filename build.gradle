@@ -16,8 +16,8 @@ repositories {
     maven {
         url = 'http://play.pvpcraft.cz:8081/repository/devport/'
         credentials {
-            username 'pvpc-user'
-            password devportPassword
+            username = 'pvpc-user'
+            password = devportPassword
         }
     }
 
@@ -39,6 +39,10 @@ repositories {
 
     maven {
         url = 'http://ci.emc.gs/nexus/content/groups/aikar/'
+    }
+
+    maven {
+        url = 'https://jitpack.io/'
     }
 }
 

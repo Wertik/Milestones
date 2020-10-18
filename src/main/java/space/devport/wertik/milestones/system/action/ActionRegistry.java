@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import space.devport.utils.ConsoleOutput;
 import space.devport.wertik.milestones.MilestonesPlugin;
 import space.devport.wertik.milestones.system.action.struct.AbstractActionListener;
@@ -113,10 +114,14 @@ public class ActionRegistry {
         return this.loadedListeners.stream().anyMatch(a -> a.getRegisteredActions().contains(name) && a.isRegistered());
     }
 
+    public void handle(@NotNull String name, @NotNull Player player) {
+        handle(name, player, new ActionContext());
+    }
+
     /**
      * Handle an incoming event.
      */
-    public void handle(String name, Player player, ActionContext context) {
+    public void handle(@NotNull String name, @NotNull Player player, @NotNull ActionContext context) {
 
         ConsoleOutput.getInstance().debug("Caught action " + name + " caused by " + player.getName() + " with context " + context.toString());
 
