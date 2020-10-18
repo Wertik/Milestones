@@ -1,5 +1,4 @@
 # Milestones
-KMR - Future milestone system prototype
 
 ## Description
 
