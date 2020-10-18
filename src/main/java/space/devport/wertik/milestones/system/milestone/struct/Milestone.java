@@ -56,7 +56,7 @@ public class Milestone {
         ConsoleOutput.getInstance().debug("Condition: " + condition.getClass().getSimpleName());
         milestone.setCondition(condition);
 
-        MilestoneRewards rewards = MilestoneRewards.load(configuration, path + ".rewards");
+        MilestoneRewards rewards = MilestoneRewards.load(configuration, path + ".rewards", false);
         milestone.setRewards(rewards);
 
         //TODO Load the rest

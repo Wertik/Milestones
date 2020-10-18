@@ -24,7 +24,7 @@ public class KillCondition extends AbstractCondition {
 
     @Override
     public void onLoad(Configuration configuration, ConfigurationSection section) {
-        List<String> typeNames = section.getStringList("entity-types");
+        List<String> typeNames = section.getStringList("entities");
         for (String typeName : typeNames) {
             EntityType type = Utils.parseEnum(typeName, EntityType.class);
             if (type != null)

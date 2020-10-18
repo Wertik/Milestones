@@ -74,6 +74,12 @@ public class MilestonesPlugin extends DevportPlugin {
         this.milestoneManager = new MilestoneManager(this);
         milestoneManager.load();
 
+        // Load again later, in case some actions got registered.
+        Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
+            milestoneManager.loadAdditional();
+            actionRegistry.unregisterUnused();
+        }, 1L);
+
         this.userManager = new UserManager(this);
         this.currentStorage = setupStorage();
 
@@ -120,9 +126,13 @@ public class MilestonesPlugin extends DevportPlugin {
 
         StorageType newType = parseStorageType();
 
-        ConsoleOutput.getInstance().debug("Storage types: " + currentStorage + " -> " + newType);
+        ConsoleOutput.getInstance().debug("Storage type: " + currentStorage + " -> " + newType);
 
         milestoneManager.load();
+
+        // Balance action listeners
+        actionRegistry.registerUsed();
+        actionRegistry.unregisterUnused();
 
         // Storage changes
         if (newType != currentStorage || currentStorage == StorageType.INVALID) {

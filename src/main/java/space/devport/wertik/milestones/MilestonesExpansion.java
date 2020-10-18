@@ -3,6 +3,7 @@ package space.devport.wertik.milestones;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import space.devport.wertik.milestones.system.user.struct.User;
 
 public class MilestonesExpansion extends PlaceholderExpansion {
 
@@ -28,7 +29,7 @@ public class MilestonesExpansion extends PlaceholderExpansion {
     }
 
     /*
-     * %milestones_<name>% -- score
+     * %milestones_score_<name>% -- score
      * */
 
     @Override
@@ -36,7 +37,22 @@ public class MilestonesExpansion extends PlaceholderExpansion {
 
         if (player == null)
             return "no_player";
-        // TODO
-        return null;
+
+        String[] args = params.split("_");
+        if (args.length == 0)
+            return "not_enough_args";
+
+        if (args[0].equalsIgnoreCase("score")) {
+            if (args.length < 2)
+                return "not_enough_args";
+
+            String milestoneName = args[1];
+            if (!plugin.getMilestoneManager().isValid(milestoneName))
+                return "invalid_milestone";
+
+            User user = plugin.getUserManager().getOrCreateUser(player.getUniqueId());
+            return String.valueOf(user.getScore(milestoneName));
+        }
+        return "invalid_params";
     }
 }

@@ -30,7 +30,27 @@ public class MilestoneManager {
         return name == null ? null : this.loadedMilestones.get(name);
     }
 
+    public void loadAdditional() {
+        FileConfiguration config = configuration.getFileConfiguration();
+
+        int count = 0;
+        for (String name : config.getKeys(false)) {
+
+            if (isValid(name)) continue;
+
+            Milestone milestone = Milestone.load(configuration, name);
+            if (milestone == null)
+                continue;
+            this.loadedMilestones.put(name, milestone);
+            count++;
+        }
+        if (count > 0)
+            ConsoleOutput.getInstance().info("Loaded " + this.loadedMilestones.size() + " additional milestone(s)...");
+    }
+
     public void load() {
+
+        this.loadedMilestones.clear();
         configuration.load();
 
         FileConfiguration config = configuration.getFileConfiguration();

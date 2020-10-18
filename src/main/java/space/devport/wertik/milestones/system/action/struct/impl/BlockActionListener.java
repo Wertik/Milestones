@@ -5,6 +5,8 @@ import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerHarvestBlockEvent;
+import org.bukkit.inventory.ItemStack;
 import space.devport.wertik.milestones.MilestonesPlugin;
 import space.devport.wertik.milestones.system.action.struct.AbstractActionListener;
 import space.devport.wertik.milestones.system.action.struct.ActionContext;
@@ -46,8 +48,23 @@ public class BlockActionListener extends AbstractActionListener {
         });
     }
 
+    @EventHandler
+    public void onHarvest(PlayerHarvestBlockEvent event) {
+        final Block block = event.getHarvestedBlock();
+        final List<ItemStack> harvestedItems = event.getItemsHarvested();
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            ActionContext context = new ActionContext();
+            context.fromBlock(block)
+                    .fromPlayer(event.getPlayer())
+                    .add(harvestedItems);
+            handle("harvest", event.getPlayer(), context);
+        });
+    }
+
     @Override
     public void registerConditionLoaders(ConditionRegistry registry) {
         registry.setInstanceCreator("break", BlockCondition::new);
+        registry.setInstanceCreator("place", BlockCondition::new);
+        registry.setInstanceCreator("harvest", BlockCondition::new);
     }
 }

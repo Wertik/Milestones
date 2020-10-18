@@ -45,7 +45,7 @@ repositories {
 dependencies {
     shadow 'org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT'
 
-    compile 'space.devport.utils:DevportUtils:3.4.3'
+    compile 'space.devport.utils:DevportUtils:3.4.4'
     compile 'org.jetbrains:annotations:19.0.0'
     compile 'com.zaxxer:HikariCP:3.1.0'
 
