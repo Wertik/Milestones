@@ -25,6 +25,26 @@ awesome-miner:
   # Conditions for the milestone score to count.
   conditions:
 
+    # Experimental condition syntax. It does not work. Just a showcase for future implementation.
+    # This would pass if you meet any of the conditions.
+    evaluator: 'condition-one//condition-two'
+    # evaluator: 'condition-one&&condition-two'
+    condition-one:
+      biomes:
+        - 'FOREST'
+        - 'OR DESERT'
+      tools:
+        - 'DIAMOND_PICKAXE'
+        - 'OR GOLDEN_PICKAXE'
+    condition-two:
+      biomes:
+        - 'PLAINS'
+      tools:
+        - IRON_PICKAXE
+      possessions:
+        - 'APPLE'
+        - 'AND STICK'
+
     tools:
       - DIAMOND_PICKAXE
 
